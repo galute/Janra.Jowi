@@ -14,32 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Tests.Factories;
 
-import java.nio.channels.SelectionKey;
+import Network.Server;
+import Network.Wrappers.*;
+import Tests.Network.Stubs.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public class SelectorKey implements ISelectorKey
+public class ServerStubFactory
 {
-    private final SelectionKey _key;
-    
-    public SelectorKey(SelectionKey key)
+    static public Map<String, Object> Create()
     {
-        _key = key;
-    }
-    
-    @Override
-    public Boolean IsAcceptable()
-    {
-        return _key.isAcceptable();
-    }
-
-    @Override
-    public Boolean IsReadable()
-    {
-        return _key.isReadable();
+        Map<String, Object> retVal = new HashMap<>();
+        
+        retVal.put("ServerSocketStub", new ServerSocketStub());
+        retVal.put("SelectorStub", new SelectorStub());
+        retVal.put("Server", new Server((IServerSocketChannel)retVal.get("ServerSocketStub"),
+                                        (ISelector)retVal.get("SelectorStub")));
+        return retVal;
     }
 }

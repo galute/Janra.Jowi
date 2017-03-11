@@ -14,32 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Network;
 
-import java.nio.channels.SelectionKey;
+import Network.Wrappers.ISelectorKeys;
+import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class SelectorKey implements ISelectorKey
+public interface IServer
 {
-    private final SelectionKey _key;
-    
-    public SelectorKey(SelectionKey key)
-    {
-        _key = key;
-    }
-    
-    @Override
-    public Boolean IsAcceptable()
-    {
-        return _key.isAcceptable();
-    }
-
-    @Override
-    public Boolean IsReadable()
-    {
-        return _key.isReadable();
-    }
+    public void Configure(Integer port) throws IOException;
+    public ISelectorKeys Start() throws IOException;
+    public void Close() throws IOException;
 }
