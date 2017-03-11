@@ -16,7 +16,9 @@
  */
 package Network;
 
+import Network.Wrappers.ISelectorKey;
 import Network.Wrappers.ISelectorKeys;
+import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
 
 /**
@@ -25,7 +27,8 @@ import java.io.IOException;
  */
 public interface IServer
 {
-    public void Configure(Integer port) throws IOException;
-    public ISelectorKeys Start() throws IOException;
-    public void Close() throws IOException;
+    void Configure(Integer port) throws IOException;
+    ISelectorKeys Start() throws IOException;
+    ISocketChannel Accept(ISelectorKey key) throws IOException;
+    void Close() throws IOException;
 }

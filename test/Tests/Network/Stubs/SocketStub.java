@@ -16,35 +16,39 @@
  */
 package Tests.Network.Stubs;
 
-import Network.Wrappers.IServerSocketChannel;
 import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
+import java.nio.CharBuffer;
 
 /**
  *
  * @author jmillen
  */
-public class ServerSocketStub implements IServerSocketChannel
+public class SocketStub implements ISocketChannel
 {
-    public Boolean _nonBlockingFlag = null;
-    public Boolean _isClosed = false;
-    public Integer _boundPort = null;
-    
+
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public CharBuffer Read(Integer numBytes) throws IOException
     {
-        _nonBlockingFlag = flag;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void Bind(Integer port) throws IOException
+    public Integer Write(CharBuffer buffer) throws IOException
     {
-        _boundPort = port;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void Close() throws IOException
     {
-        _isClosed = true;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void SetNonBlocking(Boolean flag) throws IOException
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

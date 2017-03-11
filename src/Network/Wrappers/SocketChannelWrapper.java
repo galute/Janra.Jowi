@@ -38,6 +38,18 @@ public class SocketChannelWrapper implements ISocketChannel
         _socket = socket;
     }
     
+    public SocketChannel GetChannel()
+    {
+        return _socket;
+    }
+    
+    @Override
+    public void SetNonBlocking(Boolean flag) throws IOException
+    {
+        Check();
+        _socket.configureBlocking(flag); 
+    }
+    
     @Override
     public CharBuffer Read(Integer numBytes) throws IOException
     {

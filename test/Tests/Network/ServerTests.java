@@ -18,6 +18,7 @@ package Tests.Network;
 
 import Network.Server;
 import Network.Wrappers.ISelectorKeys;
+import Network.Wrappers.ISocketChannel;
 import Tests.Network.Stubs.*;
 import Tests.Factories.*;
 import java.io.IOException;
@@ -96,6 +97,25 @@ public class ServerTests
         
         assertNotNull(keys);
         assertEquals(keys.NumKeys(), numRequests);
+    }
+    
+    @Test
+    public void RegistersAcceptedSocketForReadsWithSelector()
+    {
+        Integer numRequests = 1;
+        SelectorKeysStub keys = null;
+        try
+        {
+            GivenIncomingRequests(numRequests);
+            keys = (SelectorKeysStub)WhenCheckingForPendingRequests();
+            ISocketChannel socket = _unitUnderTest.Accept(keys.GetNext());
+            
+            assertEquals(Integer.valueOf(1),_selector._registeredForRead);
+        }
+        catch (Exception ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }
     }
     
     @Test

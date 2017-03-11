@@ -16,14 +16,44 @@
  */
 package Network;
 
+import Network.Wrappers.ISelectorKey;
+import Network.Wrappers.ISelectorKeys;
+import Network.Wrappers.ISocketChannel;
+import java.io.IOException;
+
 /**
  *
  * @author jmillen
  */
 public class ServerProcessor
 {
-    public ServerProcessor(Integer port)
+    private final IServer _server;
+    private Boolean _stop = false;
+    
+    public ServerProcessor(IServer server) throws IOException
     {
+        _server = server;
+    }
+    
+    public void Start(Integer port) throws IOException
+    {
+        _server.Configure(port);
         
+        while (!_stop)
+        {
+            ISelectorKeys keys = _server.Start();
+            
+            ISelectorKey key = keys.GetNext();
+            
+            if (key.IsAcceptable())
+            {
+                ISocketChannel socketChannel = _server.Accept(key);
+            }
+        }
+    }
+    
+    public void Stop()
+    {
+        _stop = true;
     }
 }

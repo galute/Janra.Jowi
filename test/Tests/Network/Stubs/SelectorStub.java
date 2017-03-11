@@ -38,12 +38,20 @@ public class SelectorStub implements ISelector
     @Override
     public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
     {
+        if (serverChannel == null)
+        {
+            throw new IOException("SelectorStub: Tried to register For Accept with null ServerSocketChannel");
+        }
         _registeredForAccept++;
     }
 
     @Override
-    public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void RegisterForReads(ISocketChannel socketChannel) throws ClosedChannelException, IOException
     {
+        if (socketChannel == null)
+        {
+            throw new IOException("SelectorStub: Tried to register for Read with null SocketChannel");
+        }
         _registeredForRead++;
     }
     

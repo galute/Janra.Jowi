@@ -14,19 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
-
-import java.io.IOException;
-import java.nio.CharBuffer;
+package Tests.Network;
 
 /**
  *
  * @author jmillen
  */
-public interface ISocketChannel
+public class ServerProcessorTests
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    CharBuffer Read(Integer numBytes) throws IOException;
-    Integer Write(CharBuffer buffer) throws IOException;
-    void Close() throws IOException;
+    
 }

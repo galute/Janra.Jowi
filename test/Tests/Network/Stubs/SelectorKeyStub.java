@@ -17,6 +17,8 @@
 package Tests.Network.Stubs;
 
 import Network.Wrappers.ISelectorKey;
+import Network.Wrappers.ISocketChannel;
+import java.io.IOException;
 
 /**
  *
@@ -43,6 +45,12 @@ public class SelectorKeyStub implements ISelectorKey
     public Boolean IsReadable()
     {
         return _isReadable;
+    }
+
+    @Override
+    public ISocketChannel GetChannel() throws IOException
+    {
+        return new SocketStub();
     }
     
 }

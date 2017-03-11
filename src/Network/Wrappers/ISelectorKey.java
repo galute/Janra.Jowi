@@ -16,12 +16,15 @@
  */
 package Network.Wrappers;
 
+import java.io.IOException;
+
 /**
  *
  * @author jmillen
  */
 public interface ISelectorKey
 {
-    public Boolean IsAcceptable();
-    public Boolean IsReadable();
+    ISocketChannel GetChannel() throws IOException;
+    Boolean IsAcceptable();
+    Boolean IsReadable();
 }

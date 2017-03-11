@@ -51,6 +51,18 @@ public class Server implements IServer
     }
     
     @Override
+    public ISocketChannel Accept(ISelectorKey key) throws IOException
+    {
+        Check();
+        
+        ISocketChannel socket = key.GetChannel();
+        
+        _selector.RegisterForReads(socket);
+
+        return socket;
+    }
+    
+    @Override
     public void Close() throws IOException
     {
         if (isDisposed())
