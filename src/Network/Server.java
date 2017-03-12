@@ -44,10 +44,10 @@ public class Server implements IServer
     }
     
     @Override
-    public ISelectorKeys Start() throws IOException
+    public ISelectorKeys Start(long timeout) throws IOException
     {
         Check();
-        return _selector.WaitForRequests();
+        return _selector.WaitForRequests(timeout);
     }
     
     @Override

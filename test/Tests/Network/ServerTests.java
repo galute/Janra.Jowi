@@ -16,59 +16,28 @@
  */
 package Tests.Network;
 
-import Network.Server;
-import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.ISocketChannel;
 import Tests.Network.Stubs.*;
-import Tests.Factories.*;
 import java.io.IOException;
-import java.util.Map;
-import org.junit.Test;
+import org.junit.*;
 import static org.junit.Assert.*;
-import org.junit.Before;
 
 /**
  *
  * @author jmillen
  */
-public class ServerTests
+public class ServerTests extends NetworkContext
 {
-    Server _unitUnderTest;
-    SelectorStub _selector;
-    ServerSocketStub _socket;
-    Integer _port = 1234;
-    
-    protected void GivenIncomingRequests(Integer num)
-    {
-        _selector._numKeysToSelect = num;
-    }
-    
-    protected ISelectorKeys WhenCheckingForPendingRequests() throws IOException
-    {
-        return _unitUnderTest.Start();
-    }
-    
-    protected void GivenServerIsClosed() throws IOException
-    {
-        _unitUnderTest.Close();
-    }
-    
     @Before
     public void Setup()
     {
-        Map<String, Object> created = ServerStubFactory.Create();
-        _socket = (ServerSocketStub) created.get("ServerSocketStub");
-        _selector = (SelectorStub) created.get("SelectorStub");
-        _unitUnderTest = (Server) created.get("Server");
-        
-        try
-        {
-            _unitUnderTest.Configure(_port);
-        }
-        catch (Exception ex)
-        {
-            fail("Exception Thrown: " + ex.getLocalizedMessage());
-        }
+        GivenConfiguredServer();
+    }
+    
+    @After
+    public void Cleanup() throws IOException
+    {
+        _server.Close();
     }
     
     @Test
@@ -88,7 +57,7 @@ public class ServerTests
         try
         {
             GivenIncomingRequests(numRequests);
-            keys = (SelectorKeysStub)WhenCheckingForPendingRequests();
+            keys = (SelectorKeysStub)WhenCheckingForPendingRequests(100L);
         }
         catch (Exception ex)
         {
@@ -103,14 +72,15 @@ public class ServerTests
     public void RegistersAcceptedSocketForReadsWithSelector()
     {
         Integer numRequests = 1;
-        SelectorKeysStub keys = null;
+        SelectorKeysStub keys;
         try
         {
             GivenIncomingRequests(numRequests);
-            keys = (SelectorKeysStub)WhenCheckingForPendingRequests();
-            ISocketChannel socket = _unitUnderTest.Accept(keys.GetNext());
+            keys = (SelectorKeysStub)WhenCheckingForPendingRequests(100L);
+            ISocketChannel socket = _server.Accept(keys.GetNext());
             
             assertEquals(Integer.valueOf(1),_selector._registeredForRead);
+            assertEquals(100L, _selector._timeout);
         }
         catch (Exception ex)
         {
@@ -125,7 +95,7 @@ public class ServerTests
         {
             GivenServerIsClosed();
             
-            WhenCheckingForPendingRequests();
+            WhenCheckingForPendingRequests(100L);
             
             fail("Exception not Thrown when server is closed");
         }

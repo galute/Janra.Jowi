@@ -16,11 +16,77 @@
  */
 package Tests.Network;
 
+import Network.ServerProcessor;
+import java.io.IOException;
+import static org.junit.Assert.*;
+import org.junit.*;
+
 /**
  *
  * @author jmillen
  */
-public class ServerProcessorTests
+public class ServerProcessorTests extends NetworkContext
 {
+    protected ServerProcessor _processor;
     
+    protected void GivenProcessorToldToStop()
+    {
+        _processor.Stop();
+    }
+    
+    protected void WhenProcessorIsRun() throws IOException
+    {
+        _processor = new ServerProcessor(_server, _port, 10L);
+        Thread thread = new Thread(_processor);
+        thread.start();
+    }
+    
+    @Before
+    public void Setup()
+    {
+        try
+        {
+            GivenConfiguredServer();
+            WhenProcessorIsRun();
+        }
+        catch (Exception ex)
+        {
+            fail("Setup: Exception Thrown: " + ex.getLocalizedMessage());
+        }
+    }
+    
+    @Test
+    public void StopsWhenStopFlagSet()
+    {
+        try
+        {
+            GivenProcessorToldToStop();
+            WhenProcessorIsRun();
+        }
+        catch (Exception ex)
+        {
+            fail("Test: Exception Thrown: " + ex.getLocalizedMessage());
+        }  
+    }
+    
+    @Test
+    public void StartdoesNotBlock()
+    {
+        try
+        {
+            Integer numRequests = 1;
+            
+            GivenAcceptableKeys();
+            GivenIncomingRequests(numRequests);
+            WhenProcessorIsRun();
+            Thread.sleep(500);
+            _processor.Stop();
+            
+            assertEquals(numRequests, _selector._registeredForRead);
+        }
+        catch (Exception ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }
+    }
 }

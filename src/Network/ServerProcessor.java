@@ -25,30 +25,44 @@ import java.io.IOException;
  *
  * @author jmillen
  */
-public class ServerProcessor
+public class ServerProcessor implements Runnable
 {
     private final IServer _server;
-    private Boolean _stop = false;
+    private volatile boolean _stop = false;
+    private final long _timeout;
+    private final Integer _port;
     
-    public ServerProcessor(IServer server) throws IOException
+    
+    public ServerProcessor(IServer server, Integer port, long timeout) throws IOException
     {
         _server = server;
+        _timeout = timeout;
+        _port = port;
     }
     
-    public void Start(Integer port) throws IOException
+    @Override
+    public void run()
     {
-        _server.Configure(port);
-        
-        while (!_stop)
+        int x = 0;
+        try
         {
-            ISelectorKeys keys = _server.Start();
-            
-            ISelectorKey key = keys.GetNext();
-            
-            if (key.IsAcceptable())
+            _server.Configure(_port);
+
+            while (!_stop)
             {
-                ISocketChannel socketChannel = _server.Accept(key);
+                ISelectorKeys keys = _server.Start(_timeout);
+
+                ISelectorKey key = keys.GetNext();
+
+                if (key.IsAcceptable())
+                {
+                    ISocketChannel socketChannel = _server.Accept(key);
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Thread.currentThread().interrupt();
         }
     }
     

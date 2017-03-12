@@ -58,11 +58,11 @@ public class SelectorWrapper implements ISelector
     public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
     {
         Check();
-        ServerSocketChannelWrapper serverWrapper = (ServerSocketChannelWrapper)serverChannel;
+        SocketChannelWrapper serverWrapper = (SocketChannelWrapper)serverChannel;
         
         if (serverWrapper == null)
         {
-            throw new IOException("ServerSocketChannel is null");
+            throw new IOException("SocketChannel is null");
         }
         
         if (serverWrapper.GetChannel() == null)
@@ -74,10 +74,10 @@ public class SelectorWrapper implements ISelector
     }
     
     @Override
-    public ISelectorKeys WaitForRequests() throws IOException
+    public ISelectorKeys WaitForRequests(long timeout) throws IOException
     {
         Check();
-        _selector.select();
+        _selector.select(timeout);
         Set keys = _selector.selectedKeys();
         
         return new SelectorKeys(keys);

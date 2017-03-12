@@ -34,6 +34,7 @@ public class SelectorStub implements ISelector
     public Integer _numKeysToSelect = 0;
     public Boolean _setAcceptable = false;
     public Boolean _setReadable = false;
+    public long _timeout = 0;
     
     @Override
     public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
@@ -56,9 +57,27 @@ public class SelectorStub implements ISelector
     }
     
     @Override
-    public ISelectorKeys WaitForRequests() throws IOException
+    public ISelectorKeys WaitForRequests(long timeout) throws IOException
     {
-        return new SelectorKeysStub(_numKeysToSelect, _setAcceptable, _setReadable);
+        _timeout = timeout;
+        
+        if (_numKeysToSelect > 0)
+        {
+            Integer numKeys = _numKeysToSelect;
+            _numKeysToSelect = 0;
+            return new SelectorKeysStub(numKeys, _setAcceptable, _setReadable);
+        }
+        
+        try
+        {
+            Thread.sleep(timeout);
+        }
+        catch (Exception ex)
+        {
+            throw new IOException("SelectorStub: Timeout interrupted");
+        }
+        
+        return null;
     }
 
     @Override

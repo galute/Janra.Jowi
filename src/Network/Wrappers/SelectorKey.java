@@ -50,12 +50,12 @@ public class SelectorKey implements ISelectorKey
     @Override
     public Boolean IsAcceptable()
     {
-        return _key.isAcceptable();
+        return _key.isValid() && _key.isAcceptable();
     }
 
     @Override
     public Boolean IsReadable()
     {
-        return _key.isReadable();
+        return _key.isValid() && _key.isReadable();
     }
 }

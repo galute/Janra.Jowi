@@ -28,7 +28,7 @@ import java.io.IOException;
 public interface IServer
 {
     void Configure(Integer port) throws IOException;
-    ISelectorKeys Start() throws IOException;
+    ISelectorKeys Start(long timeout) throws IOException;
     ISocketChannel Accept(ISelectorKey key) throws IOException;
     void Close() throws IOException;
 }

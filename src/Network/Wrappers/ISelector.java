@@ -27,6 +27,6 @@ public interface ISelector
 {
     public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException;
     public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException;
-    public ISelectorKeys WaitForRequests() throws IOException;
+    public ISelectorKeys WaitForRequests(long timeout) throws IOException;
     public void Close()  throws IOException;
 }
