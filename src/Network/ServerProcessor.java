@@ -20,6 +20,8 @@ import Network.Wrappers.ISelectorKey;
 import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +33,7 @@ public class ServerProcessor implements Runnable
     private volatile boolean _stop = false;
     private final long _timeout;
     private final Integer _port;
+    public Exception _exceptonThrown = null;
     
     
     public ServerProcessor(IServer server, Integer port, long timeout) throws IOException
@@ -43,7 +46,6 @@ public class ServerProcessor implements Runnable
     @Override
     public void run()
     {
-        int x = 0;
         try
         {
             _server.Configure(_port);
@@ -62,7 +64,20 @@ public class ServerProcessor implements Runnable
         }
         catch (Exception ex)
         {
+            _exceptonThrown = ex;
+            Logger.getLogger(ServerProcessor.class.getName()).log(Level.SEVERE, null, ex);
             Thread.currentThread().interrupt();
+        }
+        finally
+        {
+            try
+            {
+                _server.Close();
+            } 
+            catch (IOException ex)
+            {
+                Logger.getLogger(ServerProcessor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     

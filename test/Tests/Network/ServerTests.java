@@ -46,7 +46,7 @@ public class ServerTests extends NetworkContext
         assertTrue(_socket._nonBlockingFlag);
         assertFalse(_socket._isClosed);
         assertEquals(_port,_socket._boundPort);
-        assertEquals(Integer.valueOf(1),_selector._registeredForAccept);
+        assertEquals(Integer.valueOf(1),((SelectorStub)_selector)._registeredForAccept);
     }
     
     @Test
@@ -79,8 +79,8 @@ public class ServerTests extends NetworkContext
             keys = (SelectorKeysStub)WhenCheckingForPendingRequests(100L);
             ISocketChannel socket = _server.Accept(keys.GetNext());
             
-            assertEquals(Integer.valueOf(1),_selector._registeredForRead);
-            assertEquals(100L, _selector._timeout);
+            assertEquals(Integer.valueOf(1),((SelectorStub)_selector)._registeredForRead);
+            assertEquals(100L, ((SelectorStub)_selector)._timeout);
         }
         catch (Exception ex)
         {

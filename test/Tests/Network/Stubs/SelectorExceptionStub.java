@@ -16,34 +16,42 @@
  */
 package Tests.Network.Stubs;
 
+import Network.Wrappers.ISelector;
+import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.IServerSocketChannel;
+import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
+import java.nio.channels.ClosedChannelException;
 
 /**
  *
  * @author jmillen
  */
-public class ServerSocketStub implements IServerSocketChannel
+public class SelectorExceptionStub implements ISelector
 {
-    public Boolean _nonBlockingFlag = null;
-    public Boolean _isClosed = false;
-    public Integer _boundPort = null;
-    
+
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
     {
-        _nonBlockingFlag = flag;
+        // Do nothing
     }
 
     @Override
-    public void Bind(Integer port) throws IOException
+    public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
     {
-        _boundPort = port;
+        // Do nothing
+    }
+
+    @Override
+    public ISelectorKeys WaitForRequests(long timeout) throws IOException
+    {
+        throw new IOException("This is a test");
     }
 
     @Override
     public void Close() throws IOException
     {
-        _isClosed = true;
+        // Do nothing
     }
+    
 }

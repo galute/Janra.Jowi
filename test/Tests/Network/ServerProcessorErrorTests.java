@@ -16,23 +16,25 @@
  */
 package Tests.Network;
 
-import Tests.Network.Stubs.SelectorStub;
+import Tests.Network.Stubs.SelectorExceptionStub;
 import java.io.IOException;
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * @author jmillen
  */
-public class ServerProcessorTests extends NetworkContext
+public class ServerProcessorErrorTests extends NetworkContext
 {
     @Before
     public void Setup()
     {
         try
         {
-            GivenConfiguredServer();
+            GivenConfiguredFailingServer();
             WhenProcessorIsRun();
         }
         catch (Exception ex)
@@ -41,38 +43,20 @@ public class ServerProcessorTests extends NetworkContext
         }
     }
     
-    @Test
-    public void StopsWhenStopFlagSet()
-    {
-        try
-        {
-            GivenProcessorToldToStop();
-            WhenProcessorIsRun();
-        }
-        catch (Exception ex)
-        {
-            fail("Test: Exception Thrown: " + ex.getLocalizedMessage());
-        }  
-    }
     
     @Test
-    public void StartdoesNotBlock()
+    public void GracefullyTerminatesOnException() throws InterruptedException
     {
         try
         {
-            Integer numRequests = 1;
-            
-            GivenAcceptableKeys();
-            GivenIncomingRequests(numRequests);
             WhenProcessorIsRun();
-            Thread.sleep(500);
-            _processor.Stop();
+            Thread.sleep(100L);
+            assertTrue(_processor._exceptonThrown instanceof IOException);
             
-            assertEquals(numRequests, ((SelectorStub)_selector)._registeredForRead);
         }
-        catch (IOException | InterruptedException ex)
+        catch (IOException ex)
         {
-            fail("Exception Thrown: " + ex.getLocalizedMessage());
+            fail("Exception Thrown: " + ex.getMessage());
         }
     }
 }

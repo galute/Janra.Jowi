@@ -17,8 +17,10 @@
 package Tests.Network;
 
 import Network.Server;
+import Network.ServerProcessor;
+import Network.Wrappers.ISelector;
 import Network.Wrappers.ISelectorKeys;
-import Tests.Factories.ServerStubFactory;
+import Tests.Factories.*;
 import Tests.Network.Stubs.*;
 import java.io.IOException;
 import java.util.Map;
@@ -31,10 +33,23 @@ import static org.junit.Assert.fail;
 public class NetworkContext
 {
     
-    protected SelectorStub _selector;
+    protected ISelector _selector;
     protected ServerSocketStub _socket;
     protected Server _server;
     protected Integer _port = 1234;
+    protected ServerProcessor _processor;
+    
+    protected void GivenProcessorToldToStop()
+    {
+        _processor.Stop();
+    }
+    
+    protected void WhenProcessorIsRun() throws IOException
+    {
+        _processor = new ServerProcessor(_server, _port, 10L);
+        Thread thread = new Thread(_processor);
+        thread.start();
+    }
     
     protected ISelectorKeys WhenCheckingForPendingRequests(long timeout) throws IOException
     {
@@ -48,12 +63,12 @@ public class NetworkContext
     
     protected void GivenIncomingRequests(Integer num)
     {
-        _selector._numKeysToSelect = num;
+        ((SelectorStub)_selector)._numKeysToSelect = num;
     }
     
     protected void GivenAcceptableKeys()
     {
-        _selector._setAcceptable = true;
+        ((SelectorStub)_selector)._setAcceptable = true;
     }
     
     protected void GivenConfiguredServer()
@@ -61,6 +76,23 @@ public class NetworkContext
         Map<String, Object> created = ServerStubFactory.Create();
         _socket = (ServerSocketStub) created.get("ServerSocketStub");
         _selector = (SelectorStub) created.get("SelectorStub");
+        _server = (Server) created.get("Server");
+        
+        try
+        {
+            _server.Configure(_port);
+        }
+        catch (Exception ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }
+    }
+    
+    protected void GivenConfiguredFailingServer()
+    {
+        Map<String, Object> created = ServerStubSelectorExceptionFactory.Create();
+        _socket = (ServerSocketStub) created.get("ServerSocketStub");
+        _selector = (SelectorExceptionStub) created.get("SelectorStub");
         _server = (Server) created.get("Server");
         
         try

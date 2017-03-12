@@ -14,36 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Network.Stubs;
+package Tests.Factories;
 
+import Network.Server;
+import Network.Wrappers.ISelector;
 import Network.Wrappers.IServerSocketChannel;
-import java.io.IOException;
+import Tests.Network.Stubs.SelectorExceptionStub;
+import Tests.Network.Stubs.ServerSocketStub;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public class ServerSocketStub implements IServerSocketChannel
+public class ServerStubSelectorExceptionFactory
 {
-    public Boolean _nonBlockingFlag = null;
-    public Boolean _isClosed = false;
-    public Integer _boundPort = null;
-    
-    @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    static public Map<String, Object> Create()
     {
-        _nonBlockingFlag = flag;
-    }
-
-    @Override
-    public void Bind(Integer port) throws IOException
-    {
-        _boundPort = port;
-    }
-
-    @Override
-    public void Close() throws IOException
-    {
-        _isClosed = true;
+        Map<String, Object> retVal = new HashMap<>();
+        
+        retVal.put("ServerSocketStub", new ServerSocketStub());
+        retVal.put("SelectorStub", new SelectorExceptionStub());
+        retVal.put("Server", new Server((IServerSocketChannel)retVal.get("ServerSocketStub"),
+                                        (ISelector)retVal.get("SelectorStub")));
+        return retVal;
     }
 }
