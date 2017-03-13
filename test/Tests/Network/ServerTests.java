@@ -77,7 +77,7 @@ public class ServerTests extends NetworkContext
         {
             GivenIncomingRequests(numRequests);
             keys = (SelectorKeysStub)WhenCheckingForPendingRequests(100L);
-            ISocketChannel socket = _server.Accept(keys.GetNext());
+            ISocketChannel socket = _server.Accept(keys.getNext());
             
             assertEquals(Integer.valueOf(1),((SelectorStub)_selector)._registeredForRead);
             assertEquals(100L, ((SelectorStub)_selector)._timeout);

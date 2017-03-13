@@ -36,9 +36,9 @@ public class SelectorWrapper implements ISelector
     }
     
     @Override
-    public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
     {
-        Check();
+        check();
         ServerSocketChannelWrapper serverWrapper = (ServerSocketChannelWrapper)serverChannel;
         
         if (serverWrapper == null)
@@ -46,18 +46,18 @@ public class SelectorWrapper implements ISelector
             throw new IOException("ServerSocketChannel is null");
         }
         
-        if (serverWrapper.GetChannel() == null)
+        if (serverWrapper.getChannel() == null)
         {
             throw new IOException("Server socket is disposed");
         }
         
-        serverWrapper.GetChannel().register(_selector, SelectionKey.OP_ACCEPT);
+        serverWrapper.getChannel().register(_selector, SelectionKey.OP_ACCEPT);
     }
     
     @Override
-    public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
     {
-        Check();
+        check();
         SocketChannelWrapper serverWrapper = (SocketChannelWrapper)serverChannel;
         
         if (serverWrapper == null)
@@ -65,18 +65,18 @@ public class SelectorWrapper implements ISelector
             throw new IOException("SocketChannel is null");
         }
         
-        if (serverWrapper.GetChannel() == null)
+        if (serverWrapper.getChannel() == null)
         {
             throw new IOException("Server socket is disposed");
         }
         
-        serverWrapper.GetChannel().register(_selector, SelectionKey.OP_READ);
+        serverWrapper.getChannel().register(_selector, SelectionKey.OP_READ);
     }
     
     @Override
-    public ISelectorKeys WaitForRequests(long timeout) throws IOException
+    public ISelectorKeys waitForRequests(long timeout) throws IOException
     {
-        Check();
+        check();
         _selector.select(timeout);
         Set keys = _selector.selectedKeys();
         
@@ -84,7 +84,7 @@ public class SelectorWrapper implements ISelector
     }
     
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         if (isDisposed())
         {
@@ -95,7 +95,7 @@ public class SelectorWrapper implements ISelector
         _selector = null;
     }
     
-    private void Check() throws IOException
+    private void check() throws IOException
     {
         if (isDisposed())
         {

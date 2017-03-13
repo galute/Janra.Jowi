@@ -16,6 +16,7 @@
  */
 package Tests.Network;
 
+import Tests.Network.Stubs.SelectorKeyStub;
 import Tests.Network.Stubs.SelectorStub;
 import java.io.IOException;
 import static org.junit.Assert.*;
@@ -25,7 +26,7 @@ import org.junit.*;
  *
  * @author jmillen
  */
-public class ServerProcessorTests extends NetworkContext
+public class IncomingRequestHandlerTests extends NetworkContext
 {
     @Before
     public void Setup()
@@ -33,7 +34,7 @@ public class ServerProcessorTests extends NetworkContext
         try
         {
             GivenConfiguredServer();
-            WhenProcessorIsRun();
+            WhenAcceptingRequests();
         }
         catch (Exception ex)
         {
@@ -47,7 +48,7 @@ public class ServerProcessorTests extends NetworkContext
         try
         {
             GivenProcessorToldToStop();
-            WhenProcessorIsRun();
+            WhenAcceptingRequests();
         }
         catch (Exception ex)
         {
@@ -64,7 +65,7 @@ public class ServerProcessorTests extends NetworkContext
             
             GivenAcceptableKeys();
             GivenIncomingRequests(numRequests);
-            WhenProcessorIsRun();
+            WhenAcceptingRequests();
             Thread.sleep(500);
             _processor.Stop();
             
@@ -74,5 +75,23 @@ public class ServerProcessorTests extends NetworkContext
         {
             fail("Exception Thrown: " + ex.getLocalizedMessage());
         }
+    }
+    
+    @Test
+    public void NotAcceptableKeyIsCancelled()
+    {
+        try
+        {
+            Integer numRequests = 1;
+            GivenIncomingRequests(numRequests);
+            WhenAcceptingRequests();
+            
+            assertTrue(((SelectorKeyStub)((SelectorStub)_selector)._returnedKeys._keys.get(0))._isCancelled);
+        }
+        catch (IOException ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }
+        
     }
 }

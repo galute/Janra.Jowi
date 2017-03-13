@@ -31,25 +31,25 @@ public class SelectorExceptionStub implements ISelector
 {
 
     @Override
-    public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
     {
         // Do nothing
     }
 
     @Override
-    public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
     {
         // Do nothing
     }
 
     @Override
-    public ISelectorKeys WaitForRequests(long timeout) throws IOException
+    public ISelectorKeys waitForRequests(long timeout) throws IOException
     {
         throw new IOException("This is a test");
     }
 
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         // Do nothing
     }

@@ -19,7 +19,6 @@ package Network.Wrappers;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 
 /**
  *
@@ -36,21 +35,21 @@ public class ServerSocketChannelWrapper implements IServerSocketChannel
     }
     
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public void setNonBlocking(Boolean flag) throws IOException
     {
-        Check();
+        check();
         _serverSocketChannel.configureBlocking(flag); 
     }
     
     @Override
-    public void Bind(Integer port) throws IOException
+    public void bind(Integer port) throws IOException
     {
-        Check();
+        check();
         _serverSocketChannel.socket().bind(new InetSocketAddress(port));
     }
     
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         if (isDisposed())
         {
@@ -61,12 +60,12 @@ public class ServerSocketChannelWrapper implements IServerSocketChannel
         _serverSocketChannel = null;
     }
     
-    public ServerSocketChannel GetChannel()
+    public ServerSocketChannel getChannel()
     {
         return _serverSocketChannel;
     }
     
-    private void Check() throws IOException
+    private void check() throws IOException
     {
         if (isDisposed())
         {

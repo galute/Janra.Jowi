@@ -14,19 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Network.Handlers;
 
-import java.io.IOException;
-import java.nio.CharBuffer;
+import Network.Wrappers.*;
 
 /**
  *
  * @author jmillen
  */
-public interface ISocketChannel
+public class RequestHandler implements Runnable
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    CharBuffer read(Integer numBytes) throws IOException;
-    Integer write(CharBuffer buffer) throws IOException;
-    void close() throws IOException;
+    private final ISelectorKey _key;
+    ISocketChannel _channel;
+    
+    public RequestHandler(ISelectorKey key)
+    {
+        _key = key;
+        _channel = null;
+    }
+    
+    @Override
+    public void run()
+    {
+        try
+        {
+            if (_key.isReadable())
+            {
+                _channel = _key.getChannel();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+    
 }

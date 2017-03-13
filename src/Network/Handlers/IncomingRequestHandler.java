@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network;
+package Network.Handlers;
 
+import Network.IServer;
 import Network.Wrappers.ISelectorKey;
 import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.ISocketChannel;
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author jmillen
  */
-public class ServerProcessor implements Runnable
+public class IncomingRequestHandler implements Runnable
 {
     private final IServer _server;
     private volatile boolean _stop = false;
@@ -36,7 +37,7 @@ public class ServerProcessor implements Runnable
     public Exception _exceptonThrown = null;
     
     
-    public ServerProcessor(IServer server, Integer port, long timeout) throws IOException
+    public IncomingRequestHandler(IServer server, Integer port, long timeout) throws IOException
     {
         _server = server;
         _timeout = timeout;
@@ -54,18 +55,23 @@ public class ServerProcessor implements Runnable
             {
                 ISelectorKeys keys = _server.Start(_timeout);
 
-                ISelectorKey key = keys.GetNext();
+                ISelectorKey key = keys.getNext();
 
-                if (key.IsAcceptable())
+                if (key.isAcceptable())
                 {
                     ISocketChannel socketChannel = _server.Accept(key);
+                    socketChannel.SetNonBlocking(true);
+                }
+                else
+                {
+                    key.cancel();
                 }
             }
         }
         catch (Exception ex)
         {
             _exceptonThrown = ex;
-            Logger.getLogger(ServerProcessor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
             Thread.currentThread().interrupt();
         }
         finally
@@ -76,7 +82,7 @@ public class ServerProcessor implements Runnable
             } 
             catch (IOException ex)
             {
-                Logger.getLogger(ServerProcessor.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

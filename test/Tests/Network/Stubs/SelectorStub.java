@@ -35,9 +35,10 @@ public class SelectorStub implements ISelector
     public Boolean _setAcceptable = false;
     public Boolean _setReadable = false;
     public long _timeout = 0;
+    public SelectorKeysStub _returnedKeys = null;
     
     @Override
-    public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException
     {
         if (serverChannel == null)
         {
@@ -47,7 +48,7 @@ public class SelectorStub implements ISelector
     }
 
     @Override
-    public void RegisterForReads(ISocketChannel socketChannel) throws ClosedChannelException, IOException
+    public void registerForReads(ISocketChannel socketChannel) throws ClosedChannelException, IOException
     {
         if (socketChannel == null)
         {
@@ -57,7 +58,7 @@ public class SelectorStub implements ISelector
     }
     
     @Override
-    public ISelectorKeys WaitForRequests(long timeout) throws IOException
+    public ISelectorKeys waitForRequests(long timeout) throws IOException
     {
         _timeout = timeout;
         
@@ -65,7 +66,10 @@ public class SelectorStub implements ISelector
         {
             Integer numKeys = _numKeysToSelect;
             _numKeysToSelect = 0;
-            return new SelectorKeysStub(numKeys, _setAcceptable, _setReadable);
+            
+            _returnedKeys = new SelectorKeysStub(numKeys, _setAcceptable, _setReadable);
+            
+            return _returnedKeys;
         }
         
         try
@@ -81,7 +85,7 @@ public class SelectorStub implements ISelector
     }
 
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         // Do nothing
     }

@@ -24,7 +24,8 @@ import java.io.IOException;
  */
 public interface ISelectorKey
 {
-    ISocketChannel GetChannel() throws IOException;
-    Boolean IsAcceptable();
-    Boolean IsReadable();
+    ISocketChannel getChannel() throws IOException;
+    Boolean isAcceptable();
+    Boolean isReadable();
+    void cancel();
 }

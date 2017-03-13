@@ -30,19 +30,19 @@ public class ServerSocketStub implements IServerSocketChannel
     public Integer _boundPort = null;
     
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public void setNonBlocking(Boolean flag) throws IOException
     {
         _nonBlockingFlag = flag;
     }
 
     @Override
-    public void Bind(Integer port) throws IOException
+    public void bind(Integer port) throws IOException
     {
         _boundPort = port;
     }
 
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         _isClosed = true;
     }

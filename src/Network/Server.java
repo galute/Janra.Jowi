@@ -38,16 +38,16 @@ public class Server implements IServer
     public void Configure(Integer port) throws IOException
     {
         Check();
-        _serverSocket.SetNonBlocking(Boolean.TRUE);
-        _serverSocket.Bind(port);
-        _selector.RegisterForAccepts(_serverSocket);
+        _serverSocket.setNonBlocking(Boolean.TRUE);
+        _serverSocket.bind(port);
+        _selector.registerForAccepts(_serverSocket);
     }
     
     @Override
     public ISelectorKeys Start(long timeout) throws IOException
     {
         Check();
-        return _selector.WaitForRequests(timeout);
+        return _selector.waitForRequests(timeout);
     }
     
     @Override
@@ -55,9 +55,9 @@ public class Server implements IServer
     {
         Check();
         
-        ISocketChannel socket = key.GetChannel();
+        ISocketChannel socket = key.getChannel();
         
-        _selector.RegisterForReads(socket);
+        _selector.registerForReads(socket);
 
         return socket;
     }
@@ -69,8 +69,8 @@ public class Server implements IServer
         {
             return;
         }
-        _selector.Close();
-        _serverSocket.Close();
+        _selector.close();
+        _serverSocket.close();
         _selector = null;
         _serverSocket = null;
     }

@@ -28,6 +28,7 @@ public class SelectorKeyStub implements ISelectorKey
 {
     public Boolean _isAcceptable = false;
     public Boolean _isReadable = false;
+    public Boolean _isCancelled = false;
     
     public SelectorKeyStub(Boolean isAcceptable, Boolean isReadable)
     {
@@ -36,21 +37,27 @@ public class SelectorKeyStub implements ISelectorKey
     }
     
     @Override
-    public Boolean IsAcceptable()
+    public Boolean isAcceptable()
     {
         return _isAcceptable;
     }
 
     @Override
-    public Boolean IsReadable()
+    public Boolean isReadable()
     {
         return _isReadable;
     }
 
     @Override
-    public ISocketChannel GetChannel() throws IOException
+    public ISocketChannel getChannel() throws IOException
     {
         return new SocketStub();
+    }
+
+    @Override
+    public void cancel()
+    {
+        _isCancelled = true;
     }
     
 }

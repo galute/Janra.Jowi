@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class SelectorKeysStub implements ISelectorKeys
 {
-    List<ISelectorKey> _keys = new ArrayList<>();
+    public List<ISelectorKey> _keys = new ArrayList<>();
     
     public SelectorKeysStub(int numKeys, Boolean isAcceptable, Boolean isReadable)
     {
@@ -43,7 +43,7 @@ public class SelectorKeysStub implements ISelectorKeys
     }
     
     @Override
-    public ISelectorKey GetNext()
+    public ISelectorKey getNext()
     {
         if (_keys.isEmpty())
         {

@@ -26,21 +26,22 @@ import java.nio.CharBuffer;
  */
 public class SocketStub implements ISocketChannel
 {
-
+    public Boolean _isNonBlocking = false;
+    
     @Override
-    public CharBuffer Read(Integer numBytes) throws IOException
+    public CharBuffer read(Integer numBytes) throws IOException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Integer Write(CharBuffer buffer) throws IOException
+    public Integer write(CharBuffer buffer) throws IOException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -48,7 +49,7 @@ public class SocketStub implements ISocketChannel
     @Override
     public void SetNonBlocking(Boolean flag) throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        _isNonBlocking = true;
     }
     
 }

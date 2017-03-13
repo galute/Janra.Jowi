@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public interface IServerSocketChannel
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    void Bind(Integer port) throws IOException;
-    void Close() throws IOException;
+    void setNonBlocking(Boolean flag) throws IOException;
+    void bind(Integer port) throws IOException;
+    void close() throws IOException;
 }

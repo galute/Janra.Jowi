@@ -34,7 +34,7 @@ public class SelectorKeys implements ISelectorKeys
     }
     
     @Override
-    public ISelectorKey GetNext()
+    public ISelectorKey getNext()
     {
         if (_iter.hasNext())
         {

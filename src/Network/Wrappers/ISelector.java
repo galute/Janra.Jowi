@@ -25,8 +25,8 @@ import java.nio.channels.ClosedChannelException;
  */
 public interface ISelector
 {
-    public void RegisterForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException;
-    public void RegisterForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException;
-    public ISelectorKeys WaitForRequests(long timeout) throws IOException;
-    public void Close()  throws IOException;
+    public void registerForAccepts(IServerSocketChannel serverChannel) throws ClosedChannelException, IOException;
+    public void registerForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException;
+    public ISelectorKeys waitForRequests(long timeout) throws IOException;
+    public void close()  throws IOException;
 }

@@ -38,7 +38,7 @@ public class SocketChannelWrapper implements ISocketChannel
         _socket = socket;
     }
     
-    public SocketChannel GetChannel()
+    public SocketChannel getChannel()
     {
         return _socket;
     }
@@ -46,14 +46,14 @@ public class SocketChannelWrapper implements ISocketChannel
     @Override
     public void SetNonBlocking(Boolean flag) throws IOException
     {
-        Check();
+        check();
         _socket.configureBlocking(flag); 
     }
     
     @Override
-    public CharBuffer Read(Integer numBytes) throws IOException
+    public CharBuffer read(Integer numBytes) throws IOException
     {
-        Check();
+        check();
         
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
         
@@ -66,9 +66,9 @@ public class SocketChannelWrapper implements ISocketChannel
     }
     
     @Override
-    public Integer Write(CharBuffer buffer) throws IOException
+    public Integer write(CharBuffer buffer) throws IOException
     {
-        Check();
+        check();
         
         CharsetEncoder encoder = _charset.newEncoder();
         Integer szWritten = _socket.write(encoder.encode(buffer));
@@ -77,7 +77,7 @@ public class SocketChannelWrapper implements ISocketChannel
     }
     
     @Override
-    public void Close() throws IOException
+    public void close() throws IOException
     {
         if (isDisposed())
         {
@@ -87,7 +87,7 @@ public class SocketChannelWrapper implements ISocketChannel
         _socket = null;
     }
     
-    private void Check() throws IOException
+    private void check() throws IOException
     {
         if (isDisposed())
         {

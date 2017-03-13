@@ -35,7 +35,7 @@ public class ServerProcessorErrorTests extends NetworkContext
         try
         {
             GivenConfiguredFailingServer();
-            WhenProcessorIsRun();
+            WhenAcceptingRequests();
         }
         catch (Exception ex)
         {
@@ -49,7 +49,7 @@ public class ServerProcessorErrorTests extends NetworkContext
     {
         try
         {
-            WhenProcessorIsRun();
+            WhenAcceptingRequests();
             Thread.sleep(100L);
             assertTrue(_processor._exceptonThrown instanceof IOException);
             

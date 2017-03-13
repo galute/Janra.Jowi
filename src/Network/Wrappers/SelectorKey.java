@@ -35,7 +35,7 @@ public class SelectorKey implements ISelectorKey
     }
     
     @Override
-    public ISocketChannel GetChannel() throws IOException
+    public ISocketChannel getChannel() throws IOException
     {
         if (!_key.isValid())
         {
@@ -48,14 +48,20 @@ public class SelectorKey implements ISelectorKey
     }
     
     @Override
-    public Boolean IsAcceptable()
+    public Boolean isAcceptable()
     {
         return _key.isValid() && _key.isAcceptable();
     }
 
     @Override
-    public Boolean IsReadable()
+    public Boolean isReadable()
     {
         return _key.isValid() && _key.isReadable();
+    }
+    
+    @Override
+    public void cancel()
+    {
+        _key.cancel();
     }
 }

@@ -22,5 +22,5 @@ package Network.Wrappers;
  */
 public interface ISelectorKeys
 {
-    public ISelectorKey GetNext();
+    public ISelectorKey getNext();
 }

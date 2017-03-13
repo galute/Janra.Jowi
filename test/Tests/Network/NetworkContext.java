@@ -17,7 +17,7 @@
 package Tests.Network;
 
 import Network.Server;
-import Network.ServerProcessor;
+import Network.Handlers.IncomingRequestHandler;
 import Network.Wrappers.ISelector;
 import Network.Wrappers.ISelectorKeys;
 import Tests.Factories.*;
@@ -37,16 +37,16 @@ public class NetworkContext
     protected ServerSocketStub _socket;
     protected Server _server;
     protected Integer _port = 1234;
-    protected ServerProcessor _processor;
+    protected IncomingRequestHandler _processor;
     
     protected void GivenProcessorToldToStop()
     {
         _processor.Stop();
     }
     
-    protected void WhenProcessorIsRun() throws IOException
+    protected void WhenAcceptingRequests() throws IOException
     {
-        _processor = new ServerProcessor(_server, _port, 10L);
+        _processor = new IncomingRequestHandler(_server, _port, 10L);
         Thread thread = new Thread(_processor);
         thread.start();
     }
