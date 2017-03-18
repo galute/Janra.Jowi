@@ -14,20 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Tests.Factories;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
+import Tests.Parsers.Stubs.ParserStub;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public interface ISocketChannel
+public class ParserStubFactory
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    Integer read(ByteBuffer buffer) throws IOException;
-    Integer write(CharBuffer buffer) throws IOException;
-    void close() throws IOException;
+    static public Map<String, Object> Create()
+    {
+        Map<String, Object> retVal = new HashMap<>();
+        
+        retVal.put("ParserStub", new ParserStub());
+        return retVal;
+    }
 }

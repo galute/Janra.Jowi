@@ -26,38 +26,40 @@ import java.io.IOException;
  */
 public class SelectorKeyStub implements ISelectorKey
 {
-    public Boolean _isAcceptable = false;
-    public Boolean _isReadable = false;
-    public Boolean _isCancelled = false;
+    public Boolean IsAcceptable = false;
+    public Boolean IsReadable = false;
+    public Boolean IsCancelled = false;
+    public SocketStub SocketStub = null;
     
     public SelectorKeyStub(Boolean isAcceptable, Boolean isReadable)
     {
-        _isAcceptable = isAcceptable;
-        _isReadable = isReadable;
+        IsAcceptable = isAcceptable;
+        IsReadable = isReadable;
+        SocketStub = new SocketStub();
     }
     
     @Override
     public Boolean isAcceptable()
     {
-        return _isAcceptable;
+        return IsAcceptable;
     }
 
     @Override
     public Boolean isReadable()
     {
-        return _isReadable;
+        return IsReadable;
     }
 
     @Override
     public ISocketChannel getChannel() throws IOException
     {
-        return new SocketStub();
+        return SocketStub;
     }
 
     @Override
     public void cancel()
     {
-        _isCancelled = true;
+        IsCancelled = true;
     }
     
 }

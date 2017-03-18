@@ -34,7 +34,6 @@ public class IncomingRequestHandler implements Runnable
     private volatile boolean _stop = false;
     private final long _timeout;
     private final Integer _port;
-    public Exception _exceptonThrown = null;
     
     
     public IncomingRequestHandler(IServer server, Integer port, long timeout) throws IOException
@@ -75,8 +74,8 @@ public class IncomingRequestHandler implements Runnable
         }
         catch (Exception ex)
         {
-            _exceptonThrown = ex;
             Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Stop();
             Thread.currentThread().interrupt();
         }
         finally
@@ -87,7 +86,7 @@ public class IncomingRequestHandler implements Runnable
             } 
             catch (IOException ex)
             {
-                Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, "Exiting: ", ex);
             }
         }
     }
@@ -95,5 +94,10 @@ public class IncomingRequestHandler implements Runnable
     public void Stop()
     {
         _stop = true;
+    }
+    
+    public Boolean isStopped()
+    {
+        return _stop;
     }
 }

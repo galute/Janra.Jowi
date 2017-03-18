@@ -97,7 +97,7 @@ public class IncomingRequestHandlerTests extends NetworkContext
             assertFalse(sel._returnedKeys == null);
             assertFalse(sel._returnedKeys._keysKept.isEmpty());
             
-            assertTrue(((SelectorKeyStub)sel._returnedKeys._keysKept.get(0))._isCancelled);
+            assertTrue(((SelectorKeyStub)sel._returnedKeys._keysKept.get(0)).IsCancelled);
         }
         catch (IOException | InterruptedException ex)
         {

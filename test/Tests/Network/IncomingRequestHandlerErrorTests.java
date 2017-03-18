@@ -16,7 +16,6 @@
  */
 package Tests.Network;
 
-import Tests.Network.Stubs.SelectorExceptionStub;
 import java.io.IOException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -51,7 +50,7 @@ public class IncomingRequestHandlerErrorTests extends NetworkContext
         {
             WhenAcceptingRequests();
             Thread.sleep(100L);
-            assertTrue(_processor._exceptonThrown instanceof IOException);
+            assertTrue(_processor.isStopped());
             
         }
         catch (IOException ex)

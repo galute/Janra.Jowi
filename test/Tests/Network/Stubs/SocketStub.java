@@ -18,6 +18,7 @@ package Tests.Network.Stubs;
 
 import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
 /**
@@ -26,12 +27,19 @@ import java.nio.CharBuffer;
  */
 public class SocketStub implements ISocketChannel
 {
-    public Boolean _isNonBlocking = false;
+    public Boolean IsNonBlocking = false;
+    public Integer NumReads = 0;
+    public Integer BytesToRead = 0;
     
     @Override
-    public CharBuffer read(Integer numBytes) throws IOException
+    public Integer read(ByteBuffer buffer) throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        NumReads++;
+        
+        String retVal = new String(new char[BytesToRead]).replace("\0", "X");
+        
+        buffer.put(retVal.getBytes(), 0, BytesToRead);
+        return BytesToRead;
     }
 
     @Override
@@ -49,7 +57,7 @@ public class SocketStub implements ISocketChannel
     @Override
     public void SetNonBlocking(Boolean flag) throws IOException
     {
-        _isNonBlocking = true;
+        IsNonBlocking = true;
     }
     
 }

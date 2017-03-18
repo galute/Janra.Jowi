@@ -21,7 +21,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 /**
@@ -51,18 +50,11 @@ public class SocketChannelWrapper implements ISocketChannel
     }
     
     @Override
-    public CharBuffer read(Integer numBytes) throws IOException
+    public Integer read(ByteBuffer buffer) throws IOException
     {
         check();
         
-        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        
-        _socket.read(buffer);
-
-        buffer.flip();
-        
-        CharsetDecoder decoder = _charset.newDecoder();
-        return decoder.decode(buffer);
+        return _socket.read(buffer);
     }
     
     @Override

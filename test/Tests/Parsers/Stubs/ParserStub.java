@@ -14,20 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Tests.Parsers.Stubs;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
+import Protocol.Parsers.IParser;
 
 /**
  *
  * @author jmillen
  */
-public interface ISocketChannel
+public class ParserStub implements IParser
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    Integer read(ByteBuffer buffer) throws IOException;
-    Integer write(CharBuffer buffer) throws IOException;
-    void close() throws IOException;
+    public String PassedBuffer;
+    @Override
+    public void Parse(String buffer)
+    {
+        PassedBuffer = buffer;
+    }
+    
 }

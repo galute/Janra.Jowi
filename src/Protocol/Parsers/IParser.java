@@ -14,20 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
+package Protocol.Parsers;
 
 /**
  *
  * @author jmillen
  */
-public interface ISocketChannel
+public interface IParser
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
-    Integer read(ByteBuffer buffer) throws IOException;
-    Integer write(CharBuffer buffer) throws IOException;
-    void close() throws IOException;
+    void Parse(String buffer);
 }
