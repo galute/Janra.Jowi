@@ -27,7 +27,7 @@ import org.junit.Test;
  *
  * @author jmillen
  */
-public class ServerProcessorErrorTests extends NetworkContext
+public class IncomingRequestHandlerErrorTests extends NetworkContext
 {
     @Before
     public void Setup()

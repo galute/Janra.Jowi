@@ -34,7 +34,6 @@ public class IncomingRequestHandlerTests extends NetworkContext
         try
         {
             GivenConfiguredServer();
-            WhenAcceptingRequests();
         }
         catch (Exception ex)
         {
@@ -42,13 +41,19 @@ public class IncomingRequestHandlerTests extends NetworkContext
         }
     }
     
+    @After
+    public void TearDown()
+    {
+        _processor.Stop();
+    }
+    
     @Test
     public void StopsWhenStopFlagSet()
     {
         try
         {
-            GivenProcessorToldToStop();
             WhenAcceptingRequests();
+            GivenProcessorToldToStop();
         }
         catch (Exception ex)
         {
@@ -83,12 +88,18 @@ public class IncomingRequestHandlerTests extends NetworkContext
         try
         {
             Integer numRequests = 1;
-            GivenIncomingRequests(numRequests);
-            WhenAcceptingRequests();
             
-            assertTrue(((SelectorKeyStub)((SelectorStub)_selector)._returnedKeys._keys.get(0))._isCancelled);
+            WhenAcceptingRequests();
+            GivenIncomingRequests(numRequests);
+            SelectorStub sel = (SelectorStub)_selector;
+            Thread.sleep(100);
+
+            assertFalse(sel._returnedKeys == null);
+            assertFalse(sel._returnedKeys._keysKept.isEmpty());
+            
+            assertTrue(((SelectorKeyStub)sel._returnedKeys._keysKept.get(0))._isCancelled);
         }
-        catch (IOException ex)
+        catch (IOException | InterruptedException ex)
         {
             fail("Exception Thrown: " + ex.getLocalizedMessage());
         }

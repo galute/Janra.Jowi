@@ -28,6 +28,7 @@ import java.util.List;
 public class SelectorKeysStub implements ISelectorKeys
 {
     public List<ISelectorKey> _keys = new ArrayList<>();
+    public List<ISelectorKey> _keysKept = new ArrayList<>();
     
     public SelectorKeysStub(int numKeys, Boolean isAcceptable, Boolean isReadable)
     {
@@ -49,6 +50,8 @@ public class SelectorKeysStub implements ISelectorKeys
         {
             return null;
         }
-        return _keys.remove(0);
+        ISelectorKey key = _keys.remove(0);
+        _keysKept.add(key);
+        return key;
     }
 }

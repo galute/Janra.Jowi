@@ -42,6 +42,10 @@ public class RequestHandler implements Runnable
             {
                 _channel = _key.getChannel();
             }
+            else
+            {
+                
+            }
         }
         catch (Exception ex)
         {

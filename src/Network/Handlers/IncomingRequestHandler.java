@@ -54,6 +54,11 @@ public class IncomingRequestHandler implements Runnable
             while (!_stop)
             {
                 ISelectorKeys keys = _server.Start(_timeout);
+                
+                if (keys == null)
+                {
+                    continue;
+                }
 
                 ISelectorKey key = keys.getNext();
 
