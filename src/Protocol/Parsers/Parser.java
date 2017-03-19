@@ -26,7 +26,7 @@
 //Cookie: Rider-12145af8=199fbc8c-1b75-4bb4-8575-f91111b19480
 package Protocol.Parsers;
 
-import Protocol.Models.HttpRequest;
+import Protocol.Models.*;
 
 /**
  *
@@ -39,33 +39,60 @@ public class Parser implements IParser
     public HttpRequest Parse(String buffer) throws ProtocolException
     {
         String[] lines;
-        lines = buffer.split("\\r?\\n");
+        lines = buffer.split("\\r?\\n", -1);
         
-        if (lines.length < 1)
+        if (lines.length < 2)
         {
-            throw new ProtocolException("Line 1 missing of incoming Request");
+            throw new ProtocolException("Request line missing from incoming Request");
         }
         
         String[] line1;
-        line1 = ProtocolChecker(lines[0]);
+        line1 = ExtractRequestLine(lines[0]);
         
         HttpRequest request = new HttpRequest();
         
-        request.method = line1[0];
-        request.path = line1[1];
-        request.version = line1[2];
+        request.Method = HttpMethod.find(line1[0]);
+        request.Path = line1[1];
+        request.Version = line1.length > 2 ? line1[2] : null;
+        request.Host = ExtractHost(lines.length >1 ? lines[1] : null);
         
         return request;
     }
     
-    private String[] ProtocolChecker(String line1)
+    private String[] ExtractRequestLine(String line1) throws ProtocolException
     {
         String[] elements;
         
         elements = line1.split(" ");
         
+        if (elements.length < 2)
+        {
+            // Request-Line normally = Method SP Request-URI SP HTTP-Version CRLF
+            // but can be Method SP Request-URI
+            throw new ProtocolException("Invalid Request line");
+        }
+        
         return elements;
         
+    }
+    
+    private String ExtractHost(String line2)
+    {
+        if (line2 == null)
+        {
+            return null;
+        }
+
+        String[] elements;
+        
+        elements = line2.split(" ");
+        
+        if ("Host:".equals(elements[0]) && elements.length == 2)
+        {
+            return elements[1];
+        }
+        
+        return null;
     }
     
 }

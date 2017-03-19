@@ -16,17 +16,40 @@
  */
 package Protocol.Models;
 
-import java.util.Map;
-
 /**
  *
  * @author jmillen
  */
-public class HttpRequest
+public enum HttpMethod
 {
-    public HttpMethod Method;
-    public String Path;
-    public String Version;
-    public String Host;
-    public Map<String,String> Headers;
- }
+    OPTIONS("OPTIONS"),
+    GET("GET"),
+    HEAD("HEAD"),
+    POST("POST"),
+    PUT("PUT"),
+    DELETE("DELETE"),
+    TRACE("TRACE"),
+    CONNECT("CONNECT"),
+    UNKNOWN("UNKNOWN");
+    
+    //Todo look at adding config to allow extension methods
+    
+    private final String _textValue;
+
+    HttpMethod(String text)
+    {
+        _textValue = text;
+    }
+    
+    public static HttpMethod find(String text)
+    {
+        for (HttpMethod method : HttpMethod.values())
+        {
+            if (method._textValue.equalsIgnoreCase(text))
+            {
+                return method;
+            }
+        }
+        return HttpMethod.UNKNOWN;
+  }
+}
