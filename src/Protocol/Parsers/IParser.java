@@ -16,11 +16,13 @@
  */
 package Protocol.Parsers;
 
+import Protocol.Models.HttpRequest;
+
 /**
  *
  * @author jmillen
  */
 public interface IParser
 {
-    void Parse(String buffer);
+    HttpRequest Parse(String buffer) throws ProtocolException;
 }

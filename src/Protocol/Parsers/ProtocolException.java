@@ -14,24 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Parsers.Stubs;
-
-import Protocol.Models.HttpRequest;
-import Protocol.Parsers.IParser;
+package Protocol.Parsers;
 
 /**
  *
  * @author jmillen
  */
-public class ParserStub implements IParser
+public class ProtocolException extends Exception
 {
-    public String PassedBuffer;
-    @Override
-    public HttpRequest Parse(String buffer)
+    public ProtocolException(String message)
     {
-        PassedBuffer = buffer;
-        
-        return new HttpRequest();
+        super(message);
     }
-    
 }
