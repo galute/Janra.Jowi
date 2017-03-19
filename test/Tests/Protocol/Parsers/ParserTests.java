@@ -53,24 +53,11 @@ public class ParserTests
                    "Accept-Encoding: gzip, deflate, br\r\n" +
                    "Accept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n" +
                    "\r\n" +
-                   "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n" +
-                   "<QuoteResult xmlns=\"http://My.Janra.Services.TheService.DataContracts\" Version=\"\">\r\n" +
-                   "    <Header>\r\n" +
-                   "        <ResultStatus>FILTERED</ResultStatus>\r\n" +
-                   "        <PartnerRef>http://www.example.com/ee7e1c45-c271-4e32-beb3-e7f0b963a6c3</PartnerRef>\r\n" +
-                   "        <ServerName>PEG-CTMCORUQT02</ServerName>\r\n" +
-                   "    </Header>\r\n" +
-                   "    <Quotes>\r\n" +
-                   "        <Quote id=\"1\">\r\n" +
-                   "            <Broker>ADML</Broker>\r\n" +
-                   "            <InsurerName/>\r\n" +
-                   "            <Premium>\r\n" +
-                   "                <AnnualPremium>0</AnnualPremium>\r\n" +
-                   "            </Premium>\r\n" +
-                   "            <Excesses/>\r\n" +
-                   "        </Quote>\r\n" +
-                   "    </Quotes>\r\n" +
-                   "</QuoteResult>\r\n";
+                   "{\r\n" +
+                   "   field1: value1,\r\n" +
+                   "   field2: value2\r\n" +
+                   "}\r\n" +
+                   "\r\n";
     }
     
     @Test
@@ -113,7 +100,7 @@ public class ParserTests
         try
         {
             String badRequest = "GET /\r\n";
-            HttpRequest result = _parser.Parse(_minrequest);
+            HttpRequest result = _parser.Parse(badRequest);
             
             fail("No Exception thrown");
         }

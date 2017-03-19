@@ -39,9 +39,9 @@ public class Parser implements IParser
     public HttpRequest Parse(String buffer) throws ProtocolException
     {
         String[] lines;
-        lines = buffer.split("\\r?\\n", -1);
+        lines = buffer.split("\\R", -1);
         
-        if (lines.length < 2)
+        if (lines.length < 3)
         {
             throw new ProtocolException("Request line missing from incoming Request");
         }
