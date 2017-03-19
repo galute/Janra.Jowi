@@ -156,4 +156,20 @@ public class ParserTests
             fail("Exception thrown: " + ex);
         }
     }
+    
+    @Test
+    public void CorrectlyExtractsHeaders()
+    {
+        try
+        {
+            HttpRequest result = _parser.Parse(_fullrequest);
+            
+            assertTrue(result.Headers.size() == 12);
+            assertTrue("me".equals(result.Headers.get("firstone")));
+        }
+        catch (Exception ex)
+        {
+            fail("Exception thrown: " + ex);
+        }
+    }
 }

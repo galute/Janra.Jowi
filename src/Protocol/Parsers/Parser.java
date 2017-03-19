@@ -27,6 +27,8 @@
 package Protocol.Parsers;
 
 import Protocol.Models.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -41,7 +43,7 @@ public class Parser implements IParser
         String[] lines;
         lines = buffer.split("\\R", -1);
         
-        if (lines.length < 3)
+        if (lines.length < 3) // must end with 2 blanks lines if just request line
         {
             throw new ProtocolException("Request line missing from incoming Request");
         }
@@ -53,8 +55,11 @@ public class Parser implements IParser
         
         request.Method = HttpMethod.find(line1[0]);
         request.Path = line1[1];
+        // version not always present so check
         request.Version = line1.length > 2 ? line1[2] : null;
-        request.Host = ExtractHost(lines.length >1 ? lines[1] : null);
+        request.Host = ExtractHost(lines.length > 1 ? lines[1] : null);
+        
+        request.Headers = ExtractHeaders(lines, request.Host == null ? 1 : 2);
         
         return request;
     }
@@ -85,14 +90,39 @@ public class Parser implements IParser
 
         String[] elements;
         
-        elements = line2.split(" ");
+        elements = line2.split(": ");
         
-        if ("Host:".equals(elements[0]) && elements.length == 2)
+        if ("Host".equals(elements[0]) && elements.length == 2)
         {
             return elements[1];
         }
         
         return null;
+    }
+    
+    private Map<String, String> ExtractHeaders(String[] lines, int startIdx)
+    {
+        Map<String, String>headers = new HashMap<>();
+        int idx = startIdx;
+        
+        if (lines.length < startIdx)
+        {
+            return headers;
+        }
+        
+        while(!lines[idx].isEmpty())
+        {
+            String[] elements;
+            elements = lines[idx].split(": ");
+            if (elements.length !=2)
+            {
+                continue;
+            }
+            headers.put(elements[0], elements[1]);
+            idx++;
+        }
+        
+        return headers;
     }
     
 }
