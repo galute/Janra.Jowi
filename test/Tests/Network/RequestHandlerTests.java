@@ -32,7 +32,7 @@ public class RequestHandlerTests
 {
     RequestHandler _unitUnderTest;
     SelectorKeyStub _keyStub;
-    IParser _parser;
+    ParserStub _parser;
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
@@ -69,5 +69,6 @@ public class RequestHandlerTests
         
         assertTrue(_keyStub.SocketStub != null);
         assertTrue(_keyStub.SocketStub.NumReads > 0);
+        assertTrue(_parser.PassedBuffer.compareTo("XXXXXXXXXX") == 0);
     }
 }
