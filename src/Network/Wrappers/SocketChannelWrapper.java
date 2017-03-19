@@ -43,7 +43,7 @@ public class SocketChannelWrapper implements ISocketChannel
     }
     
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public void setNonBlocking(Boolean flag) throws IOException
     {
         check();
         _socket.configureBlocking(flag); 
@@ -58,12 +58,12 @@ public class SocketChannelWrapper implements ISocketChannel
     }
     
     @Override
-    public Integer write(CharBuffer buffer) throws IOException
+    public Integer write(ByteBuffer buffer) throws IOException
     {
         check();
         
         CharsetEncoder encoder = _charset.newEncoder();
-        Integer szWritten = _socket.write(encoder.encode(buffer));
+        Integer szWritten = _socket.write(buffer);
         
         return szWritten;
     }

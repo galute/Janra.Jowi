@@ -18,7 +18,6 @@ package Network.Wrappers;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 /**
  *
@@ -26,8 +25,8 @@ import java.nio.CharBuffer;
  */
 public interface ISocketChannel
 {
-    void SetNonBlocking(Boolean flag) throws IOException;
+    void setNonBlocking(Boolean flag) throws IOException;
     Integer read(ByteBuffer buffer) throws IOException;
-    Integer write(CharBuffer buffer) throws IOException;
+    Integer write(ByteBuffer buffer) throws IOException;
     void close() throws IOException;
 }

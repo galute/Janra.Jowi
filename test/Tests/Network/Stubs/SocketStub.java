@@ -43,7 +43,7 @@ public class SocketStub implements ISocketChannel
     }
 
     @Override
-    public Integer write(CharBuffer buffer) throws IOException
+    public Integer write(ByteBuffer buffer) throws IOException
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -55,7 +55,7 @@ public class SocketStub implements ISocketChannel
     }
 
     @Override
-    public void SetNonBlocking(Boolean flag) throws IOException
+    public void setNonBlocking(Boolean flag) throws IOException
     {
         IsNonBlocking = true;
     }
