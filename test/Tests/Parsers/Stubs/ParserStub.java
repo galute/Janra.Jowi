@@ -16,8 +16,10 @@
  */
 package Tests.Parsers.Stubs;
 
+import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Parsers.IParser;
+import java.util.HashMap;
 
 /**
  *
@@ -31,7 +33,7 @@ public class ParserStub implements IParser
     {
         PassedBuffer = buffer;
         
-        return new HttpRequest();
+        return new HttpRequest(HttpMethod.GET, "/", "HTTP/1.1", "my.host", new HashMap<>());
     }
     
 }

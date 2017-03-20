@@ -24,9 +24,47 @@ import java.util.Map;
  */
 public class HttpRequest
 {
-    public HttpMethod Method;
-    public String Path;
-    public String Version;
-    public String Host;
-    public Map<String,String> Headers;
+    private final HttpMethod _method;
+    private final String _path;
+    private final String _version;
+    private final String _host;
+    private final Map<String,String> _headers;
+    
+    public HttpRequest(HttpMethod method, String path, String version, String host, Map<String,String> headers)
+    {
+        _method = method;
+        _path = path;
+        _version = version;
+        _host = host;
+        _headers = headers;
+    }
+    
+    public HttpMethod method()
+    {
+        return _method;
+    }
+    
+    public String path()
+    {
+        return _path;
+    }
+    
+    public String version()
+    {
+        return _version;
+    }
+    
+    public String host()
+    {
+        return _host;
+    }
+    
+    public String header(String name)
+    {
+        if (_headers.containsKey(name))
+        {
+            return _headers.get(name);
+        }
+        return null;
+    }
  }

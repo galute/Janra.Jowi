@@ -68,8 +68,8 @@ public class ParserTests
             HttpRequest result = _parser.Parse(_fullrequest);
             
             assertTrue("POST".equals(HttpMethod.POST.toString()));
-            assertTrue("/my/resource/location".equals(result.Path));
-            assertTrue("HTTP/1.1".equals(result.Version));
+            assertTrue("/my/resource/location".equals(result.path()));
+            assertTrue("HTTP/1.1".equals(result.version()));
         }
         catch (Exception ex)
         {
@@ -85,8 +85,8 @@ public class ParserTests
             HttpRequest result = _parser.Parse(_minrequest);
             
             assertTrue("GET".equals(HttpMethod.GET.toString()));
-            assertTrue("/".equals(result.Path));
-            assertTrue(result.Version == null);
+            assertTrue("/".equals(result.path()));
+            assertTrue(result.version() == null);
         }
         catch (Exception ex)
         {
@@ -117,7 +117,7 @@ public class ParserTests
         {
             HttpRequest result = _parser.Parse(_fullrequest);
             
-            assertTrue("localhost:6543".equals(result.Host));
+            assertTrue("localhost:6543".equals(result.host()));
         }
         catch (Exception ex)
         {
@@ -132,7 +132,7 @@ public class ParserTests
         {
             HttpRequest result = _parser.Parse(_minrequest);
             
-            assertTrue(result.Host == null);
+            assertTrue(result.host() == null);
         }
         catch (Exception ex)
         {
@@ -149,7 +149,7 @@ public class ParserTests
                              "Host localhost:6543\r\n";
             HttpRequest result = _parser.Parse(badHost);
             
-            assertTrue(result.Host == null);
+            assertTrue(result.host() == null);
         }
         catch (Exception ex)
         {
@@ -164,8 +164,7 @@ public class ParserTests
         {
             HttpRequest result = _parser.Parse(_fullrequest);
             
-            assertTrue(result.Headers.size() == 12);
-            assertTrue("me".equals(result.Headers.get("firstone")));
+            assertTrue("me".equals(result.header("firstone")));
         }
         catch (Exception ex)
         {

@@ -51,15 +51,14 @@ public class Parser implements IParser
         String[] line1;
         line1 = ExtractRequestLine(lines[0]);
         
-        HttpRequest request = new HttpRequest();
-        
-        request.Method = HttpMethod.find(line1[0]);
-        request.Path = line1[1];
+        HttpMethod method = HttpMethod.find(line1[0]);
+        String path = line1[1];
         // version not always present so check
-        request.Version = line1.length > 2 ? line1[2] : null;
-        request.Host = ExtractHost(lines.length > 1 ? lines[1] : null);
+        String version = line1.length > 2 ? line1[2] : null;
+        String host = ExtractHost(lines.length > 1 ? lines[1] : null);
         
-        request.Headers = ExtractHeaders(lines, request.Host == null ? 1 : 2);
+        Map<String, String> headers = ExtractHeaders(lines, host == null ? 1 : 2);
+        HttpRequest request = new HttpRequest(method, path, version, host, headers);
         
         return request;
     }
