@@ -17,6 +17,7 @@
 package Network.Handlers;
 
 import Network.Wrappers.*;
+import Protocol.Models.*;
 import Protocol.Parsers.IParser;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -53,7 +54,8 @@ public class RequestHandler implements Runnable
                 _channel = _key.getChannel();
                 
                 String buffer = Read(_bufferSize);
-                _parser.Parse(buffer);
+                HttpRequest request = _parser.Parse(buffer);
+                HttpContext context = new HttpContext(request);
             }
             else
             {
