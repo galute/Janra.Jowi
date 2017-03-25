@@ -14,17 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Parsers;
+package Protocol.Models;
 
-import Protocol.Models.Header;
-import Protocol.Models.HttpRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public interface IParser
+public class Headers
 {
-    HttpRequest ParseRequestLine(String line) throws ProtocolException;
-    Header ParseHeader(String line) throws ProtocolException;
+    private final Map<String, String> _headers = new HashMap<>();
+    
+    public void addHeader(Header header)
+    {
+        _headers.put(header.key(), header.value());
+    }
+    
+    public String get(String key)
+    {
+        if (_headers.containsKey(key))
+        {
+            return _headers.get(key);
+        }
+        
+        return null;
+    }
 }

@@ -26,16 +26,16 @@ import java.io.IOException;
  */
 public class SelectorKeyStub implements ISelectorKey
 {
-    public Boolean IsAcceptable = false;
-    public Boolean IsReadable = false;
+    public Boolean IsAcceptable;
+    public Boolean IsReadable;
     public Boolean IsCancelled = false;
-    public SocketStub SocketStub = null;
+    public SocketStubIncomplete SocketStub;
     
     public SelectorKeyStub(Boolean isAcceptable, Boolean isReadable)
     {
         IsAcceptable = isAcceptable;
         IsReadable = isReadable;
-        SocketStub = new SocketStub();
+        SocketStub = new SocketStubIncomplete();
     }
     
     @Override

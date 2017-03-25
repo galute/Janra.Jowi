@@ -54,7 +54,7 @@ public class RequestHandler implements Runnable
                 _channel = _key.getChannel();
                 
                 String buffer = Read(_bufferSize);
-                HttpRequest request = _parser.Parse(buffer);
+                HttpRequest request = _parser.ParseRequestLine(buffer);
                 HttpContext context = new HttpContext(request);
             }
             else
@@ -64,7 +64,6 @@ public class RequestHandler implements Runnable
         }
         catch (Exception ex)
         {
-            
         }
     }
     

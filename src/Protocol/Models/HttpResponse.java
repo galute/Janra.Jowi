@@ -22,10 +22,25 @@ package Protocol.Models;
  */
 public class HttpResponse
 {
-    private Integer _status = 200;
+    private Integer _status;
     
-    public void status(Integer status)
+    public HttpResponse()
+    {
+        _status = 200;
+    }
+    
+    public HttpResponse(Integer status)
     {
         _status = status;
+    }
+    
+    public void setStatus(Integer status)
+    {
+        _status = status;
+    }
+    
+    public Integer status()
+    {
+        return _status;
     }
 }

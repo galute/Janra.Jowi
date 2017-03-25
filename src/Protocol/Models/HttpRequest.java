@@ -16,6 +16,7 @@
  */
 package Protocol.Models;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,15 +28,24 @@ public class HttpRequest
     private final HttpMethod _method;
     private final String _path;
     private final String _version;
-    private final String _host;
-    private final Map<String,String> _headers;
-    
-    public HttpRequest(HttpMethod method, String path, String version, String host, Map<String,String> headers)
+    private String _host = "";
+    private Headers _headers;
+    public HttpRequest(HttpMethod method, String path, String version)
     {
         _method = method;
         _path = path;
         _version = version;
-        _host = host;
+        _host = "";
+        _headers = new Headers();
+    }
+    
+    public void addHost(Header hostHeader)
+    {
+        _host = hostHeader.value();
+    }
+    
+    public void addHeaders(Headers headers)
+    {
         _headers = headers;
     }
     
@@ -61,10 +71,6 @@ public class HttpRequest
     
     public String header(String name)
     {
-        if (_headers.containsKey(name))
-        {
-            return _headers.get(name);
-        }
-        return null;
+        return _headers.get(name);
     }
  }

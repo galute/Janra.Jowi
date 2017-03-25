@@ -25,6 +25,12 @@ public class HttpContext
     private final HttpRequest _request;
     private final HttpResponse _response;
     
+    public HttpContext(Integer status)
+    {
+        _request = null;
+        _response = new HttpResponse(status);
+    }
+    
     public HttpContext(HttpRequest request)
     {
         _request = request;

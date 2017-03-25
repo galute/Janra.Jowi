@@ -19,27 +19,41 @@ package Tests.Network.Stubs;
 import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 /**
  *
  * @author jmillen
  */
-public class SocketStub implements ISocketChannel
+public class SocketStubIncomplete implements ISocketChannel
 {
     public Boolean IsNonBlocking = false;
     public Integer NumReads = 0;
     public Integer BytesToRead = 0;
+    private String bytesToRead = "";
     
     @Override
     public Integer read(ByteBuffer buffer) throws IOException
     {
         NumReads++;
+        Integer bytes = buffer.remaining();
         
-        String retVal = new String(new char[BytesToRead]).replace("\0", "X");
+        String toReturn = "";
         
-        buffer.put(retVal.getBytes(), 0, BytesToRead);
-        return BytesToRead;
+        if (bytes < bytesToRead.length())
+        {
+            toReturn = bytesToRead.substring(0, (buffer.remaining()));
+            bytesToRead = bytesToRead.substring(buffer.remaining());
+        }
+        else
+        {
+            toReturn = bytesToRead;
+            bytesToRead = "";
+            bytes = toReturn.length();
+        }
+        
+        buffer.put(toReturn.getBytes());
+        
+        return bytes;
     }
 
     @Override
@@ -58,6 +72,12 @@ public class SocketStub implements ISocketChannel
     public void setNonBlocking(Boolean flag) throws IOException
     {
         IsNonBlocking = true;
+    }
+    
+    public void setBytestoRead(Integer bytes)
+    {
+        bytesToRead = new String(new char[bytes]).replace("\0", "X");
+        bytesToRead = bytesToRead.concat("\r\n");
     }
     
 }

@@ -22,8 +22,11 @@ package Protocol.Parsers;
  */
 public class ProtocolException extends Exception
 {
-    public ProtocolException(String message)
+    public Integer ResponseStatus = 200;
+    
+    public ProtocolException(String message, Integer status)
     {
         super(message);
+        ResponseStatus = status;
     }
 }

@@ -17,7 +17,6 @@
 package Tests.Network;
 
 import Network.Handlers.RequestHandler;
-import Protocol.Parsers.IParser;
 import Tests.Network.Stubs.SelectorKeyStub;
 import Tests.Parsers.Stubs.ParserStub;
 import static org.junit.Assert.assertTrue;
@@ -36,23 +35,26 @@ public class RequestHandlerTests
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
-        _parser = new ParserStub();
-        _unitUnderTest = new RequestHandler(keyStub, _parser, 10);
+        _unitUnderTest = new RequestHandler(_keyStub, _parser, 10);
         Thread thread = new Thread(_unitUnderTest);
         thread.start();
+    }
+    
+    public void WhenSelectorKeyFlagsAreSet(Boolean acceptable, Boolean readable)
+    {
+        _keyStub = new SelectorKeyStub(acceptable, readable);
     }
     
     @Before
     public void Setup()
     {
         _parser = new ParserStub();
-        _keyStub = new SelectorKeyStub(false, false);
-        _unitUnderTest = new RequestHandler(_keyStub, _parser, 10);
     }
     @Test
     public void CancelsKeyIfNotReadable()
     {
-        _unitUnderTest = new RequestHandler(_keyStub, _parser, 10);
+        WhenSelectorKeyFlagsAreSet(false, false);
+        _unitUnderTest = new RequestHandler(_keyStub, _parser, 5);
         _unitUnderTest.run();
         
         assertTrue(_keyStub.IsCancelled);
@@ -61,7 +63,7 @@ public class RequestHandlerTests
     @Test
     public void KeepsReadingIfReadable() throws InterruptedException
     {
-        _keyStub = new SelectorKeyStub(false, true);
+        WhenSelectorKeyFlagsAreSet(false, true);
         _keyStub.SocketStub.BytesToRead = 10;
         WhenRunningHandler(_keyStub);
         Thread.sleep(100);
@@ -69,6 +71,22 @@ public class RequestHandlerTests
         
         assertTrue(_keyStub.SocketStub != null);
         assertTrue(_keyStub.SocketStub.NumReads > 0);
+        assertTrue(_parser.PassedBuffer != null);
         assertTrue(_parser.PassedBuffer.compareTo("XXXXXXXXXX") == 0);
+    }
+    
+    @Test
+    public void ReadsAllDataSpecifiedByContentLength() throws InterruptedException
+    {
+        _parser.addHeaderToReturn("Content-Length", "20");
+        WhenSelectorKeyFlagsAreSet(false, true);
+        _keyStub.SocketStub.BytesToRead = 5;
+        WhenRunningHandler(_keyStub);
+        Thread.sleep(10);
+        _keyStub.IsReadable = false;
+        Thread.sleep(100);
+        _keyStub.IsReadable = true;
+        assertTrue(_parser.PassedBuffer != null);
+        assertTrue(_parser.PassedBuffer.compareTo("XXXXXXXXXXXXXXXXXXXX") == 0);
     }
 }

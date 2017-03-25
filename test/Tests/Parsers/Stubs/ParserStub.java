@@ -16,10 +16,13 @@
  */
 package Tests.Parsers.Stubs;
 
+import Protocol.Models.Header;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Parsers.IParser;
+import Protocol.Parsers.ProtocolException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -28,12 +31,25 @@ import java.util.HashMap;
 public class ParserStub implements IParser
 {
     public String PassedBuffer;
+    public Map<String,String> headers = new HashMap<>();
+    
+    public void addHeaderToReturn(String key, String value)
+    {
+        headers.put(key, value);
+    }
+    
     @Override
-    public HttpRequest Parse(String buffer)
+    public HttpRequest ParseRequestLine(String buffer)
     {
         PassedBuffer = buffer;
         
-        return new HttpRequest(HttpMethod.GET, "/", "HTTP/1.1", "my.host", new HashMap<>());
+        return new HttpRequest(HttpMethod.GET, "/my/path", "HTTP/1.1");
+    }
+
+    @Override
+    public Header ParseHeader(String line) throws ProtocolException
+    {
+        return new Header("Host", "my.host.com:80");
     }
     
 }

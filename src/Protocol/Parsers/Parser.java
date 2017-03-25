@@ -36,16 +36,53 @@ import java.util.Map;
  */
 public class Parser implements IParser
 {
-
     @Override
-    public HttpRequest Parse(String buffer) throws ProtocolException
+    public HttpRequest ParseRequestLine(String line) throws ProtocolException
+    {
+        String[] elements;
+        
+        elements = line.split(" ");
+        
+        if (elements.length != 3)
+        {
+            throw new ProtocolException("Invalid Request Line", 400);
+        }
+        
+        if (!"HTTP/1.1".equals(elements[2]))
+        {
+            throw new ProtocolException("Unsupported Http version", 505);
+        }
+        
+        HttpMethod method;
+        method = HttpMethod.find(elements[0]);
+        
+        return new HttpRequest(method, elements[1], elements[2]);
+    }
+    
+    @Override
+    public Header ParseHeader(String line) throws ProtocolException
+    {
+        String[] elements;
+        
+        // need a regex for any LWS here
+        elements = line.split(":\\h");
+        
+        if (elements.length != 2)
+        {
+            throw new ProtocolException("Invalid Header format", 400);
+        }
+        
+        return new Header(elements[0].trim(), elements[1].trim());
+    }
+    
+    public void Parse(String buffer) throws ProtocolException
     {
         String[] lines;
         lines = buffer.split("\\R", -1);
         
         if (lines.length < 3) // must end with 2 blanks lines if just request line
         {
-            throw new ProtocolException("Request line missing from incoming Request");
+            throw new ProtocolException("Request line missing from incoming Request", 400);
         }
         
         String[] line1;
@@ -58,9 +95,9 @@ public class Parser implements IParser
         String host = ExtractHost(lines.length > 1 ? lines[1] : null);
         
         Map<String, String> headers = ExtractHeaders(lines, host == null ? 1 : 2);
-        HttpRequest request = new HttpRequest(method, path, version, host, headers);
+        //HttpRequest request = new HttpRequest(method, path, version, host, headers);
         
-        return request;
+        //return request;
     }
     
     private String[] ExtractRequestLine(String line1) throws ProtocolException
@@ -73,7 +110,7 @@ public class Parser implements IParser
         {
             // Request-Line normally = Method SP Request-URI SP HTTP-Version CRLF
             // but can be Method SP Request-URI
-            throw new ProtocolException("Invalid Request line");
+            throw new ProtocolException("Invalid Request line", 400);
         }
         
         return elements;
