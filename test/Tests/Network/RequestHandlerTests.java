@@ -19,6 +19,7 @@ package Tests.Network;
 import Network.Handlers.RequestHandler;
 import Tests.Network.Stubs.SelectorKeyStub;
 import Tests.Parsers.Stubs.ParserStub;
+import Tests.Protocol.Stubs.RequestProcessorStub;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +32,11 @@ public class RequestHandlerTests
 {
     RequestHandler _unitUnderTest;
     SelectorKeyStub _keyStub;
-    ParserStub _parser;
+    RequestProcessorStub _processor;
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
-        _unitUnderTest = new RequestHandler(_keyStub, _parser, 10);
+        _unitUnderTest = new RequestHandler(_keyStub, _processor);
         Thread thread = new Thread(_unitUnderTest);
         thread.start();
     }
@@ -48,45 +49,15 @@ public class RequestHandlerTests
     @Before
     public void Setup()
     {
-        _parser = new ParserStub();
+        _processor = new RequestProcessorStub();
     }
     @Test
     public void CancelsKeyIfNotReadable()
     {
         WhenSelectorKeyFlagsAreSet(false, false);
-        _unitUnderTest = new RequestHandler(_keyStub, _parser, 5);
+        _unitUnderTest = new RequestHandler(_keyStub, _processor);
         _unitUnderTest.run();
         
         assertTrue(_keyStub.IsCancelled);
-    }
-    
-    @Test
-    public void KeepsReadingIfReadable() throws InterruptedException
-    {
-        WhenSelectorKeyFlagsAreSet(false, true);
-        _keyStub.SocketStub.BytesToRead = 10;
-        WhenRunningHandler(_keyStub);
-        Thread.sleep(100);
-        _keyStub.IsReadable = false;
-        
-        assertTrue(_keyStub.SocketStub != null);
-        assertTrue(_keyStub.SocketStub.NumReads > 0);
-        assertTrue(_parser.PassedBuffer != null);
-        assertTrue(_parser.PassedBuffer.compareTo("XXXXXXXXXX") == 0);
-    }
-    
-    @Test
-    public void ReadsAllDataSpecifiedByContentLength() throws InterruptedException
-    {
-        _parser.addHeaderToReturn("Content-Length", "20");
-        WhenSelectorKeyFlagsAreSet(false, true);
-        _keyStub.SocketStub.BytesToRead = 5;
-        WhenRunningHandler(_keyStub);
-        Thread.sleep(10);
-        _keyStub.IsReadable = false;
-        Thread.sleep(100);
-        _keyStub.IsReadable = true;
-        assertTrue(_parser.PassedBuffer != null);
-        assertTrue(_parser.PassedBuffer.compareTo("XXXXXXXXXXXXXXXXXXXX") == 0);
     }
 }

@@ -19,6 +19,7 @@ package Network.Handlers;
 import Network.Wrappers.*;
 import Protocol.Models.*;
 import Protocol.Parsers.IParser;
+import Protocol.Processors.IProcessor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -32,16 +33,14 @@ public class RequestHandler implements Runnable
 {
     private final ISelectorKey _key;
     ISocketChannel _channel;
-    IParser _parser;
-    Integer _bufferSize;
+    IProcessor _processor;
     Charset _charset=Charset.forName("ISO-8859-1");
     
-    public RequestHandler(ISelectorKey key, IParser parser, Integer bufferSize)
+    public RequestHandler(ISelectorKey key, IProcessor processor)
     {
         _key = key;
         _channel = null;
-        _parser = parser;
-        _bufferSize = bufferSize;
+        _processor = processor;
     }
     
     @Override
@@ -53,9 +52,7 @@ public class RequestHandler implements Runnable
             {
                 _channel = _key.getChannel();
                 
-                String buffer = Read(_bufferSize);
-                HttpRequest request = _parser.ParseRequestLine(buffer);
-                HttpContext context = new HttpContext(request);
+                HttpContext context = _processor.ProcessRequest(_channel);
             }
             else
             {
@@ -66,22 +63,4 @@ public class RequestHandler implements Runnable
         {
         }
     }
-    
-    private String Read(Integer numBytes) throws IOException
-    {
-        int szRead = 1;
-        
-        ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        
-        while (szRead > 0 && buffer.remaining() > 0)
-        {
-            szRead = _channel.read(buffer);
-        }
-
-        buffer.flip();
-        
-        CharsetDecoder decoder = _charset.newDecoder();
-        return new StringBuilder(decoder.decode(buffer)).toString();
-    }
-    
 }
