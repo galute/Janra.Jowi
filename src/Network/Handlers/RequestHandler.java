@@ -19,7 +19,8 @@ package Network.Handlers;
 import Network.Wrappers.*;
 import Protocol.Models.*;
 import Protocol.Parsers.IParser;
-import Protocol.Processors.IProcessor;
+import Protocol.Builders.IRequestBuilder;
+import Request.Processing.IProcessRequest;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -33,13 +34,15 @@ public class RequestHandler implements Runnable
 {
     private final ISelectorKey _key;
     ISocketChannel _channel;
-    IProcessor _processor;
+    IRequestBuilder _builder;
+    IProcessRequest _processor;
     Charset _charset=Charset.forName("ISO-8859-1");
     
-    public RequestHandler(ISelectorKey key, IProcessor processor)
+    public RequestHandler(ISelectorKey key, IRequestBuilder builder, IProcessRequest processor)
     {
         _key = key;
         _channel = null;
+        _builder = builder;
         _processor = processor;
     }
     
@@ -52,7 +55,16 @@ public class RequestHandler implements Runnable
             {
                 _channel = _key.getChannel();
                 
-                HttpContext context = _processor.ProcessRequest(_channel);
+                HttpContext context = _builder.ProcessRequest(_channel);
+                
+                if (context.response().status() == 200)
+                {
+                    _processor.processRequest(context);
+                }
+                else
+                {
+                    // To-do send back response
+                }
             }
             else
             {

@@ -14,13 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Processors;
+package Tests.Stubs.Processing;
+
+import Protocol.Models.HttpContext;
+import Request.Processing.IProcessRequest;
 
 /**
  *
  * @author jmillen
  */
-public interface IProcessor
+public class ProcessRequestStub implements IProcessRequest
 {
+    private Integer _numCalls = 0;
     
+    @Override
+    public HttpContext processRequest(HttpContext context)
+    {
+        _numCalls++;
+        return new HttpContext(200);
+    }
+    
+    public Integer numRequests()
+    {
+        return _numCalls;
+    }
 }

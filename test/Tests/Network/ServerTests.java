@@ -16,8 +16,9 @@
  */
 package Tests.Network;
 
+import Tests.Stubs.Network.SelectorKeysStub;
+import Tests.Stubs.Network.SelectorStub;
 import Network.Wrappers.ISocketChannel;
-import Tests.Network.Stubs.*;
 import java.io.IOException;
 import org.junit.*;
 import static org.junit.Assert.*;

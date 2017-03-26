@@ -19,8 +19,8 @@ package Tests.Factories;
 import Network.Server;
 import Network.Wrappers.ISelector;
 import Network.Wrappers.IServerSocketChannel;
-import Tests.Network.Stubs.SelectorExceptionStub;
-import Tests.Network.Stubs.ServerSocketStub;
+import Tests.Stubs.Network.SelectorExceptionStub;
+import Tests.Stubs.Network.ServerSocketStub;
 import java.util.HashMap;
 import java.util.Map;
 

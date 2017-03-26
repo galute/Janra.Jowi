@@ -17,9 +17,10 @@
 package Tests.Network;
 
 import Network.Handlers.RequestHandler;
-import Tests.Network.Stubs.SelectorKeyStub;
-import Tests.Parsers.Stubs.ParserStub;
-import Tests.Protocol.Stubs.RequestProcessorStub;
+import Tests.Stubs.Network.SelectorKeyStub;
+import Tests.Stubs.Parsers.ParserStub;
+import Tests.Stubs.Processing.ProcessRequestStub;
+import Tests.Stubs.Protocol.RequestBuilderStub;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +33,12 @@ public class RequestHandlerTests
 {
     RequestHandler _unitUnderTest;
     SelectorKeyStub _keyStub;
-    RequestProcessorStub _processor;
+    RequestBuilderStub _builder;
+    ProcessRequestStub _processor;
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
-        _unitUnderTest = new RequestHandler(_keyStub, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
         Thread thread = new Thread(_unitUnderTest);
         thread.start();
     }
@@ -49,15 +51,36 @@ public class RequestHandlerTests
     @Before
     public void Setup()
     {
-        _processor = new RequestProcessorStub();
+        _builder = new RequestBuilderStub();
+        _processor = new ProcessRequestStub();
     }
     @Test
     public void CancelsKeyIfNotReadable()
     {
         WhenSelectorKeyFlagsAreSet(false, false);
-        _unitUnderTest = new RequestHandler(_keyStub, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
         _unitUnderTest.run();
         
         assertTrue(_keyStub.IsCancelled);
+    }
+    
+    @Test
+    public void DoesNotAcceptInValidRequest()
+    {
+        WhenSelectorKeyFlagsAreSet(false, true);
+        _builder.Status = 400;
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest.run();
+        assertTrue(_processor.numRequests() == 0);
+    }
+    
+    @Test
+    public void AcceptsValidRequest()
+    {
+        WhenSelectorKeyFlagsAreSet(false, true);
+        _builder.Status = 200;
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest.run();
+        assertTrue(_processor.numRequests() == 1);
     }
 }

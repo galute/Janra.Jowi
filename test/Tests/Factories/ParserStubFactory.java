@@ -16,7 +16,7 @@
  */
 package Tests.Factories;
 
-import Tests.Parsers.Stubs.ParserStub;
+import Tests.Stubs.Parsers.ParserStub;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -14,36 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Network.Stubs;
+package Protocol.Builders;
 
-import Network.Wrappers.IServerSocketChannel;
-import java.io.IOException;
+import Network.Wrappers.ISocketChannel;
+import Protocol.Models.HttpContext;
 
 /**
  *
  * @author jmillen
  */
-public class ServerSocketStub implements IServerSocketChannel
+public interface IRequestBuilder
 {
-    public Boolean _nonBlockingFlag = null;
-    public Boolean _isClosed = false;
-    public Integer _boundPort = null;
-    
-    @Override
-    public void setNonBlocking(Boolean flag) throws IOException
-    {
-        _nonBlockingFlag = flag;
-    }
-
-    @Override
-    public void bind(Integer port) throws IOException
-    {
-        _boundPort = port;
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-        _isClosed = true;
-    }
+    HttpContext ProcessRequest(ISocketChannel channel);
 }

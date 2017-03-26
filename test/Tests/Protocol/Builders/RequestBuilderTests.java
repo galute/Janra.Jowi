@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Protocol.Processors;
+package Tests.Protocol.Builders;
 
+import Tests.Stubs.Network.*;
 import Protocol.Parsers.ProtocolException;
-import Protocol.Processors.RequestProcessor;
-import Tests.Network.Stubs.*;
-import Tests.Parsers.Stubs.ParserStub;
+import Protocol.Builders.RequestBuilder;
+import Tests.Stubs.Parsers.ParserStub;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static org.junit.Assert.assertTrue;
@@ -31,16 +31,16 @@ import org.junit.Test;
  *
  * @author jmillen
  */
-public class RequestProcessorTests
+public class RequestBuilderTests
 {
-    private RequestProcessor _unitUnderTest;
+    private RequestBuilder _unitUnderTest;
     private ParserStub _parser;
     
     @Before
     public void Setup()
     {
         _parser = new ParserStub();
-        _unitUnderTest = new RequestProcessor(_parser);
+        _unitUnderTest = new RequestBuilder(_parser);
     }
     
     @Test
@@ -48,7 +48,6 @@ public class RequestProcessorTests
     {
         try
         {
-            ByteBuffer bbuffer = ByteBuffer.allocate(10);
             SocketStubIncomplete socketStub = new SocketStubIncomplete();
             socketStub.BytesToRead = 10;
             _unitUnderTest.readLine(socketStub);
@@ -65,7 +64,6 @@ public class RequestProcessorTests
     {
         try
         {
-            ByteBuffer bbuffer = ByteBuffer.allocate(10);
             SocketStubBadNewLine socketStub = new SocketStubBadNewLine();
             socketStub.setBytestoRead(10);
             _unitUnderTest.readLine(socketStub);
@@ -82,7 +80,6 @@ public class RequestProcessorTests
     {
         try
         {
-            ByteBuffer bbuffer = ByteBuffer.allocate(10);
             SocketStubComplete socketStub = new SocketStubComplete();
             socketStub.setBytestoRead(10);
             String result = _unitUnderTest.readLine(socketStub);

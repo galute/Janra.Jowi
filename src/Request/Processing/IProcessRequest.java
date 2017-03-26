@@ -14,29 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
+package Request.Processing;
 
-import Tests.Stubs.Network.ServerSocketStub;
-import Tests.Stubs.Network.SelectorStub;
-import Network.Server;
-import Network.Wrappers.*;
-import java.util.HashMap;
-import java.util.Map;
+import Protocol.Models.HttpContext;
 
 /**
  *
  * @author jmillen
  */
-public class ServerStubFactory
+public interface IProcessRequest
 {
-    static public Map<String, Object> Create()
-    {
-        Map<String, Object> retVal = new HashMap<>();
-        
-        retVal.put("ServerSocketStub", new ServerSocketStub());
-        retVal.put("SelectorStub", new SelectorStub());
-        retVal.put("Server", new Server((IServerSocketChannel)retVal.get("ServerSocketStub"),
-                                        (ISelector)retVal.get("SelectorStub")));
-        return retVal;
-    }
+    HttpContext processRequest(HttpContext context);
 }

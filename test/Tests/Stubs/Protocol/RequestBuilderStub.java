@@ -14,23 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Protocol.Stubs;
+package Tests.Stubs.Protocol;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.HttpContext;
-import Protocol.Processors.IProcessor;
+import Protocol.Builders.IRequestBuilder;
 
 /**
  *
  * @author jmillen
  */
-public class RequestProcessorStub implements IProcessor
+public class RequestBuilderStub implements IRequestBuilder
 {
-
+    public Integer Status = 200;
+    
     @Override
     public HttpContext ProcessRequest(ISocketChannel channel)
     {
-        return new HttpContext(200);
+        return new HttpContext(Status);
     }
     
 }

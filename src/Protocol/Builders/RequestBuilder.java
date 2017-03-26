@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Processors;
+package Protocol.Builders;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.*;
@@ -29,12 +29,12 @@ import java.nio.charset.CharsetDecoder;
  *
  * @author jmillen
  */
-public class RequestProcessor
+public class RequestBuilder
 {
     CharsetDecoder _decoder;
     IParser _parser;
     
-    public RequestProcessor(IParser parser)
+    public RequestBuilder(IParser parser)
     {
         _parser = parser;
         _decoder = Charset.forName("ISO-8859-1").newDecoder();

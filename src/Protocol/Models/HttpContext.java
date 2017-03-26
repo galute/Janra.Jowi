@@ -36,4 +36,14 @@ public class HttpContext
         _request = request;
         _response = new HttpResponse();
     }
+    
+    public HttpRequest request()
+    {
+        return _request;
+    }
+    
+    public HttpResponse response()
+    {
+        return _response;
+    }
 }

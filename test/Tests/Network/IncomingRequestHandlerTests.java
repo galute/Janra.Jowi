@@ -16,8 +16,8 @@
  */
 package Tests.Network;
 
-import Tests.Network.Stubs.SelectorKeyStub;
-import Tests.Network.Stubs.SelectorStub;
+import Tests.Stubs.Network.SelectorKeyStub;
+import Tests.Stubs.Network.SelectorStub;
 import java.io.IOException;
 import static org.junit.Assert.*;
 import org.junit.*;

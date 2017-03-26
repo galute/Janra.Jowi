@@ -14,44 +14,52 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Network.Stubs;
+package Tests.Stubs.Network;
 
 import Network.Wrappers.ISelectorKey;
-import Network.Wrappers.ISelectorKeys;
-import java.util.ArrayList;
-import java.util.List;
+import Network.Wrappers.ISocketChannel;
+import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class SelectorKeysStub implements ISelectorKeys
+public class SelectorKeyStub implements ISelectorKey
 {
-    public List<ISelectorKey> _keys = new ArrayList<>();
-    public List<ISelectorKey> _keysKept = new ArrayList<>();
+    public Boolean IsAcceptable;
+    public Boolean IsReadable;
+    public Boolean IsCancelled = false;
+    public SocketStubIncomplete SocketStub;
     
-    public SelectorKeysStub(int numKeys, Boolean isAcceptable, Boolean isReadable)
+    public SelectorKeyStub(Boolean isAcceptable, Boolean isReadable)
     {
-        for (int i = 0; i < numKeys; i++)
-        {
-            _keys.add(new SelectorKeyStub(isAcceptable, isReadable));
-        }
-    }
-    
-    public Integer NumKeys()
-    {
-        return _keys.size();
+        IsAcceptable = isAcceptable;
+        IsReadable = isReadable;
+        SocketStub = new SocketStubIncomplete();
     }
     
     @Override
-    public ISelectorKey getNext()
+    public Boolean isAcceptable()
     {
-        if (_keys.isEmpty())
-        {
-            return null;
-        }
-        ISelectorKey key = _keys.remove(0);
-        _keysKept.add(key);
-        return key;
+        return IsAcceptable;
     }
+
+    @Override
+    public Boolean isReadable()
+    {
+        return IsReadable;
+    }
+
+    @Override
+    public ISocketChannel getChannel() throws IOException
+    {
+        return SocketStub;
+    }
+
+    @Override
+    public void cancel()
+    {
+        IsCancelled = true;
+    }
+    
 }

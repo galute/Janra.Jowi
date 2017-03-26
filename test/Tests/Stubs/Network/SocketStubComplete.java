@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Network.Stubs;
+package Tests.Stubs.Network;
 
 import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
@@ -24,11 +24,10 @@ import java.nio.ByteBuffer;
  *
  * @author jmillen
  */
-public class SocketStubIncomplete implements ISocketChannel
+public class SocketStubComplete implements ISocketChannel
 {
     public Boolean IsNonBlocking = false;
     public Integer NumReads = 0;
-    public Integer BytesToRead = 0;
     private String bytesToRead = "";
     
     @Override
@@ -79,5 +78,4 @@ public class SocketStubIncomplete implements ISocketChannel
         bytesToRead = new String(new char[bytes]).replace("\0", "X");
         bytesToRead = bytesToRead.concat("\r\n");
     }
-    
 }
