@@ -16,6 +16,10 @@
  */
 package Protocol.Models;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  *
  * @author jmillen
@@ -23,10 +27,13 @@ package Protocol.Models;
 public class HttpResponse
 {
     private Integer _status;
+    private Headers _headers;
+    private String _body = "";
     
     public HttpResponse()
     {
         _status = 200;
+        _headers = new Headers();
     }
     
     public HttpResponse(Integer status)
@@ -39,8 +46,51 @@ public class HttpResponse
         _status = status;
     }
     
+    public void setBody(String body)
+    {
+        _body = body;
+    }
+    
     public Integer status()
     {
         return _status;
+    }
+    
+    public void addHeader(Header header)
+    {
+        _headers.addHeader(header);
+    }
+    
+    public String getRaw()
+    {
+        String retVal = "";
+        Boolean hasContentType = false;
+        
+        Iterator iter = _headers.getIterator();
+        
+        while (iter.hasNext())
+        {
+            Map.Entry pair = (Map.Entry)iter.next();
+        
+            retVal = retVal + MessageFormat.format("{0}: {1}\r\n", pair.getKey(), pair.getValue());
+            if ("Content-type".equals(pair.getKey()))
+            {
+                hasContentType = true;
+            }
+            iter.remove();
+        }
+        
+        if (!_body.isEmpty())
+        {
+            if (!hasContentType)
+            {
+                retVal = retVal + "Content-type: text/plain; charset=UTF-8\r\n";
+            }
+            
+            retVal = MessageFormat.format("{0}Content-Length: {1}\r\n\r\n", retVal, _body.length());
+            retVal = retVal + _body + "\r\n";
+        }
+
+        return retVal;
     }
 }

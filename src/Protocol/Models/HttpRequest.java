@@ -16,9 +16,6 @@
  */
 package Protocol.Models;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *
  * @author jmillen
@@ -30,6 +27,7 @@ public class HttpRequest
     private final String _version;
     private String _host = "";
     private Headers _headers;
+    
     public HttpRequest(HttpMethod method, String path, String version)
     {
         _method = method;

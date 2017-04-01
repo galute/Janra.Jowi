@@ -18,7 +18,6 @@ package Network.Wrappers;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -62,10 +61,7 @@ public class SocketChannelWrapper implements ISocketChannel
     {
         check();
         
-        CharsetEncoder encoder = _charset.newEncoder();
-        Integer szWritten = _socket.write(buffer);
-        
-        return szWritten;
+        return _socket.write(buffer);
     }
     
     @Override

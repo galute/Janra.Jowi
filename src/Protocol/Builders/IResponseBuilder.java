@@ -14,37 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
+package Protocol.Builders;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import Protocol.Models.HttpResponse;
+import Protocol.Parsers.ProtocolException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 
 /**
  *
  * @author jmillen
  */
-public class Headers
+public interface IResponseBuilder
 {
-    private final Map<String, String> _headers = new HashMap<>();
-    
-    public void addHeader(Header header)
-    {
-        _headers.put(header.key(), header.value());
-    }
-    
-    public String get(String key)
-    {
-        if (_headers.containsKey(key))
-        {
-            return _headers.get(key);
-        }
-        
-        return null;
-    }
-    
-    public Iterator getIterator()
-    {
-        return _headers.entrySet().iterator();
-    }
+    ByteBuffer BuildResponse(HttpResponse response)  throws ProtocolException, CharacterCodingException;
 }

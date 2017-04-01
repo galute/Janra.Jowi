@@ -24,6 +24,12 @@ public class ProtocolException extends Exception
 {
     public Integer ResponseStatus = 200;
     
+    public ProtocolException(String message)
+    {
+        super(message);
+        ResponseStatus = 0;
+    }
+    
     public ProtocolException(String message, Integer status)
     {
         super(message);
