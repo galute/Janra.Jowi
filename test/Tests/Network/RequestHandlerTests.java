@@ -18,8 +18,8 @@ package Tests.Network;
 
 import Network.Handlers.RequestHandler;
 import Tests.Stubs.Network.SelectorKeyStub;
-import Tests.Stubs.Parsers.ParserStub;
 import Tests.Stubs.Processing.ProcessRequestStub;
+import Tests.Stubs.Processing.SendResponseStub;
 import Tests.Stubs.Protocol.RequestBuilderStub;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -35,10 +35,11 @@ public class RequestHandlerTests
     SelectorKeyStub _keyStub;
     RequestBuilderStub _builder;
     ProcessRequestStub _processor;
+    SendResponseStub _responder;
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         Thread thread = new Thread(_unitUnderTest);
         thread.start();
     }
@@ -53,15 +54,17 @@ public class RequestHandlerTests
     {
         _builder = new RequestBuilderStub();
         _processor = new ProcessRequestStub();
+        _responder = new SendResponseStub();
     }
     @Test
     public void CancelsKeyIfNotReadable()
     {
         WhenSelectorKeyFlagsAreSet(false, false);
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();
         
         assertTrue(_keyStub.IsCancelled);
+        assertTrue(_responder.numRequests() == 0);
     }
     
     @Test
@@ -69,9 +72,10 @@ public class RequestHandlerTests
     {
         WhenSelectorKeyFlagsAreSet(false, true);
         _builder.Status = 400;
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();
         assertTrue(_processor.numRequests() == 0);
+        assertTrue(_responder.numRequests() == 1);
     }
     
     @Test
@@ -79,8 +83,9 @@ public class RequestHandlerTests
     {
         WhenSelectorKeyFlagsAreSet(false, true);
         _builder.Status = 200;
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor);
+        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();
         assertTrue(_processor.numRequests() == 1);
+        assertTrue(_responder.numRequests() == 1);
     }
 }
