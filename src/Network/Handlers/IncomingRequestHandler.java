@@ -65,6 +65,7 @@ public class IncomingRequestHandler implements Runnable
                 {
                     ISocketChannel socketChannel = _server.Accept(key);
                     socketChannel.setNonBlocking(true);
+                    // launch request handler
                 }
                 else
                 {

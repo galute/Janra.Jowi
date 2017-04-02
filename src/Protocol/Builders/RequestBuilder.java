@@ -29,7 +29,7 @@ import java.nio.charset.CharsetDecoder;
  *
  * @author jmillen
  */
-public class RequestBuilder
+public class RequestBuilder implements IRequestBuilder
 {
     CharsetDecoder _decoder;
     IParser _parser;
@@ -40,6 +40,7 @@ public class RequestBuilder
         _decoder = Charset.forName("ISO-8859-1").newDecoder();
     }
     
+    @Override
     public HttpContext ProcessRequest(ISocketChannel channel)
     {
         try

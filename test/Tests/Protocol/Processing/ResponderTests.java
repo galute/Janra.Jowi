@@ -19,7 +19,7 @@ package Tests.Protocol.Processing;
 import Protocol.Models.HttpResponse;
 import Protocol.Parsers.ProtocolException;
 import Request.Processing.Responder;
-import Tests.Stubs.Builders.ResponseBuilderStub;
+import Tests.Stubs.Protocol.ResponseBuilderStub;
 import Tests.Stubs.Network.SocketStubComplete;
 import java.io.IOException;
 import static org.junit.Assert.assertTrue;

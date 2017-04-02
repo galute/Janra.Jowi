@@ -14,23 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
+package Tests.Stubs.Protocol;
 
-import Tests.Stubs.Protocol.ParserStub;
-import java.util.HashMap;
-import java.util.Map;
+import Protocol.Builders.IResponseBuilder;
+import Protocol.Models.HttpResponse;
+import Protocol.Parsers.ProtocolException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 
 /**
  *
  * @author jmillen
  */
-public class ParserStubFactory
+public class ResponseBuilderStub implements IResponseBuilder
 {
-    static public Map<String, Object> Create()
+    private String _response;
+    
+    @Override
+    public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
     {
-        Map<String, Object> retVal = new HashMap<>();
-        
-        retVal.put("ParserStub", new ParserStub());
-        return retVal;
+        return ByteBuffer.wrap(_response.getBytes());
+    }
+    
+    public void setResponse(String response)
+    {
+        _response = response;
     }
 }

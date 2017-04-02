@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Protocol.Builders;
+package Tests.Stubs.Protocol;
 
 import Tests.Stubs.Network.*;
 import Protocol.Parsers.ProtocolException;
 import Protocol.Builders.RequestBuilder;
-import Tests.Stubs.Parsers.ParserStub;
+import Tests.Stubs.Protocol.ParserStub;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static org.junit.Assert.assertTrue;

@@ -14,30 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Builders;
-
-import Protocol.Builders.IResponseBuilder;
-import Protocol.Models.HttpResponse;
-import Protocol.Parsers.ProtocolException;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
+package Tests.Stubs.Network;
 
 /**
  *
  * @author jmillen
  */
-public class ResponseBuilderStub implements IResponseBuilder
+public class RequestHandlerStub implements Runnable
 {
-    private String _response;
-    
+    private static Integer _numLaunches = 0;
     @Override
-    public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
+    public void run()
     {
-        return ByteBuffer.wrap(_response.getBytes());
+        _numLaunches++;
     }
     
-    public void setResponse(String response)
+    public static Integer getLaunches()
     {
-        _response = response;
+        return _numLaunches;
     }
 }

@@ -14,23 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
+package Request.Processing;
 
-import Tests.Stubs.Protocol.ParserStub;
-import java.util.HashMap;
-import java.util.Map;
+import Protocol.Models.HttpContext;
 
 /**
  *
  * @author jmillen
  */
-public class ParserStubFactory
+public class RequestProcessor implements IProcessRequest
 {
-    static public Map<String, Object> Create()
+
+    @Override
+    public HttpContext processRequest(HttpContext context)
     {
-        Map<String, Object> retVal = new HashMap<>();
-        
-        retVal.put("ParserStub", new ParserStub());
-        return retVal;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 }
