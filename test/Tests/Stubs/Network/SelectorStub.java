@@ -34,6 +34,7 @@ public class SelectorStub implements ISelector
     public Integer _numKeysToSelect = 0;
     public Boolean _setAcceptable = false;
     public Boolean _setReadable = false;
+    public Boolean _setWriteable = false;
     public long _timeout = 0;
     public SelectorKeysStub _returnedKeys = null;
     
@@ -67,7 +68,7 @@ public class SelectorStub implements ISelector
             Integer numKeys = _numKeysToSelect;
             _numKeysToSelect = 0;
             
-            _returnedKeys = new SelectorKeysStub(numKeys, _setAcceptable, _setReadable);
+            _returnedKeys = new SelectorKeysStub(numKeys, _setAcceptable, _setReadable, _setWriteable);
             
             return _returnedKeys;
         }

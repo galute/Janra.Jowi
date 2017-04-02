@@ -27,5 +27,6 @@ public interface ISelectorKey
     ISocketChannel getChannel() throws IOException;
     Boolean isAcceptable();
     Boolean isReadable();
+    Boolean isWriteable();
     void cancel();
 }

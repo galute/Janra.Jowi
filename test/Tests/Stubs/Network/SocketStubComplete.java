@@ -28,6 +28,8 @@ public class SocketStubComplete implements ISocketChannel
 {
     public Boolean IsNonBlocking = false;
     public Integer NumReads = 0;
+    public Integer NumWrites = 0;
+    private Integer _bytesToWrite = 0;
     private String bytesToRead = "";
     
     @Override
@@ -58,7 +60,14 @@ public class SocketStubComplete implements ISocketChannel
     @Override
     public Integer write(ByteBuffer buffer) throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        NumWrites++;
+        
+        for (int i = 0; i <  _bytesToWrite; i++)
+        {
+            buffer.get();
+        }
+
+        return _bytesToWrite;
     }
 
     @Override
@@ -77,5 +86,10 @@ public class SocketStubComplete implements ISocketChannel
     {
         bytesToRead = new String(new char[bytes]).replace("\0", "X");
         bytesToRead = bytesToRead.concat("\r\n");
+    }
+    
+    public void setBytesToWrite(Integer bytes)
+    {
+        _bytesToWrite = bytes;
     }
 }

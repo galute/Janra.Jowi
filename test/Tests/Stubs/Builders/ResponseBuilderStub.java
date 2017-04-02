@@ -14,19 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Stubs.Builders;
 
-import Network.Wrappers.ISocketChannel;
+import Protocol.Builders.IResponseBuilder;
 import Protocol.Models.HttpResponse;
 import Protocol.Parsers.ProtocolException;
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 
 /**
  *
  * @author jmillen
  */
-public interface ISendResponse
+public class ResponseBuilderStub implements IResponseBuilder
 {
-    void sendResponse(HttpResponse response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException;
+    private String _response;
+    
+    @Override
+    public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
+    {
+        return ByteBuffer.wrap(_response.getBytes());
+    }
+    
+    public void setResponse(String response)
+    {
+        _response = response;
+    }
 }

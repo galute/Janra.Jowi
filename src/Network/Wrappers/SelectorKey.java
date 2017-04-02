@@ -60,6 +60,12 @@ public class SelectorKey implements ISelectorKey
     }
     
     @Override
+    public Boolean isWriteable()
+    {
+        return _key.isValid() && _key.isWritable();
+    }
+    
+    @Override
     public void cancel()
     {
         _key.cancel();

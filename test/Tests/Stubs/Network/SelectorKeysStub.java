@@ -30,11 +30,11 @@ public class SelectorKeysStub implements ISelectorKeys
     public List<ISelectorKey> _keys = new ArrayList<>();
     public List<ISelectorKey> _keysKept = new ArrayList<>();
     
-    public SelectorKeysStub(int numKeys, Boolean isAcceptable, Boolean isReadable)
+    public SelectorKeysStub(int numKeys, Boolean isAcceptable, Boolean isReadable, Boolean isWriteable)
     {
         for (int i = 0; i < numKeys; i++)
         {
-            _keys.add(new SelectorKeyStub(isAcceptable, isReadable));
+            _keys.add(new SelectorKeyStub(isAcceptable, isReadable, isWriteable));
         }
     }
     

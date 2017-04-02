@@ -21,6 +21,7 @@ import Protocol.Models.*;
 import Protocol.Builders.IRequestBuilder;
 import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -62,7 +63,14 @@ public class RequestHandler implements Runnable
                     context = _processor.processRequest(context);
                 }
                 
-                _responder.sendResponse(context.response(), _channel);
+                if (_key.isWriteable())
+                {
+                    _responder.sendResponse(context.response(), _channel);
+                }
+                else
+                {
+                    throw new IOException("Failed to send response");
+                }
             }
             else
             {

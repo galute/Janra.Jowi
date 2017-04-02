@@ -44,9 +44,9 @@ public class RequestHandlerTests
         thread.start();
     }
     
-    public void WhenSelectorKeyFlagsAreSet(Boolean acceptable, Boolean readable)
+    public void WhenSelectorKeyFlagsAreSet(Boolean acceptable, Boolean readable, Boolean writeable)
     {
-        _keyStub = new SelectorKeyStub(acceptable, readable);
+        _keyStub = new SelectorKeyStub(acceptable, readable, writeable);
     }
     
     @Before
@@ -59,7 +59,7 @@ public class RequestHandlerTests
     @Test
     public void CancelsKeyIfNotReadable()
     {
-        WhenSelectorKeyFlagsAreSet(false, false);
+        WhenSelectorKeyFlagsAreSet(false, false, false);
         _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();
         
@@ -70,7 +70,7 @@ public class RequestHandlerTests
     @Test
     public void DoesNotAcceptInValidRequest()
     {
-        WhenSelectorKeyFlagsAreSet(false, true);
+        WhenSelectorKeyFlagsAreSet(false, true, false);
         _builder.Status = 400;
         _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();
@@ -81,7 +81,7 @@ public class RequestHandlerTests
     @Test
     public void AcceptsValidRequest()
     {
-        WhenSelectorKeyFlagsAreSet(false, true);
+        WhenSelectorKeyFlagsAreSet(false, true, false);
         _builder.Status = 200;
         _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();

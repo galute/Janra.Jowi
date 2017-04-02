@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 /**
  *

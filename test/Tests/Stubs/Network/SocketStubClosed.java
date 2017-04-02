@@ -14,19 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
-
-import Network.Wrappers.ISocketChannel;
-import Protocol.Models.HttpResponse;
-import Protocol.Parsers.ProtocolException;
-import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
+package Tests.Stubs.Network;
 
 /**
  *
  * @author jmillen
  */
-public interface ISendResponse
+public class SocketStubClosed
 {
-    void sendResponse(HttpResponse response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException;
+    
 }
