@@ -31,7 +31,6 @@ import java.nio.charset.Charset;
 public class RequestHandler implements Runnable
 {
     private final ISelectorKey _key;
-    ISocketChannel _channel;
     IRequestBuilder _builder;
     IProcessRequest _processor;
     ISendResponse _responder;
@@ -41,7 +40,6 @@ public class RequestHandler implements Runnable
     public RequestHandler(ISelectorKey key, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder)
     {
         _key = key;
-        _channel = null;
         _builder = builder;
         _processor = processor;
         _responder = responder;
@@ -50,13 +48,14 @@ public class RequestHandler implements Runnable
     @Override
     public void run()
     {
+        ISocketChannel channel;
         try
         {
             if (_key.isReadable())
             {
-                _channel = _key.getChannel();
+                channel = _key.getChannel();
                 
-                HttpContext context = _builder.ProcessRequest(_channel);
+                HttpContext context = _builder.ProcessRequest(channel);
                 
                 if (context.response().status() == 200)
                 {
@@ -65,7 +64,7 @@ public class RequestHandler implements Runnable
                 
                 if (_key.isWriteable())
                 {
-                    _responder.sendResponse(context.response(), _channel);
+                    _responder.sendResponse(context.response(), channel);
                 }
                 else
                 {
@@ -79,7 +78,7 @@ public class RequestHandler implements Runnable
         }
         catch (Exception ex)
         {
-            // To-do send 500
+            // To-do (try to) send 500
         }
     }
 }
