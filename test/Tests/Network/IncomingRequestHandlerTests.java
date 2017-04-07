@@ -71,7 +71,7 @@ public class IncomingRequestHandlerTests extends NetworkContext
             GivenAcceptableKeys();
             GivenIncomingRequests(numRequests);
             WhenAcceptingRequests();
-            Thread.sleep(500);
+            Thread.sleep(100);
             _processor.Stop();
             
             assertEquals(numRequests, ((SelectorStub)_selector)._registeredForRead);
@@ -103,6 +103,26 @@ public class IncomingRequestHandlerTests extends NetworkContext
         {
             fail("Exception Thrown: " + ex.getLocalizedMessage());
         }
-        
+    }
+    
+    @Test
+    public void LaunchesRequestHandler()
+    {
+        try
+        {
+            Integer numRequests = 1;
+            
+            GivenAcceptableKeys();
+            GivenIncomingRequests(numRequests);
+            WhenAcceptingRequests();
+            Thread.sleep(100);
+            _processor.Stop();
+            
+            assertTrue(_launcher.NumCalls == 1);
+        }
+        catch (IOException | InterruptedException ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }
     }
 }

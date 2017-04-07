@@ -14,29 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
+package Network;
 
-import Tests.Stubs.Network.ServerSocketStub;
-import Tests.Stubs.Network.SelectorStub;
-import Network.SocketServer;
-import Network.Wrappers.*;
-import java.util.HashMap;
-import java.util.Map;
+import Network.Wrappers.ISelectorKey;
+import Network.Wrappers.ISelectorKeys;
+import Network.Wrappers.ISocketChannel;
+import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class ServerStubFactory
+public interface ISocketServer
 {
-    static public Map<String, Object> Create()
-    {
-        Map<String, Object> retVal = new HashMap<>();
-        
-        retVal.put("ServerSocketStub", new ServerSocketStub());
-        retVal.put("SelectorStub", new SelectorStub());
-        retVal.put("Server", new SocketServer((IServerSocketChannel)retVal.get("ServerSocketStub"),
-                                        (ISelector)retVal.get("SelectorStub")));
-        return retVal;
-    }
+    void Configure(Integer port) throws IOException;
+    ISelectorKeys Start(long timeout) throws IOException;
+    ISocketChannel Accept(ISelectorKey key) throws IOException;
+    void Close() throws IOException;
 }

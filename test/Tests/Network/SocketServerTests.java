@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  *
  * @author jmillen
  */
-public class ServerTests extends NetworkContext
+public class SocketServerTests extends NetworkContext
 {
     @Before
     public void Setup()

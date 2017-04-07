@@ -70,7 +70,7 @@ public class RequestHandlerTests
     @Test
     public void DoesNotAcceptInValidRequest()
     {
-        WhenSelectorKeyFlagsAreSet(false, true, false);
+        WhenSelectorKeyFlagsAreSet(false, true, true);
         _builder.Status = 400;
         _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
         _unitUnderTest.run();

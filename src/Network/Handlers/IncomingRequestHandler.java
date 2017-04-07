@@ -16,10 +16,12 @@
  */
 package Network.Handlers;
 
-import Network.IServer;
+import Network.Factories.RequestHandlerFactory;
+import Network.ISocketServer;
 import Network.Wrappers.ISelectorKey;
 import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.ISocketChannel;
+import Utilities.ILauncher;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,17 +32,19 @@ import java.util.logging.Logger;
  */
 public class IncomingRequestHandler implements Runnable
 {
-    private final IServer _server;
+    private final ISocketServer _server;
+    private final ILauncher _launcher;
     private volatile boolean _stop = false;
     private final long _timeout;
     private final Integer _port;
     
     
-    public IncomingRequestHandler(IServer server, Integer port, long timeout) throws IOException
+    public IncomingRequestHandler(ISocketServer server, ILauncher launcher, Integer port, long timeout) throws IOException
     {
         _server = server;
         _timeout = timeout;
         _port = port;
+        _launcher = launcher;
     }
     
     @Override
@@ -65,7 +69,7 @@ public class IncomingRequestHandler implements Runnable
                 {
                     ISocketChannel socketChannel = _server.Accept(key);
                     socketChannel.setNonBlocking(true);
-                    // launch request handler
+                    _launcher.launch(RequestHandlerFactory.Create(key));
                 }
                 else
                 {

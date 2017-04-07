@@ -14,21 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network;
+package Tests.Server;
 
-import Network.Wrappers.ISelectorKey;
-import Network.Wrappers.ISelectorKeys;
-import Network.Wrappers.ISocketChannel;
-import java.io.IOException;
+import org.junit.Test;
 
 /**
  *
  * @author jmillen
  */
-public interface IServer
+public class ServerTests
 {
-    void Configure(Integer port) throws IOException;
-    ISelectorKeys Start(long timeout) throws IOException;
-    ISocketChannel Accept(ISelectorKey key) throws IOException;
-    void Close() throws IOException;
+    @Test
+    public void StartsIncomingRequestHandler()
+    {
+        
+    }
 }

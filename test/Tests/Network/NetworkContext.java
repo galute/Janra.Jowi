@@ -19,11 +19,12 @@ package Tests.Network;
 import Tests.Stubs.Network.ServerSocketStub;
 import Tests.Stubs.Network.SelectorExceptionStub;
 import Tests.Stubs.Network.SelectorStub;
-import Network.Server;
+import Network.SocketServer;
 import Network.Handlers.IncomingRequestHandler;
 import Network.Wrappers.ISelector;
 import Network.Wrappers.ISelectorKeys;
 import Tests.Factories.*;
+import Tests.Stubs.Utilities.LauncherStub;
 import java.io.IOException;
 import java.util.Map;
 import static org.junit.Assert.fail;
@@ -37,9 +38,10 @@ public class NetworkContext
     
     protected ISelector _selector;
     protected ServerSocketStub _socket;
-    protected Server _server;
+    protected SocketServer _server;
     protected Integer _port = 1234;
     protected IncomingRequestHandler _processor;
+    protected LauncherStub _launcher = new LauncherStub();
     
     protected void GivenProcessorToldToStop()
     {
@@ -48,7 +50,7 @@ public class NetworkContext
     
     protected void WhenAcceptingRequests() throws IOException
     {
-        _processor = new IncomingRequestHandler(_server, _port, 10L);
+        _processor = new IncomingRequestHandler(_server, _launcher,_port, 10L);
         Thread thread = new Thread(_processor);
         thread.start();
     }
@@ -78,7 +80,7 @@ public class NetworkContext
         Map<String, Object> created = ServerStubFactory.Create();
         _socket = (ServerSocketStub) created.get("ServerSocketStub");
         _selector = (SelectorStub) created.get("SelectorStub");
-        _server = (Server) created.get("Server");
+        _server = (SocketServer) created.get("Server");
         
         try
         {
@@ -95,7 +97,7 @@ public class NetworkContext
         Map<String, Object> created = ServerStubSelectorExceptionFactory.Create();
         _socket = (ServerSocketStub) created.get("ServerSocketStub");
         _selector = (SelectorExceptionStub) created.get("SelectorStub");
-        _server = (Server) created.get("Server");
+        _server = (SocketServer) created.get("Server");
         
         try
         {

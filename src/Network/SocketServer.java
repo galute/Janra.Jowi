@@ -23,12 +23,12 @@ import java.io.IOException;
  *
  * @author jmillen
  */
-public class Server implements IServer
+public class SocketServer implements ISocketServer
 {
     IServerSocketChannel _serverSocket;
     ISelector _selector;
     
-    public Server(IServerSocketChannel serverSocket, ISelector selector)
+    public SocketServer(IServerSocketChannel serverSocket, ISelector selector)
     {
         _serverSocket = serverSocket;
         _selector = selector;

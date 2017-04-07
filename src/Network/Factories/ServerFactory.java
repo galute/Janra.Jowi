@@ -16,8 +16,8 @@
  */
 package Network.Factories;
 
-import Network.IServer;
-import Network.Server;
+import Network.ISocketServer;
+import Network.SocketServer;
 import Network.Wrappers.*;
 import java.io.IOException;
 
@@ -27,8 +27,8 @@ import java.io.IOException;
  */
 public class ServerFactory
 {
-    static public IServer Create() throws IOException
+    static public ISocketServer Create() throws IOException
     {
-        return new Server(new ServerSocketChannelWrapper(), new SelectorWrapper());
+        return new SocketServer(new ServerSocketChannelWrapper(), new SelectorWrapper());
     }
 }

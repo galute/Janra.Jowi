@@ -16,7 +16,7 @@
  */
 package Tests.Factories;
 
-import Network.Server;
+import Network.SocketServer;
 import Network.Wrappers.ISelector;
 import Network.Wrappers.IServerSocketChannel;
 import Tests.Stubs.Network.SelectorExceptionStub;
@@ -36,7 +36,7 @@ public class ServerStubSelectorExceptionFactory
         
         retVal.put("ServerSocketStub", new ServerSocketStub());
         retVal.put("SelectorStub", new SelectorExceptionStub());
-        retVal.put("Server", new Server((IServerSocketChannel)retVal.get("ServerSocketStub"),
+        retVal.put("Server", new SocketServer((IServerSocketChannel)retVal.get("ServerSocketStub"),
                                         (ISelector)retVal.get("SelectorStub")));
         return retVal;
     }
