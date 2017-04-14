@@ -16,11 +16,21 @@
  */
 package Server;
 
+import Network.Factories.ServerFactory;
+import Network.Handlers.IncomingRequestHandler;
+import Utilities.*;
+import java.io.IOException;
+
 /**
  *
  * @author jmillen
  */
 public class Server
 {
-    
+    public void Start(Integer port, Configuration config) throws IOException
+    {
+        ILauncher launcher = new ThreadLauncher();
+        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config.readTimeout);
+        handler.run();
+    }
 }

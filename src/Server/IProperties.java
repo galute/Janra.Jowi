@@ -14,23 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
-
-import Tests.Stubs.Protocol.ParserStub;
-import java.util.HashMap;
-import java.util.Map;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public class ParserStubFactory
+public interface IProperties
 {
-    static public Map<String, Object> Create()
-    {
-        Map<String, Object> retVal = new HashMap<>();
-        
-        retVal.put("ParserStub", new ParserStub());
-        return retVal;
-    }
+    Object Property(String key);
+    void add(String key, Object value);
 }

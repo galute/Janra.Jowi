@@ -39,6 +39,10 @@ public class HttpContext
     
     public HttpRequest request()
     {
+        if (_request != null)
+        {
+            return new HttpRequest(_request);
+        }
         return _request;
     }
     

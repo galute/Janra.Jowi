@@ -14,45 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
-
-import java.util.HashMap;
-import java.util.Iterator;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public class Headers
+public class Configuration
 {
-    private final HashMap<String, String> _headers;
-    
-    public Headers()
-    {
-        _headers = new HashMap<>();
-    }
-    public Headers(Headers headers)
-    {
-        _headers = (HashMap)headers._headers.clone();
-    }
-    
-    public void addHeader(Header header)
-    {
-        _headers.put(header.key(), header.value());
-    }
-    
-    public String get(String key)
-    {
-        if (_headers.containsKey(key))
-        {
-            return _headers.get(key);
-        }
-        
-        return null;
-    }
-    
-    public Iterator getIterator()
-    {
-        return _headers.entrySet().iterator();
-    }
+    long readTimeout = 500;
 }

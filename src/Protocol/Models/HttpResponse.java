@@ -27,17 +27,18 @@ import java.util.Map;
 public class HttpResponse
 {
     private Integer _status;
-    private Headers _headers;
+    private final Headers _headers;
     private String _body = "";
     
     public HttpResponse()
     {
+        this._headers = new Headers();
         _status = 200;
-        _headers = new Headers();
     }
     
     public HttpResponse(Integer status)
     {
+        this._headers = new Headers();
         _status = status;
     }
     

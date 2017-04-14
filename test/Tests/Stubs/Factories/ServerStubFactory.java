@@ -14,45 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
+package Tests.Stubs.Factories;
 
+import Tests.Stubs.Network.ServerSocketStub;
+import Tests.Stubs.Network.SelectorStub;
+import Network.SocketServer;
+import Network.Wrappers.*;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public class Headers
+public class ServerStubFactory
 {
-    private final HashMap<String, String> _headers;
-    
-    public Headers()
+    static public Map<String, Object> Create()
     {
-        _headers = new HashMap<>();
-    }
-    public Headers(Headers headers)
-    {
-        _headers = (HashMap)headers._headers.clone();
-    }
-    
-    public void addHeader(Header header)
-    {
-        _headers.put(header.key(), header.value());
-    }
-    
-    public String get(String key)
-    {
-        if (_headers.containsKey(key))
-        {
-            return _headers.get(key);
-        }
+        Map<String, Object> retVal = new HashMap<>();
         
-        return null;
-    }
-    
-    public Iterator getIterator()
-    {
-        return _headers.entrySet().iterator();
+        retVal.put("ServerSocketStub", new ServerSocketStub());
+        retVal.put("SelectorStub", new SelectorStub());
+        retVal.put("Server", new SocketServer((IServerSocketChannel)retVal.get("ServerSocketStub"),
+                                        (ISelector)retVal.get("SelectorStub")));
+        return retVal;
     }
 }

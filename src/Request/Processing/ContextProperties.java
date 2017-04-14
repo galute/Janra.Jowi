@@ -14,45 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
+package Request.Processing;
 
+import Server.IProperties;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
  * @author jmillen
  */
-public class Headers
+public class ContextProperties implements IProperties
 {
-    private final HashMap<String, String> _headers;
+    RequestContext _context;
     
-    public Headers()
+    public ContextProperties(RequestContext context)
     {
-        _headers = new HashMap<>();
-    }
-    public Headers(Headers headers)
-    {
-        _headers = (HashMap)headers._headers.clone();
+        _context = context;
     }
     
-    public void addHeader(Header header)
+    @Override
+    public Object Property(String key)
     {
-        _headers.put(header.key(), header.value());
+        return _context.getProperty(key);
     }
-    
-    public String get(String key)
+
+    @Override
+    public void add(String key, Object value)
     {
-        if (_headers.containsKey(key))
-        {
-            return _headers.get(key);
-        }
-        
-        return null;
-    }
-    
-    public Iterator getIterator()
-    {
-        return _headers.entrySet().iterator();
+        _context.addProperty(key, value);
     }
 }

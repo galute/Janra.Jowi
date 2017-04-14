@@ -14,12 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Factories;
+package Tests.Stubs.Factories;
 
-import Tests.Stubs.Network.ServerSocketStub;
-import Tests.Stubs.Network.SelectorStub;
-import Network.SocketServer;
-import Network.Wrappers.*;
+import Tests.Stubs.Protocol.ParserStub;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,16 +24,13 @@ import java.util.Map;
  *
  * @author jmillen
  */
-public class ServerStubFactory
+public class ParserStubFactory
 {
     static public Map<String, Object> Create()
     {
         Map<String, Object> retVal = new HashMap<>();
         
-        retVal.put("ServerSocketStub", new ServerSocketStub());
-        retVal.put("SelectorStub", new SelectorStub());
-        retVal.put("Server", new SocketServer((IServerSocketChannel)retVal.get("ServerSocketStub"),
-                                        (ISelector)retVal.get("SelectorStub")));
+        retVal.put("ParserStub", new ParserStub());
         return retVal;
     }
 }

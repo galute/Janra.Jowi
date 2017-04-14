@@ -20,7 +20,7 @@ package Protocol.Models;
  *
  * @author jmillen
  */
-public class HttpRequest
+public class HttpRequest implements Cloneable
 {
     private final HttpMethod _method;
     private final String _path;
@@ -35,6 +35,15 @@ public class HttpRequest
         _version = version;
         _host = "";
         _headers = new Headers();
+    }
+    
+    public HttpRequest(HttpRequest request)
+    {
+        _method = request._method;
+        _path = request._path;
+        _version = request._version;
+        _host = request._host;
+        _headers = new Headers(request._headers);
     }
     
     public void addHost(Header hostHeader)

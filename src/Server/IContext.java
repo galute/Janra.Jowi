@@ -14,45 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
+package Server;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import Protocol.Models.HttpRequest;
 
 /**
  *
  * @author jmillen
  */
-public class Headers
+public interface IContext
 {
-    private final HashMap<String, String> _headers;
-    
-    public Headers()
-    {
-        _headers = new HashMap<>();
-    }
-    public Headers(Headers headers)
-    {
-        _headers = (HashMap)headers._headers.clone();
-    }
-    
-    public void addHeader(Header header)
-    {
-        _headers.put(header.key(), header.value());
-    }
-    
-    public String get(String key)
-    {
-        if (_headers.containsKey(key))
-        {
-            return _headers.get(key);
-        }
-        
-        return null;
-    }
-    
-    public Iterator getIterator()
-    {
-        return _headers.entrySet().iterator();
-    }
+    HttpRequest Request();
+    void setResponseStatus(Integer status);
+    void setResponseBody(String body);
+    void addResponseHeader(String key, String value);
+    IProperties Properties();
 }
