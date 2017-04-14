@@ -27,11 +27,13 @@ public class MiddlewareStubTwo implements IPipelineMiddleware
 {
 
     @Override
-    public void Invoke(IContext context)
+    public Boolean Invoke(IContext context)
     {
         context.setResponseStatus(404);
         context.addResponseHeader("Content-type", "application/json");
-        context.setResponseBody("MiddlewareStubtwo Body");
+        context.setResponseBody("MiddlewareStubTwo Body");
+        
+        return true;
     }
     
 }

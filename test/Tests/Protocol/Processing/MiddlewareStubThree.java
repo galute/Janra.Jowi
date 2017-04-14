@@ -14,40 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Protocol.Processing;
 
 import Server.IContext;
 import Server.IPipelineMiddleware;
-import java.util.function.Function;
 
 /**
  *
  * @author jmillen
  */
-public class PipelineModule implements IPipelineModule
+public class MiddlewareStubThree implements IPipelineMiddleware
 {
-    private final Function<IContext, Boolean> _middleware;
-    private final PipelineModule _next;
-    
-    public PipelineModule(IPipelineMiddleware middleware)
-    {
-        _middleware = x -> middleware.Invoke(x);
-        _next = null;
-    }
-    
-    public PipelineModule(IPipelineMiddleware middleware, PipelineModule next)
-    {
-        _middleware = x -> middleware.Invoke(x);
-        _next = next;
-    }
 
     @Override
-    public void Invoke(RequestContext context)
+    public Boolean Invoke(IContext context)
     {
-        Boolean keepGoing = _middleware.apply(context);
-        if (_next != null && keepGoing)
-        {
-            _next.Invoke(context);
-        }
+        context.setResponseStatus(503);
+        context.addResponseHeader("Content-type", "application/xml");
+        context.setResponseBody("MiddlewareStubThree Body");
+        
+        return false;
     }
 }

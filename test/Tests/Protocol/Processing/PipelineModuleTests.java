@@ -61,9 +61,26 @@ public class PipelineModuleTests
         IPipelineMiddleware middleware2 = new MiddlewareStubTwo();
         PipelineModule module = new PipelineModule(middleware2);
         _unitUnderTest = new PipelineModule(_middleware, module);
+        _unitUnderTest.Invoke(_context);
         String result = _context.getResponse().getRaw();
         assertFalse(result.contains("MiddlewareStub Body"));
         assertFalse(result.contains("Content-type: application/xml"));
+        assertTrue(result.contains("MiddlewareStubTwo Body"));
+        assertTrue(result.contains("Content-type: application/json"));
+        
+    }
+    
+    @Test
+    public void DoesNotInvokeMiddlewareStackOnReturnFalse()
+    {
+        IPipelineMiddleware middleware2 = new MiddlewareStubThree();
+        PipelineModule module = new PipelineModule(middleware2);
+        _middleware = new MiddlewareStubTwo();
+        _unitUnderTest = new PipelineModule(_middleware, module);
+        _unitUnderTest.Invoke(_context);
+        String result = _context.getResponse().getRaw();
+        assertTrue(result.contains("MiddlewareStubThree Body"));
+        assertTrue(result.contains("Content-type: application/xml"));
         
     }
 }

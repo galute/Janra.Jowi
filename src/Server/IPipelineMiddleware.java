@@ -19,8 +19,12 @@ package Server;
 /**
  *
  * @author jmillen
+ * 
+ * Return : true if next pipeline module is to be invoked
+ *          false if http response is to be sent without calling
+ *                further pipeline modules
  */
 public interface IPipelineMiddleware
 {
-    public void Invoke(IContext context);
+    public Boolean Invoke(IContext context);
 }
