@@ -18,12 +18,8 @@ package Tests.Protocol.Models;
 
 import Protocol.Models.Header;
 import Protocol.Models.HttpResponse;
-import Protocol.Parsers.ProtocolException;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +50,17 @@ public class HttpResponseTests
     {
         String result = _unitUnderTest.getRaw();
         assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
+    }
+    
+    @Test
+    public void OnlyEverOneContentHeader()
+    {
+        _unitUnderTest.setBody("TestBody");
+        _unitUnderTest.addHeader(new Header("Content-type", "test/first"));
+        _unitUnderTest.addHeader(new Header("Content-type", "test/second"));
+        String result = _unitUnderTest.getRaw();
+        assertFalse(result.contains("Content-type: test/first"));
+        assertTrue(result.contains("Content-type: test/second"));
     }
     
     @Test

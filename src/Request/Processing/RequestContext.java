@@ -19,6 +19,7 @@ package Request.Processing;
 import Protocol.Models.Header;
 import Protocol.Models.HttpContext;
 import Protocol.Models.HttpRequest;
+import Protocol.Models.HttpResponse;
 import Server.IContext;
 import Server.IProperties;
 import java.util.HashMap;
@@ -73,5 +74,10 @@ public class RequestContext implements IContext
     public void addProperty(String key, Object value)
     {
         _properties.put(key, value);
+    }
+    
+    public HttpResponse getResponse()
+    {
+        return _context.response();
     }
 }

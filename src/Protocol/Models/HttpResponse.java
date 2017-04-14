@@ -60,6 +60,8 @@ public class HttpResponse
     public void addHeader(Header header)
     {
         _headers.addHeader(header);
+        // To-do, will need to change this, can have multiple of some
+        // headers, e.g. Link
     }
     
     public String getRaw()

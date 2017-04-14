@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Server;
+package Request.Processing;
 
 /**
  *
@@ -22,5 +22,5 @@ package Server;
  */
 public interface IPipelineModule
 {
-    public void Invoke(IContext context);
+    public void Invoke(RequestContext context);
 }
