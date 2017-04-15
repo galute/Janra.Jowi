@@ -33,6 +33,13 @@ public class MiddlewareStubTwo implements IPipelineMiddleware
         context.addResponseHeader("Content-type", "application/json");
         context.setResponseBody("MiddlewareStubTwo Body");
         
+        if (context.Properties().Property("Module") != null)
+        {
+            context.Properties().add("Module2", this);
+        }
+        
+        context.Properties().add("Two", this);
+        
         return true;
     }
     

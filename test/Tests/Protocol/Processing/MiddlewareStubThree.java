@@ -33,6 +33,13 @@ public class MiddlewareStubThree implements IPipelineMiddleware
         context.addResponseHeader("Content-type", "application/xml");
         context.setResponseBody("MiddlewareStubThree Body");
         
+        if (context.Properties().Property("Module2") != null)
+        {
+            context.Properties().add("Module3", this);
+        }
+        
+        context.Properties().add("Three", this);
+        
         return false;
     }
 }

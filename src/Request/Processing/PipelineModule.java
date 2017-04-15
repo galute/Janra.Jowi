@@ -42,7 +42,7 @@ public class PipelineModule implements IPipelineModule
     }
 
     @Override
-    public void Invoke(RequestContext context)
+    public void Invoke(IContext context)
     {
         Boolean keepGoing = _middleware.apply(context);
         if (_next != null && keepGoing)

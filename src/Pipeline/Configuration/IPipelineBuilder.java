@@ -17,8 +17,8 @@
 package Pipeline.Configuration;
 
 import Request.Processing.Pipeline;
-import Request.Processing.Pipeline;
 import Server.IPipelineMiddleware;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,5 +27,5 @@ import java.util.Map;
  */
 public interface IPipelineBuilder
 {
-    Pipeline build(Map<String, Map<Integer, IPipelineMiddleware>> config);
+    List<Pipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config);
 }

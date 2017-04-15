@@ -16,11 +16,13 @@
  */
 package Request.Processing;
 
+import Server.IContext;
+
 /**
  *
  * @author jmillen
  */
 public interface IPipelineModule
 {
-    public void Invoke(RequestContext context);
+    public void Invoke(IContext context);
 }

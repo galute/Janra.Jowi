@@ -25,13 +25,16 @@ import Server.IPipelineMiddleware;
  */
 public class MiddlewareStub implements IPipelineMiddleware
 {
+    public Integer calledCounter = 0;
+    
     @Override
     public Boolean Invoke(IContext context)
     {
         context.setResponseStatus(503);
         context.addResponseHeader("Content-type", "application/xml");
         context.setResponseBody("MiddlewareStub Body");
-        
+        context.Properties().add("Module", this);
+        calledCounter++;
         return true;
     }
     

@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Processing;
+package Request.Processing;
 
-import Pipeline.Configuration.IPipelineBuilder;
-import Request.Processing.Pipeline;
-import Server.IPipelineMiddleware;
-import java.util.List;
-import java.util.Map;
+import Server.IContext;
 
 /**
  *
  * @author jmillen
  */
-public class PipelineBuilderStub implements IPipelineBuilder
+public class Pipeline
 {
-    public Map<String, Map<Integer, IPipelineMiddleware>> map;
-    @Override
-    public List<Pipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config)
+    private final IPipelineModule _entrypoint;
+    private final String _path;
+    
+    public Pipeline(String path, IPipelineModule start)
     {
-        map = config;
-        return null;
+        _path = path;
+        _entrypoint = start;
     }
     
+    public Boolean isPipeline(String path)
+    {
+        return _path.equalsIgnoreCase(path);
+    }
+    
+    public void run(IContext context)
+    {
+        _entrypoint.Invoke(context);
+    }
 }

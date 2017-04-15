@@ -19,8 +19,11 @@ package Pipeline.Configuration;
 import Request.Processing.Pipeline;
 import Server.IPipelineConfiguration;
 import Server.IPipelineMiddleware;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
@@ -54,14 +57,14 @@ public class PipelineConfiguration implements IPipelineConfiguration
         }
         else
         {
-            Map<Integer,IPipelineMiddleware>pipeline = new HashMap<>();
+            Map<Integer,IPipelineMiddleware>pipeline = new TreeMap(Collections.reverseOrder());
             pipeline.put(1, middleware);
             _pipelines.put(path, pipeline);
             _counters.put(path, 1);
         }
     }
     
-    public Pipeline build()
+    public List<Pipeline> build()
     {
         return _builder.build(_pipelines);
     }
