@@ -14,27 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Server;
+package Network.Factories;
 
-import Pipeline.Configuration.*;
+import Pipeline.Configuration.PipelineBuilder;
+import Server.Configuration;
 
 /**
  *
  * @author jmillen
  */
-public class Configuration
+public class ConfigurationFactory
 {
-    public long Timeout = 500;
-    
-    private final IPipelineConfiguration _pipelineConfig;
-    
-    public Configuration(IPipelineBuilder builder)
+    static public Configuration Create()
     {
-        _pipelineConfig = new PipelineConfiguration(builder);
-    }
-    
-    public void addMiddleware(String path, IPipelineMiddleware middleware)
-    {
-        _pipelineConfig.addMiddleware(path, middleware);
+        return new Configuration(new PipelineBuilder());
     }
 }

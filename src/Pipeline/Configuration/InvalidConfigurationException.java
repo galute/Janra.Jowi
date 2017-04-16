@@ -14,27 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Server;
-
-import Pipeline.Configuration.*;
+package Pipeline.Configuration;
 
 /**
  *
  * @author jmillen
  */
-public class Configuration
+public class InvalidConfigurationException extends Exception
 {
-    public long Timeout = 500;
-    
-    private final IPipelineConfiguration _pipelineConfig;
-    
-    public Configuration(IPipelineBuilder builder)
+    public InvalidConfigurationException(String message)
     {
-        _pipelineConfig = new PipelineConfiguration(builder);
-    }
-    
-    public void addMiddleware(String path, IPipelineMiddleware middleware)
-    {
-        _pipelineConfig.addMiddleware(path, middleware);
+        super(message);
     }
 }

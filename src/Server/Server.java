@@ -16,7 +16,7 @@
  */
 package Server;
 
-import Network.Factories.ServerFactory;
+import Network.Factories.*;
 import Network.Handlers.IncomingRequestHandler;
 import Utilities.*;
 import java.io.IOException;
@@ -30,7 +30,12 @@ public class Server
     public void Start(Integer port, Configuration config) throws IOException
     {
         ILauncher launcher = new ThreadLauncher();
-        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config.readTimeout);
+        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config.Timeout);
         handler.run();
+    }
+    
+    public Configuration create()
+    {
+        return ConfigurationFactory.Create();
     }
 }
