@@ -34,6 +34,11 @@ public class ServerSocketChannelWrapper implements IServerSocketChannel
         _serverSocketChannel = ServerSocketChannel.open();
     }
     
+    public ServerSocketChannelWrapper(ServerSocketChannel channel) throws IOException
+    {
+        _serverSocketChannel = channel;
+    }
+    
     @Override
     public void setNonBlocking(Boolean flag) throws IOException
     {
@@ -46,6 +51,12 @@ public class ServerSocketChannelWrapper implements IServerSocketChannel
     {
         check();
         _serverSocketChannel.socket().bind(new InetSocketAddress(port));
+    }
+    
+    @Override
+    public ISocketChannel accept() throws IOException
+    {
+        return new SocketChannelWrapper(_serverSocketChannel.accept());
     }
     
     @Override

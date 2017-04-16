@@ -17,6 +17,7 @@
 package Tests.Stubs.Network;
 
 import Network.Wrappers.IServerSocketChannel;
+import Network.Wrappers.ISocketChannel;
 import java.io.IOException;
 
 /**
@@ -45,5 +46,11 @@ public class ServerSocketStub implements IServerSocketChannel
     public void close() throws IOException
     {
         _isClosed = true;
+    }
+
+    @Override
+    public ISocketChannel accept() throws IOException
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

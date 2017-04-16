@@ -30,50 +30,70 @@ import java.nio.charset.Charset;
  */
 public class RequestHandler implements Runnable
 {
-    private final ISelectorKey _key;
+    private final ISelector _selector;
+    private final long _timeout;
     IRequestBuilder _builder;
     IProcessRequest _processor;
     ISendResponse _responder;
     Charset _charset=Charset.forName("ISO-8859-1");
     
     
-    public RequestHandler(ISelectorKey key, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder)
+    public RequestHandler(ISelector selector, ISocketChannel channel, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder, long timeout) throws IOException
     {
-        _key = key;
+        _selector = selector;
         _builder = builder;
         _processor = processor;
         _responder = responder;
+        _timeout = timeout;
+        
+        selector.registerForReads(channel);
     }
     
     @Override
     public void run()
     {
-        ISocketChannel channel;
+        Boolean isFinished = false;
+        ISocketChannel channel = null;
+        
         try
-        {
-            if (_key.isReadable())
+        { 
+            while (!isFinished)
             {
-                channel = _key.getChannel();
-                
-                HttpContext context = _builder.ProcessRequest(channel);
-                
-                if (context.response().status() == 200)
+                ISelectorKeys keys = _selector.waitForRequests(_timeout);
+
+                if (keys == null)
                 {
-                    context = _processor.processRequest(context);
+                    isFinished = true;
+                    continue;
                 }
-                
-                if (_key.isWriteable())
+
+                ISelectorKey key = keys.getNext();
+
+                if (key.isReadable())
                 {
+                    channel = key.getChannel();
+                    System.out.print("got channel\n");
+                    HttpContext context = _builder.ProcessRequest(channel);
+
+                    if (context.response().status() == 200)
+                    {
+                        context = _processor.processRequest(context);
+                    }
+
                     _responder.sendResponse(context.response(), channel);
+                    isFinished = true;
                 }
                 else
                 {
-                    throw new IOException("Failed to send response");
+                    isFinished = true;
+                    key.getChannel().close();
+                    key.cancel();
                 }
             }
-            else
+
+            if (channel != null)
             {
-                _key.cancel();
+                channel.close();
             }
         }
         catch (Exception ex)

@@ -38,7 +38,7 @@ public class SocketServer implements ISocketServer
     public void Configure(Integer port) throws IOException
     {
         Check();
-        _serverSocket.setNonBlocking(Boolean.TRUE);
+        _serverSocket.setNonBlocking(Boolean.FALSE);
         _serverSocket.bind(port);
         _selector.registerForAccepts(_serverSocket);
     }
@@ -55,9 +55,8 @@ public class SocketServer implements ISocketServer
     {
         Check();
         
-        ISocketChannel socket = key.getChannel();
-        
-        _selector.registerForReads(socket);
+        ISocketChannel socket = _serverSocket.accept();
+        socket.setNonBlocking(false);
 
         return socket;
     }

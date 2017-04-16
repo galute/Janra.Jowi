@@ -17,7 +17,9 @@
 package Network.Factories;
 
 import Network.Handlers.RequestHandler;
-import Network.Wrappers.ISelectorKey;
+import Network.Wrappers.ISelector;
+import Network.Wrappers.ISocketChannel;
+import Network.Wrappers.SelectorWrapper;
 import Protocol.Builders.IRequestBuilder;
 import Protocol.Builders.IResponseBuilder;
 import Protocol.Builders.RequestBuilder;
@@ -29,6 +31,7 @@ import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
 import Request.Processing.RequestProcessor;
 import Request.Processing.Responder;
+import java.io.IOException;
 
 /**
  *
@@ -36,14 +39,15 @@ import Request.Processing.Responder;
  */
 public class RequestHandlerFactory
 {
-    static public RequestHandler Create(ISelectorKey key, IMarshaller marshaller)
+    static public RequestHandler Create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException
     {
         IParser parser = new Parser();
+        ISelector selector = new SelectorWrapper();
         IResponseBuilder responseBuilder = new ResponseBuilder();
         IRequestBuilder requestBuilder = new RequestBuilder(parser);
 
         IProcessRequest requestProcessor = new RequestProcessor(marshaller);
         ISendResponse responder = new Responder(responseBuilder);
-        return new RequestHandler(key, requestBuilder, requestProcessor, responder);
+        return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, timeout);
     }
 }

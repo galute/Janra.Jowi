@@ -30,14 +30,14 @@ public class SelectorKeyStub implements ISelectorKey
     public Boolean IsReadable;
     public Boolean IsWriteable;
     public Boolean IsCancelled = false;
-    public SocketStubIncomplete SocketStub;
+    public SocketStubComplete SocketStub;
     
     public SelectorKeyStub(Boolean isAcceptable, Boolean isReadable, Boolean isWriteable)
     {
         IsAcceptable = isAcceptable;
         IsReadable = isReadable;
         IsWriteable = isWriteable;
-        SocketStub = new SocketStubIncomplete();
+        SocketStub = new SocketStubComplete();
     }
     
     @Override

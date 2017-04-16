@@ -14,18 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Examples.Basic;
 
+import Server.IConfiguration;
+import Server.IPipelineMiddleware;
+import Server.Server;
 import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public interface IServerSocketChannel
+public class Program
 {
-    void setNonBlocking(Boolean flag) throws IOException;
-    void bind(Integer port) throws IOException;
-    ISocketChannel accept() throws IOException;
-    void close() throws IOException;
+    public static void main(String[] args) throws IOException, Exception
+    {
+        IPipelineMiddleware middleware = new Pong();
+        Server server = new Server();
+        IConfiguration config = server.create();
+        config.setTimeout(500); //mS
+        config.addMiddleware("/my/path", middleware);
+        
+        server.Start(6543, config);
+    }
 }

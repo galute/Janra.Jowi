@@ -19,7 +19,6 @@ package Server;
 import Pipeline.Configuration.Configuration;
 import Network.Factories.*;
 import Network.Handlers.IncomingRequestHandler;
-import Pipeline.Configuration.IPipelineBuilder;
 import Pipeline.Configuration.PipelineBuilder;
 import Pipeline.Configuration.PipelineConfiguration;
 import Request.Processing.IMarshaller;
@@ -39,7 +38,7 @@ public class Server
     {
         _pipelineConfig = new PipelineConfiguration(new PipelineBuilder());
     }
-    public void Start(Integer port, Configuration config) throws IOException
+    public void Start(Integer port, IConfiguration config) throws IOException
     {
         ILauncher launcher = new ThreadLauncher();
         IMarshaller marshaller = new RequestMarshaller(_pipelineConfig.build());

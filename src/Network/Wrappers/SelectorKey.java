@@ -18,7 +18,6 @@ package Network.Wrappers;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -41,8 +40,8 @@ public class SelectorKey implements ISelectorKey
         {
             throw new IOException("Selector key is not valid");
         }
-        ServerSocketChannel channel = (ServerSocketChannel)_key.channel();
-        SocketChannel socket = channel.accept();
+        
+        SocketChannel socket = (SocketChannel)_key.channel();
         
         return new SocketChannelWrapper(socket);
     }

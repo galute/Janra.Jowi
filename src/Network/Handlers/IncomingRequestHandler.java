@@ -67,17 +67,30 @@ public class IncomingRequestHandler implements Runnable
                     continue;
                 }
 
-                ISelectorKey key = keys.getNext();
+                Boolean hasMoreKeys = true;
+                while (hasMoreKeys)
+                {
+                    ISelectorKey key = keys.getNext();
 
-                if (key.isAcceptable())
-                {
-                    ISocketChannel socketChannel = _server.Accept(key);
-                    socketChannel.setNonBlocking(true);
-                    _launcher.launch(RequestHandlerFactory.Create(key, _marshaller));
-                }
-                else
-                {
-                    key.cancel();
+                    if (key == null)
+                    {
+                        System.out.print("No keys\n");
+                        hasMoreKeys = false;
+                        continue;
+                    }
+
+                    if (key.isAcceptable())
+                    {
+                        System.out.print("Accepting ********************\n");
+
+                        ISocketChannel channel = _server.Accept(key);
+                        _launcher.launch(RequestHandlerFactory.Create(channel, _marshaller, _timeout));
+                    }
+                    else
+                    {
+                        System.out.print("Cancelling");
+                        key.cancel();
+                    }
                 }
             }
         }
@@ -110,3 +123,9 @@ public class IncomingRequestHandler implements Runnable
         return _stop;
     }
 }
+//java.nio.channels.IllegalBlockingModeException
+//	at java.nio.channels.spi.AbstractSelectableChannel.configureBlocking(AbstractSelectableChannel.java:293)
+//	at Network.Wrappers.SocketChannelWrapper.setNonBlocking(SocketChannelWrapper.java:47)
+//	at Network.Handlers.IncomingRequestHandler.run(IncomingRequestHandler.java:80)
+//	at Server.Server.Start(Server.java:46)
+//	at Examples.Basic.Program.main(Program.java:38)

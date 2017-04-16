@@ -55,22 +55,22 @@ public class SelectorWrapper implements ISelector
     }
     
     @Override
-    public void registerForReads(ISocketChannel serverChannel) throws ClosedChannelException, IOException
+    public void registerForReads(ISocketChannel socketChannel) throws ClosedChannelException, IOException
     {
         check();
-        SocketChannelWrapper serverWrapper = (SocketChannelWrapper)serverChannel;
+        SocketChannelWrapper socketWrapper = (SocketChannelWrapper)socketChannel;
         
-        if (serverWrapper == null)
+        if (socketWrapper == null)
         {
             throw new IOException("SocketChannel is null");
         }
         
-        if (serverWrapper.getChannel() == null)
+        if (socketWrapper.getChannel() == null)
         {
             throw new IOException("Server socket is disposed");
         }
-        
-        serverWrapper.getChannel().register(_selector, SelectionKey.OP_READ);
+        socketWrapper.setNonBlocking(Boolean.FALSE);
+        socketWrapper.getChannel().register(_selector, SelectionKey.OP_READ);
     }
     
     @Override

@@ -18,10 +18,13 @@ package Tests.Network;
 
 import Network.Handlers.RequestHandler;
 import Tests.Stubs.Network.SelectorKeyStub;
+import Tests.Stubs.Network.SelectorStub;
+import Tests.Stubs.Network.SocketStubComplete;
 import Tests.Stubs.Processing.ProcessRequestStub;
 import Tests.Stubs.Processing.SendResponseStub;
 import Tests.Stubs.Protocol.RequestBuilderStub;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,22 +34,36 @@ import org.junit.Test;
  */
 public class RequestHandlerTests
 {
-    RequestHandler _unitUnderTest;
-    SelectorKeyStub _keyStub;
-    RequestBuilderStub _builder;
-    ProcessRequestStub _processor;
-    SendResponseStub _responder;
+    private RequestHandler _unitUnderTest;
+    private SelectorKeyStub _keyStub;
+    private SelectorStub _selectorStub;
+    private SocketStubComplete _socketStub;
+    private RequestBuilderStub _builder;
+    private ProcessRequestStub _processor;
+    private SendResponseStub _responder;
+    private final long _timeout = 500;
+    
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
-        Thread thread = new Thread(_unitUnderTest);
-        thread.start();
+        try
+        {
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            Thread thread = new Thread(_unitUnderTest);
+            thread.start();
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
     }
     
     public void WhenSelectorKeyFlagsAreSet(Boolean acceptable, Boolean readable, Boolean writeable)
     {
-        _keyStub = new SelectorKeyStub(acceptable, readable, writeable);
+        _selectorStub._setAcceptable = acceptable;
+        _selectorStub._setReadable = readable;
+        _selectorStub._setWriteable = writeable;
+        _selectorStub._numKeysToSelect = 1;
     }
     
     @Before
@@ -55,37 +72,76 @@ public class RequestHandlerTests
         _builder = new RequestBuilderStub();
         _processor = new ProcessRequestStub();
         _responder = new SendResponseStub();
+        _selectorStub = new SelectorStub();
+        _socketStub = new SocketStubComplete();
     }
+    
+    @Test
+    public void RegistersKeyWithSelector()
+    {
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, false, false);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            assertTrue(_selectorStub._registeredForRead == 1);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
+    }
+    
     @Test
     public void CancelsKeyIfNotReadable()
     {
-        WhenSelectorKeyFlagsAreSet(false, false, false);
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
-        _unitUnderTest.run();
-        
-        assertTrue(_keyStub.IsCancelled);
-        assertTrue(_responder.numRequests() == 0);
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, false, false);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest.run();
+
+            assertTrue(_processor.numRequests() == 0);
+            assertTrue(_responder.numRequests() == 0);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
     }
     
     @Test
     public void DoesNotAcceptInValidRequest()
     {
-        WhenSelectorKeyFlagsAreSet(false, true, true);
-        _builder.Status = 400;
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
-        _unitUnderTest.run();
-        assertTrue(_processor.numRequests() == 0);
-        assertTrue(_responder.numRequests() == 1);
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, true, true);
+            _builder.Status = 400;
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest.run();
+            assertTrue(_processor.numRequests() == 0);
+            assertTrue(_responder.numRequests() == 1);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
     }
     
     @Test
     public void AcceptsValidRequest()
     {
-        WhenSelectorKeyFlagsAreSet(false, true, true);
-        _builder.Status = 200;
-        _unitUnderTest = new RequestHandler(_keyStub, _builder, _processor, _responder);
-        _unitUnderTest.run();
-        assertTrue(_processor.numRequests() == 1);
-        assertTrue(_responder.numRequests() == 1);
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, true, true);
+            _builder.Status = 200;
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest.run();
+            assertTrue(_processor.numRequests() == 1);
+            assertTrue(_responder.numRequests() == 1);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
     }
 }

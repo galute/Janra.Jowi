@@ -14,18 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Wrappers;
+package Examples.Basic;
 
-import java.io.IOException;
+import Server.IContext;
+import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public interface IServerSocketChannel
+public class Pong implements IPipelineMiddleware
 {
-    void setNonBlocking(Boolean flag) throws IOException;
-    void bind(Integer port) throws IOException;
-    ISocketChannel accept() throws IOException;
-    void close() throws IOException;
+
+    @Override
+    public Boolean Invoke(IContext context)
+    {
+        context.setResponseStatus(200);
+        context.addResponseHeader("Content-type", "text/plain");
+        context.setResponseBody("Pong");
+        
+        return true;
+    }
+    
 }

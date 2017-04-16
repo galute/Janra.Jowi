@@ -199,23 +199,3 @@ public class ParserTests
         }  
     }
 }
-//_fullrequest = "POST /my/resource/location HTTP/1.1\r\n" +
-//                   "Host: localhost:6543\r\n" +
-//                   "Connection: keep-alive\r\n" +
-//                   "Content-Length: 2023\r\n" +
-//                   "Postman-Token: 4f46158f-d06e-66e9-bdeb-780311945b2a\r\n" +
-//                   "Cache-Control: no-cache\r\n" +
-//                   "Origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop\r\n" +
-//                   "second-one: not me\r\n" +
-//                   "firstone: me\r\n" +
-//                   "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36\r\n" +
-//                   "Content-Type: text/plain;charset=UTF-8\r\n" +
-//                   "Accept: */*\r\n" +
-//                   "Accept-Encoding: gzip, deflate, br\r\n" +
-//                   "Accept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n" +
-//                   "\r\n" +
-//                   "{\r\n" +
-//                   "   field1: value1,\r\n" +
-//                   "   field2: value2\r\n" +
-//                   "}\r\n" +
-//                   "\r\n";
