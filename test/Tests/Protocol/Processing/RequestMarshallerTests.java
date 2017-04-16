@@ -17,6 +17,7 @@
 package Tests.Protocol.Processing;
 
 import Pipeline.Configuration.InvalidConfigurationException;
+import Request.Processing.IPipeline;
 import Request.Processing.Pipeline;
 import Request.Processing.PipelineModule;
 import Request.Processing.RequestMarshaller;
@@ -81,11 +82,30 @@ public class RequestMarshallerTests
         
         try
         {
-            Pipeline pipeline = _unitUnderTest.pipeline("my/path");
+            IPipeline pipeline = _unitUnderTest.pipeline("my/path");
             assertTrue(pipeline.isPipeline("my/path"));
             
             pipeline = _unitUnderTest.pipeline("my/other/path");
             assertTrue(pipeline.isPipeline("my/other/path"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void ReturnsNullforNoPipeline()
+    {
+        Pipeline pipeline1 = new Pipeline("my/path", _module);
+        _pipelines.add(pipeline1);
+        
+        _unitUnderTest = new RequestMarshaller(_pipelines);
+        
+        try
+        {
+            IPipeline pipeline = _unitUnderTest.pipeline("my/other/path");
+            assertTrue(pipeline == null);
         }
         catch (Exception ex)
         {

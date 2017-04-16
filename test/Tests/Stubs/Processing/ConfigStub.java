@@ -14,15 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Stubs.Processing;
 
-import Pipeline.Configuration.InvalidConfigurationException;
+import Server.IConfiguration;
+import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public interface IMarshaller
+public class ConfigStub implements IConfiguration
 {
-    IPipeline pipeline(String path) throws InvalidConfigurationException;
+
+    @Override
+    public void setTimeout(Integer value)
+    {
+        
+    }
+
+    @Override
+    public void addMiddleware(String path, IPipelineMiddleware middleware)
+    {
+        
+    }
+    
+    @Override
+    public long timeout()
+    {
+        return 500;
+    }
 }

@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author jmillen
  */
-public class RequestMarshaller
+public class RequestMarshaller implements IMarshaller
 {
     private final List<Pipeline> _pipelines;
     
@@ -33,7 +33,8 @@ public class RequestMarshaller
         _pipelines = pipelines;
     }
     
-    public Pipeline pipeline(String path) throws InvalidConfigurationException
+    @Override
+    public IPipeline pipeline(String path) throws InvalidConfigurationException
     {
         List<Pipeline>candidates;
         
@@ -54,6 +55,11 @@ public class RequestMarshaller
              * with the path as the key
              */
             throw new InvalidConfigurationException("Multiple registrations of same path");
+        }
+        
+        if (candidates.isEmpty())
+        {
+            return null;
         }
         return candidates.get(0);
     }

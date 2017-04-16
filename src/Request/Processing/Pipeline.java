@@ -22,7 +22,7 @@ import Server.IContext;
  *
  * @author jmillen
  */
-public class Pipeline
+public class Pipeline implements IPipeline
 {
     private final IPipelineModule _entrypoint;
     private final String _path;
@@ -33,11 +33,13 @@ public class Pipeline
         _entrypoint = start;
     }
     
+    @Override
     public Boolean isPipeline(String path)
     {
         return _path.equalsIgnoreCase(path);
     }
     
+    @Override
     public void run(IContext context)
     {
         _entrypoint.Invoke(context);

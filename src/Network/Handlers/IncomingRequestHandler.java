@@ -21,6 +21,8 @@ import Network.ISocketServer;
 import Network.Wrappers.ISelectorKey;
 import Network.Wrappers.ISelectorKeys;
 import Network.Wrappers.ISocketChannel;
+import Request.Processing.IMarshaller;
+import Server.IConfiguration;
 import Utilities.ILauncher;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -34,17 +36,19 @@ public class IncomingRequestHandler implements Runnable
 {
     private final ISocketServer _server;
     private final ILauncher _launcher;
+    private final IMarshaller _marshaller;
     private volatile boolean _stop = false;
     private final long _timeout;
     private final Integer _port;
     
     
-    public IncomingRequestHandler(ISocketServer server, ILauncher launcher, Integer port, long timeout) throws IOException
+    public IncomingRequestHandler(ISocketServer server, ILauncher launcher, Integer port, IConfiguration config, IMarshaller marshaller) throws IOException
     {
         _server = server;
-        _timeout = timeout;
+        _timeout = config.timeout();
         _port = port;
-        _launcher = launcher;
+        _launcher = launcher;    
+        _marshaller = marshaller;
     }
     
     @Override
@@ -69,7 +73,7 @@ public class IncomingRequestHandler implements Runnable
                 {
                     ISocketChannel socketChannel = _server.Accept(key);
                     socketChannel.setNonBlocking(true);
-                    _launcher.launch(RequestHandlerFactory.Create(key));
+                    _launcher.launch(RequestHandlerFactory.Create(key, _marshaller));
                 }
                 else
                 {

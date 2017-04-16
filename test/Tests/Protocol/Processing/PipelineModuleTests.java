@@ -20,10 +20,10 @@ import Protocol.Models.HttpContext;
 import Request.Processing.PipelineModule;
 import Request.Processing.RequestContext;
 import Server.IPipelineMiddleware;
-import Tests.Protocol.Processing.MiddlewareStub;
 import org.junit.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -48,39 +48,59 @@ public class PipelineModuleTests
     @Test
     public void InvokesSingleMiddleware()
     {
-        _unitUnderTest.Invoke(_context);
+        try
+        {
+            _unitUnderTest.Invoke(_context);
         
-        String result = _context.getResponse().getRaw();
-        assertTrue(result.contains("MiddlewareStub Body"));
-        assertTrue(result.contains("Content-type: application/xml"));
+            String result = _context.getResponse().getRaw();
+            assertTrue(result.contains("MiddlewareStub Body"));
+            assertTrue(result.contains("Content-type: application/xml"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+        
     }
     
     @Test
     public void InvokesMiddlewareStack()
     {
-        IPipelineMiddleware middleware2 = new MiddlewareStubTwo();
-        PipelineModule module = new PipelineModule(middleware2);
-        _unitUnderTest = new PipelineModule(_middleware, module);
-        _unitUnderTest.Invoke(_context);
-        String result = _context.getResponse().getRaw();
-        assertFalse(result.contains("MiddlewareStub Body"));
-        assertFalse(result.contains("Content-type: application/xml"));
-        assertTrue(result.contains("MiddlewareStubTwo Body"));
-        assertTrue(result.contains("Content-type: application/json"));
-        
+        try
+        {
+            IPipelineMiddleware middleware2 = new MiddlewareStubTwo();
+            PipelineModule module = new PipelineModule(middleware2);
+            _unitUnderTest = new PipelineModule(_middleware, module);
+            _unitUnderTest.Invoke(_context);
+            String result = _context.getResponse().getRaw();
+            assertFalse(result.contains("MiddlewareStub Body"));
+            assertFalse(result.contains("Content-type: application/xml"));
+            assertTrue(result.contains("MiddlewareStubTwo Body"));
+            assertTrue(result.contains("Content-type: application/json"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void DoesNotInvokeMiddlewareStackOnReturnFalse()
     {
-        IPipelineMiddleware middleware2 = new MiddlewareStubThree();
-        PipelineModule module = new PipelineModule(middleware2);
-        _middleware = new MiddlewareStubTwo();
-        _unitUnderTest = new PipelineModule(_middleware, module);
-        _unitUnderTest.Invoke(_context);
-        String result = _context.getResponse().getRaw();
-        assertTrue(result.contains("MiddlewareStubThree Body"));
-        assertTrue(result.contains("Content-type: application/xml"));
-        
+        try
+        {
+            IPipelineMiddleware middleware2 = new MiddlewareStubThree();
+            PipelineModule module = new PipelineModule(middleware2);
+            _middleware = new MiddlewareStubTwo();
+            _unitUnderTest = new PipelineModule(_middleware, module);
+            _unitUnderTest.Invoke(_context);
+            String result = _context.getResponse().getRaw();
+            assertTrue(result.contains("MiddlewareStubThree Body"));
+            assertTrue(result.contains("Content-type: application/xml"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
 }

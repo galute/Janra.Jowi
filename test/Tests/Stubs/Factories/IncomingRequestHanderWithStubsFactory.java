@@ -14,27 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Server;
+package Tests.Stubs.Factories;
 
-import Pipeline.Configuration.*;
+import Network.Handlers.IncomingRequestHandler;
+import Network.SocketServer;
+import Request.Processing.IMarshaller;
+import Server.IConfiguration;
+import Tests.Stubs.Processing.*;
+import Tests.Stubs.Utilities.LauncherStub;
+import Utilities.ILauncher;
+import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class Configuration
+public class IncomingRequestHanderWithStubsFactory
 {
-    public long Timeout = 500;
-    
-    private final IPipelineConfiguration _pipelineConfig;
-    
-    public Configuration(IPipelineBuilder builder)
+    public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher) throws IOException
     {
-        _pipelineConfig = new PipelineConfiguration(builder);
-    }
-    
-    public void addMiddleware(String path, IPipelineMiddleware middleware)
-    {
-        _pipelineConfig.addMiddleware(path, middleware);
+        IMarshaller marshaller = new MarshallerStub();
+        IConfiguration config = new ConfigStub();
+        return new IncomingRequestHandler(socketServer, launcher, port, config, marshaller);
     }
 }

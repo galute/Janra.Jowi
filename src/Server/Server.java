@@ -16,8 +16,14 @@
  */
 package Server;
 
+import Pipeline.Configuration.Configuration;
 import Network.Factories.*;
 import Network.Handlers.IncomingRequestHandler;
+import Pipeline.Configuration.IPipelineBuilder;
+import Pipeline.Configuration.PipelineBuilder;
+import Pipeline.Configuration.PipelineConfiguration;
+import Request.Processing.IMarshaller;
+import Request.Processing.RequestMarshaller;
 import Utilities.*;
 import java.io.IOException;
 
@@ -27,15 +33,22 @@ import java.io.IOException;
  */
 public class Server
 {
+    PipelineConfiguration _pipelineConfig;
+    
+    public Server()
+    {
+        _pipelineConfig = new PipelineConfiguration(new PipelineBuilder());
+    }
     public void Start(Integer port, Configuration config) throws IOException
     {
         ILauncher launcher = new ThreadLauncher();
-        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config.Timeout);
+        IMarshaller marshaller = new RequestMarshaller(_pipelineConfig.build());
+        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config, marshaller);
         handler.run();
     }
     
     public Configuration create()
     {
-        return ConfigurationFactory.Create();
+        return ConfigurationFactory.Create(_pipelineConfig);
     }
 }

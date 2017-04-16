@@ -14,19 +14,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Factories;
+package Pipeline.Configuration;
 
-import Pipeline.Configuration.Configuration;
+import Server.IConfiguration;
 import Server.IPipelineConfiguration;
+import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public class ConfigurationFactory
+public class Configuration implements IConfiguration
 {
-    static public Configuration Create(IPipelineConfiguration builder)
+    private long _timeout = 500;
+    
+    private final IPipelineConfiguration _pipelineConfig;
+    
+    public Configuration(IPipelineConfiguration config)
     {
-        return new Configuration(builder);
+        _pipelineConfig = config;
+    }
+    
+    @Override
+    public void setTimeout(Integer value)
+    {
+        _timeout = value;
+    }
+    
+    @Override
+    public void addMiddleware(String path, IPipelineMiddleware middleware)
+    {
+        _pipelineConfig.addMiddleware(path, middleware);
+    }
+    
+    @Override
+    public long timeout()
+    {
+        return _timeout;
     }
 }

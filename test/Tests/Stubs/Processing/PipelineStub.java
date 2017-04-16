@@ -14,15 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Stubs.Processing;
 
-import Pipeline.Configuration.InvalidConfigurationException;
+import Request.Processing.IPipeline;
+import Server.IContext;
+import Server.IPipelineMiddleware;
+import Tests.Protocol.Processing.MiddlewareStub;
 
 /**
  *
  * @author jmillen
  */
-public interface IMarshaller
+public class PipelineStub implements IPipeline
 {
-    IPipeline pipeline(String path) throws InvalidConfigurationException;
+    private final IPipelineMiddleware _middleware = new MiddlewareStub();
+    
+    @Override
+    public Boolean isPipeline(String path)
+    {
+        return true;
+    }
+
+    @Override
+    public void run(IContext context)
+    {
+        _middleware.Invoke(context);
+    }
+    
 }

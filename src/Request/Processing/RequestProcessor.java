@@ -16,7 +16,10 @@
  */
 package Request.Processing;
 
+import Pipeline.Configuration.InvalidConfigurationException;
 import Protocol.Models.HttpContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,11 +27,37 @@ import Protocol.Models.HttpContext;
  */
 public class RequestProcessor implements IProcessRequest
 {
-
+    private final IMarshaller _marshaller;
+    
+    public RequestProcessor(IMarshaller marshaller)
+    {
+        _marshaller = marshaller;
+    }
+    
     @Override
     public HttpContext processRequest(HttpContext context)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try
+        {
+            IPipeline pipeline = _marshaller.pipeline(context.request().path());
+            
+            if (pipeline == null)
+            {
+                context.response().setStatus(404);
+                return context;
+            }
+            
+            pipeline.run(new RequestContext(context));
+            
+            return context;
+        }
+        catch (InvalidConfigurationException ex)
+        {
+            Logger.getLogger(RequestProcessor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        context.response().setStatus(500);
+        return context;
     }
     
 }

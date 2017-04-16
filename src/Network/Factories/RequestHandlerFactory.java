@@ -24,6 +24,7 @@ import Protocol.Builders.RequestBuilder;
 import Protocol.Builders.ResponseBuilder;
 import Protocol.Parsers.IParser;
 import Protocol.Parsers.Parser;
+import Request.Processing.IMarshaller;
 import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
 import Request.Processing.RequestProcessor;
@@ -35,12 +36,13 @@ import Request.Processing.Responder;
  */
 public class RequestHandlerFactory
 {
-    static public RequestHandler Create(ISelectorKey key)
+    static public RequestHandler Create(ISelectorKey key, IMarshaller marshaller)
     {
         IParser parser = new Parser();
         IResponseBuilder responseBuilder = new ResponseBuilder();
         IRequestBuilder requestBuilder = new RequestBuilder(parser);
-        IProcessRequest requestProcessor = new RequestProcessor();
+
+        IProcessRequest requestProcessor = new RequestProcessor(marshaller);
         ISendResponse responder = new Responder(responseBuilder);
         return new RequestHandler(key, requestBuilder, requestProcessor, responder);
     }

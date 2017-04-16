@@ -16,13 +16,14 @@
  */
 package Request.Processing;
 
-import Pipeline.Configuration.InvalidConfigurationException;
+import Server.IContext;
 
 /**
  *
  * @author jmillen
  */
-public interface IMarshaller
+public interface IPipeline
 {
-    IPipeline pipeline(String path) throws InvalidConfigurationException;
+    Boolean isPipeline(String path);
+    void run(IContext context);
 }

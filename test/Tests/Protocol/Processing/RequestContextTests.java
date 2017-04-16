@@ -20,6 +20,7 @@ import Protocol.Models.HttpContext;
 import Request.Processing.RequestContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,9 +50,16 @@ public class RequestContextTests
     @Test
     public void PropertiesAreNotInResponse()
     {
-        _unitUnderTest.Properties().add("TestKey", "TestValue");
-        assertFalse(_httpContext.response().getRaw().contains("TestKey"));
-        assertFalse(_httpContext.response().getRaw().contains("TestValue"));
+        try
+        {
+            _unitUnderTest.Properties().add("TestKey", "TestValue");
+            assertFalse(_httpContext.response().getRaw().contains("TestKey"));
+            assertFalse(_httpContext.response().getRaw().contains("TestValue"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
@@ -64,14 +72,28 @@ public class RequestContextTests
     @Test
     public void ResponseBodyIsUpDated()
     {
-        _unitUnderTest.setResponseBody("Test Body");
-        assertTrue(_httpContext.response().getRaw().contains("Test Body"));
+        try
+        {
+            _unitUnderTest.setResponseBody("Test Body");
+            assertTrue(_httpContext.response().getRaw().contains("Test Body"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ResponseHeaderIsAdded()
     {
-        _unitUnderTest.addResponseHeader("TestHeaderKey", "TestHeaderValue");
-        assertTrue(_httpContext.response().getRaw().contains("TestHeaderKey: TestHeaderValue"));
+        try
+        {
+            _unitUnderTest.addResponseHeader("TestHeaderKey", "TestHeaderValue");
+            assertTrue(_httpContext.response().getRaw().contains("TestHeaderKey: TestHeaderValue"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
 }

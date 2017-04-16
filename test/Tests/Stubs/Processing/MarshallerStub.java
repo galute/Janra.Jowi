@@ -14,15 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Stubs.Processing;
 
 import Pipeline.Configuration.InvalidConfigurationException;
+import Request.Processing.IMarshaller;
+import Request.Processing.IPipeline;
 
 /**
  *
  * @author jmillen
  */
-public interface IMarshaller
+public class MarshallerStub implements IMarshaller
 {
-    IPipeline pipeline(String path) throws InvalidConfigurationException;
+
+    @Override
+    public IPipeline pipeline(String path) throws InvalidConfigurationException
+    {
+        return new PipelineStub();
+    }
+    
 }

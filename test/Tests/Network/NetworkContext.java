@@ -25,6 +25,9 @@ import Network.SocketServer;
 import Network.Handlers.IncomingRequestHandler;
 import Network.Wrappers.ISelector;
 import Network.Wrappers.ISelectorKeys;
+import Request.Processing.IMarshaller;
+import Server.IPipelineConfiguration;
+import Tests.Stubs.Factories.IncomingRequestHanderWithStubsFactory;
 import Tests.Stubs.Utilities.LauncherStub;
 import java.io.IOException;
 import java.util.Map;
@@ -43,6 +46,8 @@ public class NetworkContext
     protected Integer _port = 1234;
     protected IncomingRequestHandler _processor;
     protected LauncherStub _launcher = new LauncherStub();
+    protected IPipelineConfiguration _pipelineConfig;
+    protected IMarshaller _marshaller;
     
     protected void GivenProcessorToldToStop()
     {
@@ -51,7 +56,7 @@ public class NetworkContext
     
     protected void WhenAcceptingRequests() throws IOException
     {
-        _processor = new IncomingRequestHandler(_server, _launcher,_port, 10L);
+        _processor = IncomingRequestHanderWithStubsFactory.create(_server, _port, _launcher);
         Thread thread = new Thread(_processor);
         thread.start();
     }

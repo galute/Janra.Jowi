@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
-
-import Pipeline.Configuration.InvalidConfigurationException;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public interface IMarshaller
+public interface IConfiguration
 {
-    IPipeline pipeline(String path) throws InvalidConfigurationException;
+    void setTimeout(Integer value); // in mS
+    void addMiddleware(String path, IPipelineMiddleware middleware);
+    public long timeout();
 }

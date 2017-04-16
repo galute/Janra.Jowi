@@ -20,7 +20,6 @@ import Request.Processing.Pipeline;
 import Request.Processing.PipelineModule;
 import Server.IPipelineMiddleware;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -61,5 +60,4 @@ public class PipelineBuilder implements IPipelineBuilder
         
         return pipelines;
     }
-    
 }
