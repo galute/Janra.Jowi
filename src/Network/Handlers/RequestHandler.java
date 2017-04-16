@@ -72,7 +72,6 @@ public class RequestHandler implements Runnable
                 if (key.isReadable())
                 {
                     channel = key.getChannel();
-                    System.out.print("got channel\n");
                     HttpContext context = _builder.ProcessRequest(channel);
 
                     if (context.response().status() == 200)

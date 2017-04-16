@@ -74,7 +74,7 @@ public class IncomingRequestHandlerTests extends NetworkContext
             Thread.sleep(100);
             _processor.Stop();
             
-            assertEquals(numRequests, ((SelectorStub)_selector)._registeredForRead);
+            assertTrue(((SelectorStub)_selector)._timeout > 0);
         }
         catch (IOException | InterruptedException ex)
         {

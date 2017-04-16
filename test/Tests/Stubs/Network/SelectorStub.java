@@ -32,6 +32,7 @@ public class SelectorStub implements ISelector
     public Integer _registeredForAccept = 0;
     public Integer _registeredForRead = 0;
     public Integer _numKeysToSelect = 0;
+    public Integer NumWaits = 0;
     public Boolean _setAcceptable = false;
     public Boolean _setReadable = false;
     public Boolean _setWriteable = false;
@@ -62,6 +63,8 @@ public class SelectorStub implements ISelector
     public ISelectorKeys waitForRequests(long timeout) throws IOException
     {
         _timeout = timeout;
+        
+        NumWaits++;
         
         if (_numKeysToSelect > 0)
         {

@@ -17,25 +17,22 @@
 package Tests.Stubs.Factories;
 
 import Network.Factories.IRequestHandlerFactory;
-import Network.Handlers.IncomingRequestHandler;
-import Network.SocketServer;
+import Network.Wrappers.ISocketChannel;
 import Request.Processing.IMarshaller;
-import Server.IConfiguration;
-import Tests.Stubs.Processing.*;
-import Utilities.ILauncher;
+import Tests.Stubs.Network.RequestHandlerStub;
 import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class IncomingRequestHanderWithStubsFactory
+public class RequestHandlerStubFactory implements IRequestHandlerFactory
 {
-    public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher) throws IOException
+
+    @Override
+    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException
     {
-        IMarshaller marshaller = new MarshallerStub();
-        IConfiguration config = new ConfigStub();
-        IRequestHandlerFactory factory = new RequestHandlerStubFactory();
-        return new IncomingRequestHandler(factory, socketServer, launcher, port, config, marshaller);
+        return new RequestHandlerStub();
     }
+    
 }

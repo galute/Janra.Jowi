@@ -17,20 +17,10 @@
 package Network.Factories;
 
 import Network.Handlers.RequestHandler;
-import Network.Wrappers.ISelector;
-import Network.Wrappers.ISocketChannel;
-import Network.Wrappers.SelectorWrapper;
-import Protocol.Builders.IRequestBuilder;
-import Protocol.Builders.IResponseBuilder;
-import Protocol.Builders.RequestBuilder;
-import Protocol.Builders.ResponseBuilder;
-import Protocol.Parsers.IParser;
-import Protocol.Parsers.Parser;
-import Request.Processing.IMarshaller;
-import Request.Processing.IProcessRequest;
-import Request.Processing.ISendResponse;
-import Request.Processing.RequestProcessor;
-import Request.Processing.Responder;
+import Network.Wrappers.*;
+import Protocol.Builders.*;
+import Protocol.Parsers.*;
+import Request.Processing.*;
 import java.io.IOException;
 
 /**

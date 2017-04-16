@@ -16,11 +16,10 @@
  */
 package Network.Handlers;
 
+import Network.Factories.IRequestHandlerFactory;
 import Network.Factories.RequestHandlerFactory;
 import Network.ISocketServer;
-import Network.Wrappers.ISelectorKey;
-import Network.Wrappers.ISelectorKeys;
-import Network.Wrappers.ISocketChannel;
+import Network.Wrappers.*;
 import Request.Processing.IMarshaller;
 import Server.IConfiguration;
 import Utilities.ILauncher;
@@ -34,6 +33,7 @@ import java.util.logging.Logger;
  */
 public class IncomingRequestHandler implements Runnable
 {
+    private final IRequestHandlerFactory _factory;
     private final ISocketServer _server;
     private final ILauncher _launcher;
     private final IMarshaller _marshaller;
@@ -42,13 +42,14 @@ public class IncomingRequestHandler implements Runnable
     private final Integer _port;
     
     
-    public IncomingRequestHandler(ISocketServer server, ILauncher launcher, Integer port, IConfiguration config, IMarshaller marshaller) throws IOException
+    public IncomingRequestHandler(IRequestHandlerFactory factory, ISocketServer server, ILauncher launcher, Integer port, IConfiguration config, IMarshaller marshaller) throws IOException
     {
         _server = server;
         _timeout = config.timeout();
         _port = port;
         _launcher = launcher;    
         _marshaller = marshaller;
+        _factory = factory;
     }
     
     @Override
@@ -74,21 +75,17 @@ public class IncomingRequestHandler implements Runnable
 
                     if (key == null)
                     {
-                        System.out.print("No keys\n");
                         hasMoreKeys = false;
                         continue;
                     }
 
                     if (key.isAcceptable())
                     {
-                        System.out.print("Accepting ********************\n");
-
                         ISocketChannel channel = _server.Accept(key);
-                        _launcher.launch(RequestHandlerFactory.Create(channel, _marshaller, _timeout));
+                        _launcher.launch(_factory.create(channel, _marshaller, _timeout));
                     }
                     else
                     {
-                        System.out.print("Cancelling");
                         key.cancel();
                     }
                 }

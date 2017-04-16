@@ -18,8 +18,6 @@
 package Protocol.Parsers;
 
 import Protocol.Models.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *

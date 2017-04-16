@@ -44,7 +44,7 @@ public class SocketServerTests extends NetworkContext
     @Test
     public void BoundToCorrectPortAndConfigured()
     {
-        assertTrue(_socket._nonBlockingFlag);
+        assertFalse(_socket._nonBlockingFlag);
         assertFalse(_socket._isClosed);
         assertEquals(_port,_socket._boundPort);
         assertEquals(Integer.valueOf(1),((SelectorStub)_selector)._registeredForAccept);
@@ -67,26 +67,6 @@ public class SocketServerTests extends NetworkContext
         
         assertNotNull(keys);
         assertEquals(keys.NumKeys(), numRequests);
-    }
-    
-    @Test
-    public void RegistersAcceptedSocketForReadsWithSelector()
-    {
-        Integer numRequests = 1;
-        SelectorKeysStub keys;
-        try
-        {
-            GivenIncomingRequests(numRequests);
-            keys = (SelectorKeysStub)WhenCheckingForPendingRequests(100L);
-            ISocketChannel socket = _server.Accept(keys.getNext());
-            
-            assertEquals(Integer.valueOf(1),((SelectorStub)_selector)._registeredForRead);
-            assertEquals(100L, ((SelectorStub)_selector)._timeout);
-        }
-        catch (Exception ex)
-        {
-            fail("Exception Thrown: " + ex.getLocalizedMessage());
-        }
     }
     
     @Test

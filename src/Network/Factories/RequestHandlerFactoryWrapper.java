@@ -14,28 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Factories;
+package Network.Factories;
 
-import Network.Factories.IRequestHandlerFactory;
-import Network.Handlers.IncomingRequestHandler;
-import Network.SocketServer;
+import Network.Handlers.RequestHandler;
+import Network.Wrappers.ISocketChannel;
 import Request.Processing.IMarshaller;
-import Server.IConfiguration;
-import Tests.Stubs.Processing.*;
-import Utilities.ILauncher;
 import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class IncomingRequestHanderWithStubsFactory
+public class RequestHandlerFactoryWrapper implements IRequestHandlerFactory
 {
-    public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher) throws IOException
+    @Override
+    public RequestHandler create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException
     {
-        IMarshaller marshaller = new MarshallerStub();
-        IConfiguration config = new ConfigStub();
-        IRequestHandlerFactory factory = new RequestHandlerStubFactory();
-        return new IncomingRequestHandler(factory, socketServer, launcher, port, config, marshaller);
+        return RequestHandlerFactory.Create(channel, marshaller, timeout);
     }
 }

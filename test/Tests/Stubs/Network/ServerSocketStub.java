@@ -51,6 +51,6 @@ public class ServerSocketStub implements IServerSocketChannel
     @Override
     public ISocketChannel accept() throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new SocketStubComplete();
     }
 }

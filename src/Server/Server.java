@@ -16,13 +16,10 @@
  */
 package Server;
 
-import Pipeline.Configuration.Configuration;
+import Pipeline.Configuration.*;
 import Network.Factories.*;
 import Network.Handlers.IncomingRequestHandler;
-import Pipeline.Configuration.PipelineBuilder;
-import Pipeline.Configuration.PipelineConfiguration;
-import Request.Processing.IMarshaller;
-import Request.Processing.RequestMarshaller;
+import Request.Processing.*;
 import Utilities.*;
 import java.io.IOException;
 
@@ -42,7 +39,8 @@ public class Server
     {
         ILauncher launcher = new ThreadLauncher();
         IMarshaller marshaller = new RequestMarshaller(_pipelineConfig.build());
-        IncomingRequestHandler handler = new IncomingRequestHandler(ServerFactory.Create(), launcher, port, config, marshaller);
+        IRequestHandlerFactory factory = new RequestHandlerFactoryWrapper();
+        IncomingRequestHandler handler = new IncomingRequestHandler(factory, ServerFactory.Create(), launcher, port, config, marshaller);
         handler.run();
     }
     

@@ -17,10 +17,8 @@
 package Tests.Pipeline.Configuration;
 
 import Pipeline.Configuration.PipelineConfiguration;
-import Server.IPipelineMiddleware;
 import Tests.Protocol.Processing.*;
 import Tests.Stubs.Processing.PipelineBuilderStub;
-import java.util.Map;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
