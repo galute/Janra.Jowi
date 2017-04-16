@@ -20,6 +20,7 @@ import Protocol.Models.Header;
 import Protocol.Models.HttpResponse;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,80 +39,176 @@ public class HttpResponseTests
     }
     
     @Test
+    public void ReturnsStatusLine()
+    {
+        try
+        {
+            _unitUnderTest.setBody("TestBody");
+            String result = _unitUnderTest.getRaw();
+            String[] lines = result.split("\r\n", -1);
+            assertTrue(lines[0].equals("HTTP/1.1 200 OK"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void ReturnsCorrectStatus()
+    {
+        try
+        {
+            _unitUnderTest.setBody("TestBody");
+            _unitUnderTest.setStatus(400);
+            String result = _unitUnderTest.getRaw();
+            String[] lines = result.split("\r\n", -1);
+            assertTrue(lines[0].equals("HTTP/1.1 400 Bad Request"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
     public void ReturnsDefaultContentHeaderWithBody()
     {
-        _unitUnderTest.setBody("TestBody");
-        String result = _unitUnderTest.getRaw();
-        assertTrue(result.contains("Content-type: text/plain; charset=UTF-8"));
+        try
+        {
+            _unitUnderTest.setBody("TestBody");
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Content-type: text/plain; charset=UTF-8"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void DoesNotReturnsDefaultContentHeaderWithoutBody()
     {
-        String result = _unitUnderTest.getRaw();
-        assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
+        try
+        {
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void OnlyEverOneContentHeader()
     {
-        _unitUnderTest.setBody("TestBody");
-        _unitUnderTest.addHeader(new Header("Content-type", "test/first"));
-        _unitUnderTest.addHeader(new Header("Content-type", "test/second"));
-        String result = _unitUnderTest.getRaw();
-        assertFalse(result.contains("Content-type: test/first"));
-        assertTrue(result.contains("Content-type: test/second"));
+        try
+        {
+            _unitUnderTest.setBody("TestBody");
+            _unitUnderTest.addHeader(new Header("Content-type", "test/first"));
+            _unitUnderTest.addHeader(new Header("Content-type", "test/second"));
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Content-type: test/first"));
+            assertTrue(result.contains("Content-type: test/second"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void DoesNotReturnsDefaultContentHeaderIfSet()
     {
-        _unitUnderTest.addHeader(new Header("Content-type","text/xml"));
-        String result = _unitUnderTest.getRaw();
-        assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
-        assertTrue(result.contains("Content-type: text/xml"));
+        try
+        {
+            _unitUnderTest.addHeader(new Header("Content-type","text/xml"));
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
+            assertTrue(result.contains("Content-type: text/xml"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ReturnsAllSetHeaders()
     {
-        _unitUnderTest.addHeader(new Header("Customer-id","123456"));
-        _unitUnderTest.addHeader(new Header("Session-id","654321"));
-        String result = _unitUnderTest.getRaw();
-        assertTrue(result.contains("Customer-id: 123456"));
-        assertTrue(result.contains("Session-id: 654321"));
+        try
+        {
+            _unitUnderTest.addHeader(new Header("Customer-id","123456"));
+            _unitUnderTest.addHeader(new Header("Session-id","654321"));
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Customer-id: 123456"));
+            assertTrue(result.contains("Session-id: 654321"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ReturnsBody()
     {
-        _unitUnderTest.setBody("Test body");
-        String result = _unitUnderTest.getRaw();
-        assertTrue(result.contains("Test body"));
+        try
+        {
+            _unitUnderTest.setBody("Test body");
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Test body"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ReturnsBlankLineBeforBody()
     {
-        _unitUnderTest.setBody("Test body");
-        String result = _unitUnderTest.getRaw();
-        String[] lines = result.split("\r\n", -1);
-        assertTrue(lines.length == 5);
-        assertTrue(lines[2].isEmpty());
+        try
+        {
+            _unitUnderTest.setBody("Test body");
+            String result = _unitUnderTest.getRaw();
+            String[] lines = result.split("\r\n", -1);
+            assertTrue(lines.length == 6);
+            assertTrue(lines[3].isEmpty());
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ReturnsCorrectContentLength()
     {
-        _unitUnderTest.setBody("Test body");
-        String result = _unitUnderTest.getRaw();
-        assertTrue(result.contains("Content-Length: 9"));
+        try
+        {
+            _unitUnderTest.setBody("Test body");
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Content-Length: 9"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
     
     @Test
     public void ReturnsNoContentLengthIfNoBody()
     {
-        String result = _unitUnderTest.getRaw();
-        assertFalse(result.contains("Content-Length:"));
+        try
+        {
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Content-Length:"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
     }
 }

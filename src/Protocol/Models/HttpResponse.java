@@ -16,6 +16,7 @@
  */
 package Protocol.Models;
 
+import Protocol.Parsers.ProtocolException;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -64,10 +65,11 @@ public class HttpResponse
         // headers, e.g. Link
     }
     
-    public String getRaw()
+    public String getRaw() throws ProtocolException
     {
-        String retVal = "";
         Boolean hasContentType = false;
+        
+        String retVal = MessageFormat.format("HTTP/1.1 {0}\r\n", HttpStatus.getRaw(_status));
         
         Iterator iter = _headers.getIterator();
         
