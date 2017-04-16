@@ -20,8 +20,7 @@ import Protocol.Models.HttpContext;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Request.Processing.RequestProcessor;
-import Tests.Stubs.Processing.MarshallerStub;
-import Tests.Stubs.Processing.MarshallerStubNoPipelines;
+import Tests.Stubs.Processing.*;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -42,6 +41,26 @@ public class RequestProcessorTests
         HttpRequest request = new HttpRequest(HttpMethod.GET, "my/path", "HTTP/1.1");
         _context = new HttpContext(request);
     }
+    
+    @Test
+    public void returnsResponseFromPipeline()
+    {
+        HttpContext result = _unitUnderTest.processRequest(_context);
+        
+        try
+        {
+            String raw = result.response().getRaw();
+            
+            assertTrue(raw.contains("503 Service Unavailable"));
+            assertTrue(raw.contains("Content-type: application/xml"));
+            assertTrue(raw.contains("MiddlewareStub Body"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
     @Test
     public void returns404IfNoPipeline()
     {
@@ -53,7 +72,26 @@ public class RequestProcessorTests
         {
             String raw = result.response().getRaw();
             
-            assertTrue(raw.contains("404"));
+            assertTrue(raw.contains("404 Not Found"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void returns500IfPipelineThrowsException()
+    {
+        _unitUnderTest = new RequestProcessor(new MarshallerStubException());
+        
+        HttpContext result = _unitUnderTest.processRequest(_context);
+        
+        try
+        {
+            String raw = result.response().getRaw();
+            
+            assertTrue(raw.contains("500 Internal Server Error"));
         }
         catch (Exception ex)
         {

@@ -24,12 +24,12 @@ import Request.Processing.IPipeline;
  *
  * @author jmillen
  */
-public class MarshallerStubNoPipelines implements IMarshaller
+public class MarshallerStubException implements IMarshaller
 {
 
     @Override
     public IPipeline pipeline(String path) throws InvalidConfigurationException
     {
-        return null;
+        throw new InvalidConfigurationException("Test stub exception");
     }
 }
