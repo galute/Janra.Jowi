@@ -29,7 +29,7 @@ import java.util.Map;
 public class HttpStatus
 {
     private static final Map<Integer, String> _codes;
-
+    // Codes and descriptions taken from rfc7321 section 6
     static {
         Map<Integer, String> tempMap = new HashMap<>();
         tempMap.put(100, "Continue");
@@ -56,21 +56,21 @@ public class HttpStatus
         tempMap.put(405, "Method Not Allowed");
         tempMap.put(406, "Not Acceptable");
         tempMap.put(407, "Proxy Authentication Required");
-        tempMap.put(408, "Request Time-out");
+        tempMap.put(408, "Request Timeout");
         tempMap.put(409, "Conflict");
         tempMap.put(410, "Gone");
         tempMap.put(411, "Length Required");
         tempMap.put(412, "Precondition Failed");
-        tempMap.put(413, "Request Entity Too Large");
-        tempMap.put(414, "Request-URI Too Large");
+        tempMap.put(413, "Payload Too Large");
+        tempMap.put(414, "URI Too Long");
         tempMap.put(415, "Unsupported Media Type");
-        tempMap.put(416, "Requested range not satisfiable");
+        tempMap.put(416, "Range Not Satisfiable");
         tempMap.put(417, "Expectation Failed");
         tempMap.put(500, "Internal Server Error");
         tempMap.put(501, "Not Implemented");
         tempMap.put(502, "Bad Gateway");
         tempMap.put(503, "Service Unavailable");
-        tempMap.put(504, "Gateway Time-out");
+        tempMap.put(504, "Gateway Timeout");
         tempMap.put(505, "HTTP Version not supported");
         _codes = Collections.unmodifiableMap(tempMap);
     }
