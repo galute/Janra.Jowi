@@ -52,14 +52,19 @@ public class Parser implements IParser
     public Header ParseHeader(String line) throws ProtocolException
     {
         String[] elements;
-        
+        //rfc7230 section 3.2 indicates header fieldname followed by a colon (:).
+        //This is followed by a value with optional leading and
+        // trailing whitespace on the value
         elements = line.split(":\\h");
         
-        if (elements.length != 2)
+        int colon = line.indexOf(':');
+        if (colon < 1)
         {
             throw new ProtocolException("Invalid Header format", 400);
         }
+        String name = line.substring(0, colon);
+        String value = line.substring(colon + 1);
         
-        return new Header(elements[0].trim(), elements[1].trim());
+        return new Header(name, value.trim());
     }
 }

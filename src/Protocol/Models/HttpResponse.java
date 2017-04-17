@@ -69,6 +69,7 @@ public class HttpResponse
     {
         Boolean hasContentType = false;
         
+        //rfc7230 section-3.1.2
         String retVal = MessageFormat.format("HTTP/1.1 {0}\r\n", HttpStatus.getRaw(_status));
         
         Iterator iter = _headers.getIterator();
@@ -76,7 +77,8 @@ public class HttpResponse
         while (iter.hasNext())
         {
             Map.Entry pair = (Map.Entry)iter.next();
-        
+            //rfc7230 section 3.2 indicates header fieldname followed by a colon (:). This is followed by a value with optional leading and
+            // trailing whitespace on the value
             retVal = retVal + MessageFormat.format("{0}: {1}\r\n", pair.getKey(), pair.getValue());
             if ("Content-type".equals(pair.getKey()))
             {
