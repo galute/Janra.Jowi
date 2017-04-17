@@ -21,6 +21,7 @@ import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Parsers.IParser;
 import Protocol.Parsers.ProtocolException;
+import Server.IHeader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,9 +48,9 @@ public class ParserStub implements IParser
     }
 
     @Override
-    public Header ParseHeader(String line) throws ProtocolException
+    public IHeader ParseHeader(String line) throws ProtocolException
     {
-        return new Header("Host", "my.host.com:80");
+        return Header.create("Host", "my.host.com:80");
     }
     
 }

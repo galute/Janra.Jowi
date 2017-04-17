@@ -41,6 +41,7 @@ public class ResponseBuilder implements IResponseBuilder
     @Override
     public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
     {
+        //rfc7230 section-3.1.2
         String statusLine = "HTTP/1.1 " + HttpStatus.getRaw(response.status()) + "\r\nServer: Jowi\r\n";
         
         return _encoder.encode(CharBuffer.wrap(statusLine + response.getRaw()));

@@ -16,28 +16,48 @@
  */
 package Protocol.Models;
 
+import Server.IHeader;
+
 /**
  *
  * @author jmillen
  */
-public class Header
+public class Header implements IHeader
 {
+    public static IHeader create(String key, String value)
+    {
+        return new Header(key, value);
+    }
+    
     private final String _key;
     private final String _value;
     
-    public Header(String key, String value)
+    private Header(String key, String value)
     {
          _key = key;
          _value = value;
     }
     
+    @Override
     public String key()
     {
         return _key;
     }
-    
-    public String value()
+
+    @Override
+    public Integer occurences()
     {
-        return _value;
+        return 1;
+    }
+
+    @Override
+    public String value(Integer index)
+    {
+        if (index == 0)
+        {
+            return _value;
+        }
+        
+        return null;
     }
 }

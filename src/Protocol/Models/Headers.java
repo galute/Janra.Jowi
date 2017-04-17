@@ -16,6 +16,7 @@
  */
 package Protocol.Models;
 
+import Server.IHeader;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -25,7 +26,7 @@ import java.util.Iterator;
  */
 public class Headers
 {
-    private final HashMap<String, String> _headers;
+    private final HashMap<String, IHeader> _headers;
     
     public Headers()
     {
@@ -36,14 +37,14 @@ public class Headers
         _headers = (HashMap)headers._headers.clone();
     }
     
-    public void addHeader(Header header)
+    public void addHeader(IHeader header)
     {
         // rfc7320 section 3.2 header field name
         // is case-insensitive so always to-lower name
-        _headers.put(header.key().toLowerCase(), header.value());
+        _headers.put(header.key().toLowerCase(), header);
     }
     
-    public String get(String key)
+    public IHeader get(String key)
     {
         if (key == null)
         {

@@ -34,8 +34,8 @@ public class HttpRequestTests
     {
         Headers firstHeaders = new Headers();
         Headers secondHeaders = new Headers();
-        firstHeaders.addHeader(new Header("First Header", "First Header Value"));
-        secondHeaders.addHeader(new Header("Second Header", "Second Header Value"));
+        firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
+        secondHeaders.addHeader(Header.create("Second Header", "Second Header Value"));
         
         HttpRequest first = new HttpRequest(HttpMethod.POST, "first path","first version");
         first.addHeaders(firstHeaders);

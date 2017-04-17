@@ -17,6 +17,7 @@
 package Protocol.Models;
 
 import Protocol.Parsers.ProtocolException;
+import Server.IHeader;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class HttpResponse
         return _status;
     }
     
-    public void addHeader(Header header)
+    public void addHeader(IHeader header)
     {
         _headers.addHeader(header);
         // To-do, will need to change this, can have multiple of some
@@ -69,8 +70,8 @@ public class HttpResponse
     {
         Boolean hasContentType = false;
         
-        //rfc7230 section-3.1.2
-        String retVal = MessageFormat.format("HTTP/1.1 {0}\r\n", HttpStatus.getRaw(_status));
+        
+        String retVal = "";
         
         Iterator iter = _headers.getIterator();
         
@@ -79,8 +80,8 @@ public class HttpResponse
             Map.Entry pair = (Map.Entry)iter.next();
             //rfc7230 section 3.2 indicates header fieldname followed by a colon (:). This is followed by a value with optional leading and
             // trailing whitespace on the value
-            retVal = retVal + MessageFormat.format("{0}: {1}\r\n", pair.getKey(), pair.getValue());
-            if ("Content-type".equals(pair.getKey()))
+            retVal = retVal + MessageFormat.format("{0}: {1}\r\n", ((IHeader)pair.getValue()).key(), ((IHeader)pair.getValue()).value(0));
+            if ("content-type".equals(((String)pair.getKey()).toLowerCase()))
             {
                 hasContentType = true;
             }

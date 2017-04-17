@@ -39,31 +39,13 @@ public class HttpResponseTests
     }
     
     @Test
-    public void ReturnsStatusLine()
-    {
-        try
-        {
-            _unitUnderTest.setBody("TestBody");
-            String result = _unitUnderTest.getRaw();
-            String[] lines = result.split("\r\n", -1);
-            assertTrue(lines[0].equals("HTTP/1.1 200 OK"));
-        }
-        catch (Exception ex)
-        {
-            fail("Unexpected exception thrown: " + ex.getMessage());
-        }
-    }
-    
-    @Test
     public void ReturnsCorrectStatus()
     {
         try
         {
             _unitUnderTest.setBody("TestBody");
             _unitUnderTest.setStatus(400);
-            String result = _unitUnderTest.getRaw();
-            String[] lines = result.split("\r\n", -1);
-            assertTrue(lines[0].equals("HTTP/1.1 400 Bad Request"));
+            assertTrue(_unitUnderTest.status() == 400);
         }
         catch (Exception ex)
         {
@@ -106,8 +88,8 @@ public class HttpResponseTests
         try
         {
             _unitUnderTest.setBody("TestBody");
-            _unitUnderTest.addHeader(new Header("Content-type", "test/first"));
-            _unitUnderTest.addHeader(new Header("Content-type", "test/second"));
+            _unitUnderTest.addHeader(Header.create("Content-type", "test/first"));
+            _unitUnderTest.addHeader(Header.create("Content-type", "test/second"));
             String result = _unitUnderTest.getRaw();
             assertFalse(result.contains("Content-type: test/first"));
             assertTrue(result.contains("Content-type: test/second"));
@@ -123,7 +105,7 @@ public class HttpResponseTests
     {
         try
         {
-            _unitUnderTest.addHeader(new Header("Content-type","text/xml"));
+            _unitUnderTest.addHeader(Header.create("Content-type","text/xml"));
             String result = _unitUnderTest.getRaw();
             assertFalse(result.contains("Content-type: text/plain; charset=UTF-8"));
             assertTrue(result.contains("Content-type: text/xml"));
@@ -139,8 +121,8 @@ public class HttpResponseTests
     {
         try
         {
-            _unitUnderTest.addHeader(new Header("Customer-id","123456"));
-            _unitUnderTest.addHeader(new Header("Session-id","654321"));
+            _unitUnderTest.addHeader(Header.create("Customer-id","123456"));
+            _unitUnderTest.addHeader(Header.create("Session-id","654321"));
             String result = _unitUnderTest.getRaw();
             assertTrue(result.contains("Customer-id: 123456"));
             assertTrue(result.contains("Session-id: 654321"));
@@ -174,8 +156,8 @@ public class HttpResponseTests
             _unitUnderTest.setBody("Test body");
             String result = _unitUnderTest.getRaw();
             String[] lines = result.split("\r\n", -1);
-            assertTrue(lines.length == 6);
-            assertTrue(lines[3].isEmpty());
+            assertTrue(lines.length == 5);
+            assertTrue(lines[2].isEmpty());
         }
         catch (Exception ex)
         {

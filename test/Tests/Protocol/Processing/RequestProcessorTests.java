@@ -51,7 +51,7 @@ public class RequestProcessorTests
         {
             String raw = result.response().getRaw();
             
-            assertTrue(raw.contains("503 Service Unavailable"));
+            assertTrue(result.response().status() == 503);
             assertTrue(raw.contains("Content-type: application/xml"));
             assertTrue(raw.contains("MiddlewareStub Body"));
         }
@@ -70,9 +70,7 @@ public class RequestProcessorTests
         
         try
         {
-            String raw = result.response().getRaw();
-            
-            assertTrue(raw.contains("404 Not Found"));
+            assertTrue(result.response().status() == 404);
         }
         catch (Exception ex)
         {
@@ -89,9 +87,7 @@ public class RequestProcessorTests
         
         try
         {
-            String raw = result.response().getRaw();
-            
-            assertTrue(raw.contains("500 Internal Server Error"));
+            assertTrue(result.response().status() == 500);
         }
         catch (Exception ex)
         {

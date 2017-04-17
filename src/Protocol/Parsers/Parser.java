@@ -18,6 +18,7 @@
 package Protocol.Parsers;
 
 import Protocol.Models.*;
+import Server.IHeader;
 
 /**
  *
@@ -49,7 +50,7 @@ public class Parser implements IParser
     }
     
     @Override
-    public Header ParseHeader(String line) throws ProtocolException
+    public IHeader ParseHeader(String line) throws ProtocolException
     {
         String[] elements;
         //rfc7230 section 3.2 indicates header fieldname followed by a colon (:).
@@ -65,6 +66,6 @@ public class Parser implements IParser
         String name = line.substring(0, colon);
         String value = line.substring(colon + 1);
         
-        return new Header(name, value.trim());
+        return Header.create(name, value.trim());
     }
 }

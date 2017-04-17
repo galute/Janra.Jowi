@@ -31,10 +31,10 @@ public class HeadersTests
     public void CopyConstructorDoesNotKeepReferences()
     {
         Headers first = new Headers();
-        first.addHeader(new Header("first key", "first value"));
+        first.addHeader(Header.create("first key", "first value"));
         Headers second = new Headers(first);
         
-        first.addHeader(new Header("second key", "second value"));
+        first.addHeader(Header.create("second key", "second value"));
         assertTrue(second.get("second key") == null);
     }
     
@@ -43,8 +43,8 @@ public class HeadersTests
     public void HeaderNameIsCaseInsensitive()
     {
         Headers headers = new Headers();
-        headers.addHeader(new Header("FiRsT", "value"));
+        headers.addHeader(Header.create("FiRsT", "value"));
         
-        assertTrue("value".equals(headers.get("first")));
+        assertTrue("value".equals(headers.get("first").value(0)));
     }
 }

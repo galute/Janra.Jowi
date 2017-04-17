@@ -38,7 +38,7 @@ public class FirstModule implements IPipelineMiddleware
         else if (context.Request().method() == HttpMethod.POST &&
                 context.Request().header("ReturnType") != null)
         {
-            property = context.Request().header("ReturnType");
+            property = context.Request().header("ReturnType").value(0);
         }
         else
         {

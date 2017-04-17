@@ -20,6 +20,7 @@ import Protocol.Models.Header;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Parsers.*;
+import Server.IHeader;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,10 +115,10 @@ public class ParserTests
     {
         try
         {
-            Header result = _parser.ParseHeader(_goodHeader1);
+            IHeader result = _parser.ParseHeader(_goodHeader1);
             
             assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value()));
+            assertTrue("my.host:80".equals(result.value(0)));
         }
         catch (Exception ex)
         {
@@ -130,10 +131,10 @@ public class ParserTests
     {
         try
         {
-            Header result = _parser.ParseHeader(_goodHeader2);
+            IHeader result = _parser.ParseHeader(_goodHeader2);
             
             assertTrue("Host ".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value()));
+            assertTrue("my.host:80".equals(result.value(0)));
         }
         catch (Exception ex)
         {
@@ -146,10 +147,10 @@ public class ParserTests
     {
         try
         {
-            Header result = _parser.ParseHeader(_goodHeader3);
+            IHeader result = _parser.ParseHeader(_goodHeader3);
             
             assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value()));
+            assertTrue("my.host:80".equals(result.value(0)));
         }
         catch (Exception ex)
         {
@@ -162,10 +163,10 @@ public class ParserTests
     {
         try
         {
-            Header result = _parser.ParseHeader(_goodHeader4);
+            IHeader result = _parser.ParseHeader(_goodHeader4);
             
             assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value()));
+            assertTrue("my.host:80".equals(result.value(0)));
         }
         catch (Exception ex)
         {

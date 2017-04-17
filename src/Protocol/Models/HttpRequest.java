@@ -16,6 +16,8 @@
  */
 package Protocol.Models;
 
+import Server.IHeader;
+
 /**
  *
  * @author jmillen
@@ -46,9 +48,9 @@ public class HttpRequest implements Cloneable
         _headers = new Headers(request._headers);
     }
     
-    public void addHost(Header hostHeader)
+    public void addHost(IHeader hostHeader)
     {
-        _host = hostHeader.value();
+        _host = hostHeader.value(0);
     }
     
     public void addHeaders(Headers headers)
@@ -76,7 +78,7 @@ public class HttpRequest implements Cloneable
         return _host;
     }
     
-    public String header(String name)
+    public IHeader header(String name)
     {
         return _headers.get(name);
     }

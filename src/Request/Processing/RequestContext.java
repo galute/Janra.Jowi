@@ -57,8 +57,7 @@ public class RequestContext implements IContext
     @Override
     public void addResponseHeader(String key, String value)
     {
-        Header header = new Header(key, value);
-        _context.response().addHeader(header);
+       _context.response().addHeader(Header.create(key, value));
     }
     @Override
     public IProperties Properties()

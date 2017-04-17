@@ -19,6 +19,7 @@ package Protocol.Builders;
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.*;
 import Protocol.Parsers.*;
+import Server.IHeader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -49,7 +50,7 @@ public class RequestBuilder implements IRequestBuilder
             HttpRequest request = _parser.ParseRequestLine(requestLine);
             String hostLine = readLine(channel);
             
-            Header host = _parser.ParseHeader(hostLine);
+            IHeader host = _parser.ParseHeader(hostLine);
             
             request.addHost(host);
             
@@ -65,8 +66,7 @@ public class RequestBuilder implements IRequestBuilder
                 }
                 else
                 {
-                    Header header = _parser.ParseHeader(headerLine);
-                    headers.addHeader(header);
+                    headers.addHeader(_parser.ParseHeader(headerLine));
                 }
             }
             

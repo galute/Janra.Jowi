@@ -14,17 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Parsers;
-
-import Protocol.Models.HttpRequest;
-import Server.IHeader;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public interface IParser
+public interface IHeader
 {
-    HttpRequest ParseRequestLine(String line) throws ProtocolException;
-    IHeader ParseHeader(String line) throws ProtocolException;
+    String key();
+    Integer occurences();
+    String value(Integer index);
 }
