@@ -38,14 +38,23 @@ public class Headers
     
     public void addHeader(Header header)
     {
-        _headers.put(header.key(), header.value());
+        // rfc7320 section 3.2 header field name
+        // is case-insensitive so always to-lower name
+        _headers.put(header.key().toLowerCase(), header.value());
     }
     
     public String get(String key)
     {
-        if (_headers.containsKey(key))
+        if (key == null)
         {
-            return _headers.get(key);
+            return null;
+        }
+        // rfc7320 section 3.2 header field name
+        // is case-insensitive so always to-lower name
+        String lowerKey = key.toLowerCase();
+        if (_headers.containsKey(lowerKey))
+        {
+            return _headers.get(lowerKey);
         }
         
         return null;

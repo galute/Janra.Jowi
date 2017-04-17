@@ -37,4 +37,14 @@ public class HeadersTests
         first.addHeader(new Header("second key", "second value"));
         assertTrue(second.get("second key") == null);
     }
+    
+    // rfs7320 Section 3.2 Header name is case-insensitive
+    @Test
+    public void HeaderNameIsCaseInsensitive()
+    {
+        Headers headers = new Headers();
+        headers.addHeader(new Header("FiRsT", "value"));
+        
+        assertTrue("value".equals(headers.get("first")));
+    }
 }
