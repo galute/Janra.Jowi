@@ -19,10 +19,13 @@ package Network.Handlers;
 import Network.Wrappers.*;
 import Protocol.Models.*;
 import Protocol.Builders.IRequestBuilder;
+import Protocol.Parsers.ProtocolException;
 import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -54,6 +57,7 @@ public class RequestHandler implements Runnable
     {
         Boolean isFinished = false;
         ISocketChannel channel = null;
+        HttpContext context = null;
         
         try
         { 
@@ -72,32 +76,49 @@ public class RequestHandler implements Runnable
                 if (key.isReadable())
                 {
                     channel = key.getChannel();
-                    HttpContext context = _builder.ProcessRequest(channel);
+                    context = _builder.ProcessRequest(channel);
 
                     if (context.response().status() == 200)
                     {
                         context = _processor.processRequest(context);
                     }
 
-                    _responder.sendResponse(context.response(), channel);
                     isFinished = true;
                 }
                 else
                 {
                     isFinished = true;
-                    key.getChannel().close();
                     key.cancel();
                 }
-            }
-
-            if (channel != null)
-            {
-                channel.close();
             }
         }
         catch (Exception ex)
         {
-            // To-do (try to) send 500
+            // (try to) send 500
+            if (context != null)
+            {
+                context.response().setStatus(500);
+            }
+            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, "Failed to handle request: ", ex);
+
+        }
+        finally
+        {
+            try
+            {
+                if (channel != null)
+                {
+                    if (context != null)
+                    {
+                        _responder.sendResponse(context.response(), channel);
+                    }
+                    channel.close();
+                }
+            }
+            catch (ProtocolException | IOException ex)
+            {
+                Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, "Failed to send response: ", ex);
+            }
         }
     }
 }

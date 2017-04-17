@@ -16,29 +16,18 @@
  */
 package Tests.Stubs.Processing;
 
-import Network.Wrappers.ISocketChannel;
-import Protocol.Models.HttpResponse;
-import Request.Processing.ISendResponse;
+import Protocol.Models.HttpContext;
+import Request.Processing.IProcessRequest;
 
 /**
  *
  * @author jmillen
  */
-public class SendResponseStub implements ISendResponse
+public class ProcessRequestExceptionStub implements IProcessRequest
 {
-    public Integer _numCalls = 0;
-    public HttpResponse Response = null;
-    
     @Override
-    public void sendResponse(HttpResponse response, ISocketChannel channel)
+    public HttpContext processRequest(HttpContext context)
     {
-        _numCalls++;
-        Response = response;
+        throw new IllegalArgumentException("Test Exception");
     }
-    
-    public Integer numRequests()
-    {
-        return _numCalls;
-    }
-    
 }

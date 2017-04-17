@@ -17,9 +17,11 @@
 package Tests.Network;
 
 import Network.Handlers.RequestHandler;
+import Request.Processing.IProcessRequest;
 import Tests.Stubs.Network.SelectorKeyStub;
 import Tests.Stubs.Network.SelectorStub;
 import Tests.Stubs.Network.SocketStubComplete;
+import Tests.Stubs.Processing.ProcessRequestExceptionStub;
 import Tests.Stubs.Processing.ProcessRequestStub;
 import Tests.Stubs.Processing.SendResponseStub;
 import Tests.Stubs.Protocol.RequestBuilderStub;
@@ -39,7 +41,7 @@ public class RequestHandlerTests
     private SelectorStub _selectorStub;
     private SocketStubComplete _socketStub;
     private RequestBuilderStub _builder;
-    private ProcessRequestStub _processor;
+    private IProcessRequest _processor;
     private SendResponseStub _responder;
     private final long _timeout = 500;
     
@@ -100,7 +102,7 @@ public class RequestHandlerTests
             _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
             _unitUnderTest.run();
 
-            assertTrue(_processor.numRequests() == 0);
+            assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
             assertTrue(_responder.numRequests() == 0);
         }
         catch (Exception ex)
@@ -118,7 +120,7 @@ public class RequestHandlerTests
             _builder.Status = 400;
             _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
             _unitUnderTest.run();
-            assertTrue(_processor.numRequests() == 0);
+            assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
             assertTrue(_responder.numRequests() == 1);
         }
         catch (Exception ex)
@@ -136,8 +138,27 @@ public class RequestHandlerTests
             _builder.Status = 200;
             _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
             _unitUnderTest.run();
-            assertTrue(_processor.numRequests() == 1);
+            assertTrue(((ProcessRequestStub)_processor).numRequests() == 1);
             assertTrue(_responder.numRequests() == 1);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void Returns500OnException()
+    {
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, true, true);
+            _processor = new ProcessRequestExceptionStub();
+            _builder.Status = 200;
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest.run();
+            assertTrue(_responder.Response != null);
+            assertTrue(_responder.Response.status() == 500);
         }
         catch (Exception ex)
         {
