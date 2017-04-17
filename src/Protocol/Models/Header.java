@@ -17,6 +17,10 @@
 package Protocol.Models;
 
 import Server.IHeader;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -30,12 +34,28 @@ public class Header implements IHeader
     }
     
     private final String _key;
-    private final String _value;
+    private final List<String> _values = new ArrayList<>();
     
-    private Header(String key, String value)
+    public Header(String key, String value)
     {
          _key = key;
-         _value = value;
+         _values.addAll(parseValue(value));
+    }
+    
+    public Header(IHeader header)
+    {
+        _key = header.key();
+        addHeader(header);
+    }
+    
+    public final void addHeader(IHeader header)
+    {
+        if (header == null || !_key.equals(header.key()))
+        {
+            return;
+        }
+        
+        _values.addAll(((Header)header)._values);
     }
     
     @Override
@@ -47,17 +67,52 @@ public class Header implements IHeader
     @Override
     public Integer occurences()
     {
-        return 1;
+        return _values.size();
+    }
+    
+    @Override
+    public String value()
+    {
+        return _values.get(0);
     }
 
     @Override
     public String value(Integer index)
     {
-        if (index == 0)
+        if (index >=0 && index < _values.size())
         {
-            return _value;
+            return _values.get(index);
         }
         
         return null;
+    }
+    
+    public String raw()
+    {
+        String raw = MessageFormat.format("{0}: ", _key);
+        
+        for (int i = 0; i < _values.size(); i++)
+        {
+            if (i > 0)
+            {
+                raw = raw + ", ";
+            }
+            raw = raw + _values.get(i);
+        }
+        
+        return raw + "\r\n";
+    }
+    
+    private List<String> parseValue(String value)
+    {
+        List<String>output = new ArrayList<>();
+        
+        String[] items = value.split(",", -1);
+        
+        Arrays.asList(items).forEach((item) ->{
+            output.add(item.trim());
+        });
+        
+        return output;
     }
 }

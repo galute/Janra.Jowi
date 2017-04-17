@@ -24,5 +24,6 @@ public interface IHeader
 {
     String key();
     Integer occurences();
+    String value();
     String value(Integer index);
 }

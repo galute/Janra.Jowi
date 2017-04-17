@@ -36,9 +36,9 @@ public class FirstModule implements IPipelineMiddleware
             property = "application/text";
         }
         else if (context.Request().method() == HttpMethod.POST &&
-                context.Request().header("ReturnType") != null)
+                 context.Request().header("ReturnType") != null)
         {
-            property = context.Request().header("ReturnType").value(0);
+            property = context.Request().header("ReturnType").value();
         }
         else
         {

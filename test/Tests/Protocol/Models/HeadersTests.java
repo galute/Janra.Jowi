@@ -47,4 +47,30 @@ public class HeadersTests
         
         assertTrue("value".equals(headers.get("first").value(0)));
     }
+    
+    @Test
+    public void DuplicateHeaderIsAccessible()
+    {
+        Headers headers = new Headers();
+        headers.addHeader(Header.create("First", "value"));
+        headers.addHeader(Header.create("First", "value2"));
+        
+        assertTrue(headers.get("First").occurences() == 2);
+        assertTrue("value".equals(headers.get("First").value()));
+        assertTrue("value".equals(headers.get("First").value(0)));
+        assertTrue("value2".equals(headers.get("First").value(1)));
+    }
+    
+    @Test
+    public void CommaSeparatedHeaderValueIsAccessible()
+    {
+        Headers headers = new Headers();
+        headers.addHeader(Header.create("First", "value, value2, value3"));
+        
+        assertTrue(headers.get("First").occurences() == 3);
+        assertTrue("value".equals(headers.get("First").value()));
+        assertTrue("value".equals(headers.get("First").value(0)));
+        assertTrue("value2".equals(headers.get("First").value(1)));
+        assertTrue("value3".equals(headers.get("First").value(2)));
+    }
 }

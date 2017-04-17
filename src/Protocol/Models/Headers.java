@@ -39,9 +39,16 @@ public class Headers
     
     public void addHeader(IHeader header)
     {
-        // rfc7320 section 3.2 header field name
-        // is case-insensitive so always to-lower name
-        _headers.put(header.key().toLowerCase(), header);
+        String lowerKey = header.key().toLowerCase();
+        if (_headers.containsKey(lowerKey))
+        {
+            Header multi = (Header)_headers.get(lowerKey);
+            multi.addHeader(header);
+        }
+        else
+        {
+            _headers.put(lowerKey, header);
+        }
     }
     
     public IHeader get(String key)
