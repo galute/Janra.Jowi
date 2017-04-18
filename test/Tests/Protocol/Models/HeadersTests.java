@@ -73,4 +73,15 @@ public class HeadersTests
         assertTrue("value2".equals(headers.get("First").value(1)));
         assertTrue("value3".equals(headers.get("First").value(2)));
     }
+    
+    @Test
+    public void OnlyOneContentHeaderType()
+    {
+        Headers headers = new Headers();
+        headers.addHeader(Header.create("Content-type", "value"));
+        headers.addHeader(Header.create("Content-type", "value2"));
+        
+        assertTrue(headers.get("Content-type").occurences() == 1);
+        assertTrue("value2".equals(headers.get("Content-type").value()));
+    }
 }

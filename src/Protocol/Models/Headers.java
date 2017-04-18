@@ -42,8 +42,11 @@ public class Headers
         String lowerKey = header.key().toLowerCase();
         if (_headers.containsKey(lowerKey))
         {
-            Header multi = (Header)_headers.get(lowerKey);
-            multi.addHeader(header);
+            if (!specialCase(header))
+            {
+                Header multi = (Header)_headers.get(lowerKey);
+                multi.addHeader(header);
+            }
         }
         else
         {
@@ -71,5 +74,18 @@ public class Headers
     public Iterator getIterator()
     {
         return _headers.entrySet().iterator();
+    }
+    
+    private Boolean specialCase(IHeader header)
+    {
+        String lowerKey = header.key().toLowerCase();
+        if ("content-type".equals(lowerKey))
+        {
+            // Only allowed one of these
+            _headers.replace(lowerKey, header);
+            return true;
+        }
+        
+        return false;
     }
 }

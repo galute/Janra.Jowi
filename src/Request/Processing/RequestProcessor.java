@@ -16,6 +16,7 @@
  */
 package Request.Processing;
 
+import Pipeline.IPipeline;
 import Pipeline.Configuration.InvalidConfigurationException;
 import Protocol.Models.HttpContext;
 import java.util.logging.Level;

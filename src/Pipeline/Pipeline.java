@@ -14,32 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Protocol.Processing;
+package Pipeline;
 
+import Request.Processing.IPipelineModule;
 import Server.IContext;
-import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public class MiddlewareStubThree implements IPipelineMiddleware
+public class Pipeline implements IPipeline
 {
-
-    @Override
-    public Boolean Invoke(IContext context)
+    private final IPipelineModule _entrypoint;
+    private final String _path;
+    
+    public Pipeline(String path, IPipelineModule start)
     {
-        context.setResponseStatus(503);
-        context.addResponseHeader("Content-type", "application/xml");
-        context.setResponseBody("MiddlewareStubThree Body");
-        
-        if (context.Properties().Property("Module2") != null)
-        {
-            context.Properties().add("Module3", this);
-        }
-        
-        context.Properties().add("Three", this);
-        
-        return false;
+        _path = path;
+        _entrypoint = start;
+    }
+    
+    @Override
+    public Boolean isPipeline(String path)
+    {
+        return _path.equalsIgnoreCase(path);
+    }
+    
+    @Override
+    public void run(IContext context)
+    {
+        _entrypoint.Invoke(context);
     }
 }

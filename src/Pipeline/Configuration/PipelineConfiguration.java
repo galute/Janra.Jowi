@@ -16,7 +16,7 @@
  */
 package Pipeline.Configuration;
 
-import Request.Processing.Pipeline;
+import Pipeline.IPipeline;
 import Server.IPipelineConfiguration;
 import Server.IPipelineMiddleware;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class PipelineConfiguration implements IPipelineConfiguration
         }
     }
     
-    public List<Pipeline> build()
+    public List<IPipeline> build()
     {
         return _builder.build(_pipelines);
     }

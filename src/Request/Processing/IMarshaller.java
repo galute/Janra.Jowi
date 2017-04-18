@@ -16,6 +16,7 @@
  */
 package Request.Processing;
 
+import Pipeline.IPipeline;
 import Pipeline.Configuration.InvalidConfigurationException;
 
 /**

@@ -16,9 +16,9 @@
  */
 package Tests.Protocol.Processing;
 
+import Tests.Stubs.Middleware.MiddlewareStub;
 import Pipeline.Configuration.InvalidConfigurationException;
-import Request.Processing.IPipeline;
-import Request.Processing.Pipeline;
+import Pipeline.*;
 import Request.Processing.PipelineModule;
 import Request.Processing.RequestMarshaller;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import static org.junit.Assert.fail;
 public class RequestMarshallerTests
 {
     private RequestMarshaller _unitUnderTest;
-    private final List<Pipeline> _pipelines = new ArrayList<>();
+    private final List<IPipeline> _pipelines = new ArrayList<>();
     private static PipelineModule _module;
     
     @BeforeClass
@@ -52,8 +52,8 @@ public class RequestMarshallerTests
     @Test
     public void ThowsExceptionForDuplicatePaths()
     {
-        Pipeline pipeline1 = new Pipeline("my/path", _module);
-        Pipeline pipeline2 = new Pipeline("my/path", _module);
+        IPipeline pipeline1 = new Pipeline("my/path", _module);
+        IPipeline pipeline2 = new Pipeline("my/path", _module);
         _pipelines.add(pipeline1);
         _pipelines.add(pipeline2);
         
@@ -73,8 +73,8 @@ public class RequestMarshallerTests
     @Test
     public void SelectsCorrectPipelineForPath()
     {
-        Pipeline pipeline1 = new Pipeline("my/path", _module);
-        Pipeline pipeline2 = new Pipeline("my/other/path", _module);
+        IPipeline pipeline1 = new Pipeline("my/path", _module);
+        IPipeline pipeline2 = new Pipeline("my/other/path", _module);
         _pipelines.add(pipeline1);
         _pipelines.add(pipeline2);
         
@@ -97,7 +97,7 @@ public class RequestMarshallerTests
     @Test
     public void ReturnsNullforNoPipeline()
     {
-        Pipeline pipeline1 = new Pipeline("my/path", _module);
+        IPipeline pipeline1 = new Pipeline("my/path", _module);
         _pipelines.add(pipeline1);
         
         _unitUnderTest = new RequestMarshaller(_pipelines);

@@ -18,7 +18,7 @@ package Tests.Stubs.Processing;
 
 import Pipeline.Configuration.InvalidConfigurationException;
 import Request.Processing.IMarshaller;
-import Request.Processing.IPipeline;
+import Pipeline.IPipeline;
 
 /**
  *
@@ -26,11 +26,9 @@ import Request.Processing.IPipeline;
  */
 public class MarshallerStub implements IMarshaller
 {
-
     @Override
     public IPipeline pipeline(String path) throws InvalidConfigurationException
     {
         return new PipelineStub();
     }
-    
 }

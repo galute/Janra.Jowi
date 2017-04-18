@@ -14,16 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Request.Processing;
+package Tests.Stubs.Middleware;
 
 import Server.IContext;
+import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public interface IPipeline
+public class MiddlewareStubTwo implements IPipelineMiddleware
 {
-    Boolean isPipeline(String path);
-    void run(IContext context);
+
+    @Override
+    public Boolean Invoke(IContext context)
+    {
+        context.setResponseStatus(404);
+        context.addResponseHeader("Content-type", "application/json");
+        context.setResponseBody("MiddlewareStubTwo Body");
+        
+        if (context.Properties().Property("Module") != null)
+        {
+            context.Properties().add("Module2", this);
+        }
+        
+        context.Properties().add("Two", this);
+        
+        return true;
+    }
+    
 }

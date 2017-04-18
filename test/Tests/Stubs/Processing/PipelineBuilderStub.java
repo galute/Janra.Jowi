@@ -17,7 +17,7 @@
 package Tests.Stubs.Processing;
 
 import Pipeline.Configuration.IPipelineBuilder;
-import Request.Processing.Pipeline;
+import Pipeline.IPipeline;
 import Server.IPipelineMiddleware;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +29,11 @@ import java.util.Map;
 public class PipelineBuilderStub implements IPipelineBuilder
 {
     public Map<String, Map<Integer, IPipelineMiddleware>> map;
+    
     @Override
-    public List<Pipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config)
+    public List<IPipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config)
     {
         map = config;
         return null;
     }
-    
 }

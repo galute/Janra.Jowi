@@ -14,28 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Protocol.Processing;
+package Pipeline;
 
 import Server.IContext;
-import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public class MiddlewareStub implements IPipelineMiddleware
+public interface IPipeline
 {
-    public Integer calledCounter = 0;
-    
-    @Override
-    public Boolean Invoke(IContext context)
-    {
-        context.setResponseStatus(503);
-        context.addResponseHeader("Content-type", "application/xml");
-        context.setResponseBody("MiddlewareStub Body");
-        context.Properties().add("Module", this);
-        calledCounter++;
-        return true;
-    }
-    
+    Boolean isPipeline(String path);
+    void run(IContext context);
 }

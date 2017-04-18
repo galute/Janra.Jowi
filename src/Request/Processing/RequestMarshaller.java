@@ -16,6 +16,7 @@
  */
 package Request.Processing;
 
+import Pipeline.IPipeline;
 import Pipeline.Configuration.InvalidConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.List;
  */
 public class RequestMarshaller implements IMarshaller
 {
-    private final List<Pipeline> _pipelines;
+    private final List<IPipeline> _pipelines;
     
-    public RequestMarshaller(List<Pipeline> pipelines)
+    public RequestMarshaller(List<IPipeline> pipelines)
     {
         _pipelines = pipelines;
     }
@@ -36,7 +37,7 @@ public class RequestMarshaller implements IMarshaller
     @Override
     public IPipeline pipeline(String path) throws InvalidConfigurationException
     {
-        List<Pipeline>candidates;
+        List<IPipeline>candidates;
         
         candidates = new ArrayList<>();
         

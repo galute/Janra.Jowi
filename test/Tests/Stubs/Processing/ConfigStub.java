@@ -25,7 +25,6 @@ import Server.IPipelineMiddleware;
  */
 public class ConfigStub implements IConfiguration
 {
-
     @Override
     public void setTimeout(Integer value)
     {

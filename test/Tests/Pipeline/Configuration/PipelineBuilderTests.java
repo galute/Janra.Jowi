@@ -16,9 +16,12 @@
  */
 package Tests.Pipeline.Configuration;
 
+import Tests.Stubs.Middleware.MiddlewareStubTwo;
+import Tests.Stubs.Middleware.MiddlewareStubThree;
+import Tests.Stubs.Middleware.MiddlewareStub;
 import Pipeline.Configuration.*;
+import Pipeline.IPipeline;
 import Protocol.Models.HttpContext;
-import Request.Processing.Pipeline;
 import Request.Processing.RequestContext;
 import Server.IPipelineMiddleware;
 import Tests.Protocol.Processing.*;
@@ -60,12 +63,12 @@ public class PipelineBuilderTests
         _pipeline.put(1, new MiddlewareStub());
         _config.put("my/path", _pipeline);
         
-        List<Pipeline>result = _unitUnderTest.build(_config);
+        List<IPipeline>result = _unitUnderTest.build(_config);
         
         assertTrue(result.size() == 1);
-        assertTrue(((Pipeline)result.get(0)).isPipeline("my/path"));
+        assertTrue(((IPipeline)result.get(0)).isPipeline("my/path"));
         
-       ((Pipeline)result.get(0)).run(_context);
+       ((IPipeline)result.get(0)).run(_context);
        
        assertTrue(_context.Properties().Property("Module") instanceof MiddlewareStub);
     }
@@ -78,12 +81,12 @@ public class PipelineBuilderTests
         _pipeline.put(3, new MiddlewareStubThree());
         _config.put("my/path", _pipeline);
         
-        List<Pipeline>result = _unitUnderTest.build(_config);
+        List<IPipeline>result = _unitUnderTest.build(_config);
         
         assertTrue(result.size() == 1);
-        assertTrue(((Pipeline)result.get(0)).isPipeline("my/path"));
+        assertTrue(((IPipeline)result.get(0)).isPipeline("my/path"));
         
-       ((Pipeline)result.get(0)).run(_context);
+       ((IPipeline)result.get(0)).run(_context);
        
        assertTrue(_context.Properties().Property("Module") instanceof MiddlewareStub);
        assertTrue(_context.Properties().Property("Module2") instanceof MiddlewareStubTwo);
@@ -104,13 +107,13 @@ public class PipelineBuilderTests
         _pipeline.put(3, new MiddlewareStubThree());
         _config.put("my/other/path", _pipeline);
         
-        List<Pipeline>result = _unitUnderTest.build(_config);
+        List<IPipeline>result = _unitUnderTest.build(_config);
         
         assertTrue(result.size() == 2);
-        assertTrue(((Pipeline)result.get(0)).isPipeline("my/path"));
-        assertTrue(((Pipeline)result.get(1)).isPipeline("my/other/path"));
+        assertTrue(((IPipeline)result.get(0)).isPipeline("my/path"));
+        assertTrue(((IPipeline)result.get(1)).isPipeline("my/other/path"));
         
-       ((Pipeline)result.get(1)).run(_context);
+       ((IPipeline)result.get(1)).run(_context);
        
        assertTrue(_context.Properties().Property("Module") instanceof MiddlewareStub);
        assertTrue(_context.Properties().Property("Module2") == null);

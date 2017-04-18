@@ -16,10 +16,10 @@
  */
 package Tests.Stubs.Processing;
 
-import Request.Processing.IPipeline;
+import Pipeline.IPipeline;
 import Server.IContext;
 import Server.IPipelineMiddleware;
-import Tests.Protocol.Processing.MiddlewareStub;
+import Tests.Stubs.Middleware.MiddlewareStub;
 
 /**
  *
@@ -40,5 +40,4 @@ public class PipelineStub implements IPipeline
     {
         _middleware.Invoke(context);
     }
-    
 }

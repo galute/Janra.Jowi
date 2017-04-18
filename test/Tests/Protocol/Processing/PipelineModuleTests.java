@@ -16,6 +16,9 @@
  */
 package Tests.Protocol.Processing;
 
+import Tests.Stubs.Middleware.MiddlewareStubTwo;
+import Tests.Stubs.Middleware.MiddlewareStubThree;
+import Tests.Stubs.Middleware.MiddlewareStub;
 import Protocol.Models.HttpContext;
 import Request.Processing.PipelineModule;
 import Request.Processing.RequestContext;

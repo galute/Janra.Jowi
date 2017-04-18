@@ -40,5 +40,4 @@ public class SendResponseStub implements ISendResponse
     {
         return _numCalls;
     }
-    
 }

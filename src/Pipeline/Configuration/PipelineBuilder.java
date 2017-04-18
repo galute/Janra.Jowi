@@ -16,7 +16,8 @@
  */
 package Pipeline.Configuration;
 
-import Request.Processing.Pipeline;
+import Pipeline.IPipeline;
+import Pipeline.Pipeline;
 import Request.Processing.PipelineModule;
 import Server.IPipelineMiddleware;
 import java.util.ArrayList;
@@ -32,9 +33,9 @@ public class PipelineBuilder implements IPipelineBuilder
 {
 
     @Override
-    public List<Pipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config)
+    public List<IPipeline> build(Map<String, Map<Integer, IPipelineMiddleware>> config)
     {
-        List<Pipeline> pipelines = new ArrayList<>();
+        List<IPipeline> pipelines = new ArrayList<>();
         
         Iterator routeIterator = config.entrySet().iterator();
         while (routeIterator.hasNext())
@@ -53,7 +54,7 @@ public class PipelineBuilder implements IPipelineBuilder
                 moduleIterator.remove();
             }
             
-            Pipeline pipeline = new Pipeline(path, module);
+            IPipeline pipeline = new Pipeline(path, module);
             pipelines.add(pipeline);
             routeIterator.remove(); // avoids a ConcurrentModificationException
         }
