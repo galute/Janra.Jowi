@@ -37,20 +37,20 @@ public class Headers
         _headers = (HashMap)headers._headers.clone();
     }
     
-    public void addHeader(IHeader header)
+    public void addHeader(IHeader newHeader)
     {
-        String lowerKey = header.key().toLowerCase();
+        String lowerKey = newHeader.key().toLowerCase();
         if (_headers.containsKey(lowerKey))
         {
-            if (!specialCase(header))
+            if (!specialCase(newHeader))
             {
-                Header multi = (Header)_headers.get(lowerKey);
-                multi.addHeader(header);
+                Header existingHeader = (Header)_headers.get(lowerKey);
+                existingHeader.addHeader(newHeader);
             }
         }
         else
         {
-            _headers.put(lowerKey, header);
+            _headers.put(lowerKey, newHeader);
         }
     }
     
