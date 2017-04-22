@@ -20,6 +20,7 @@ import Network.Factories.IRequestHandlerFactory;
 import Network.Wrappers.ISocketChannel;
 import Request.Processing.IMarshaller;
 import Tests.Stubs.Network.RequestHandlerStub;
+import Utilities.ILauncher;
 import java.io.IOException;
 
 /**
@@ -30,7 +31,7 @@ public class RequestHandlerStubFactory implements IRequestHandlerFactory
 {
 
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException
+    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
     {
         return new RequestHandlerStub();
     }

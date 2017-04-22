@@ -18,6 +18,7 @@ package Network.Factories;
 
 import Network.Wrappers.ISocketChannel;
 import Request.Processing.IMarshaller;
+import Utilities.ILauncher;
 import java.io.IOException;
 
 /**
@@ -26,5 +27,5 @@ import java.io.IOException;
  */
 public interface IRequestHandlerFactory
 {
-    Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException;
+    Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException;
 }

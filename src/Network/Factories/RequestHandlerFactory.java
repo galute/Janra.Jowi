@@ -21,6 +21,7 @@ import Network.Wrappers.*;
 import Protocol.Builders.*;
 import Protocol.Parsers.*;
 import Request.Processing.*;
+import Utilities.ILauncher;
 import java.io.IOException;
 
 /**
@@ -29,7 +30,7 @@ import java.io.IOException;
  */
 public class RequestHandlerFactory
 {
-    static public RequestHandler Create(ISocketChannel channel, IMarshaller marshaller, long timeout) throws IOException
+    static public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
     {
         IParser parser = new Parser();
         ISelector selector = new SelectorWrapper();
@@ -38,6 +39,6 @@ public class RequestHandlerFactory
 
         IProcessRequest requestProcessor = new RequestProcessor(marshaller);
         ISendResponse responder = new Responder(responseBuilder);
-        return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, timeout);
+        return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, timeout, launcher);
     }
 }

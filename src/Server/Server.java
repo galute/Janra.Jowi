@@ -19,6 +19,8 @@ package Server;
 import Pipeline.Configuration.*;
 import Network.Factories.*;
 import Network.Handlers.IncomingRequestHandler;
+import Protocol.Builders.IResponseBuilder;
+import Protocol.Builders.ResponseBuilder;
 import Request.Processing.*;
 import Utilities.*;
 import java.io.IOException;
@@ -37,10 +39,12 @@ public class Server
     }
     public void Start(Integer port, IConfiguration config) throws IOException
     {
-        ILauncher launcher = new ThreadLauncher();
+        ILauncher launcher = new ThreadLauncher(config.maxThreads());
         IMarshaller marshaller = new RequestMarshaller(_pipelineConfig.build());
         IRequestHandlerFactory factory = new RequestHandlerFactoryWrapper();
-        IncomingRequestHandler handler = new IncomingRequestHandler(factory, ServerFactory.Create(), launcher, port, config, marshaller);
+        IResponseBuilder responseBuilder = new ResponseBuilder();
+        ISendResponse responder = new Responder(responseBuilder);
+        IncomingRequestHandler handler = new IncomingRequestHandler(factory, ServerFactory.Create(), launcher, port, config, marshaller, responder);
         handler.run();
     }
     

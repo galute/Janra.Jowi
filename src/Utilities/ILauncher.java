@@ -23,4 +23,5 @@ package Utilities;
 public interface ILauncher
 {
     long launch(Runnable runnable);
+    void threadFinished();
 }

@@ -14,22 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Factories;
+package Examples.LimitedThreads;
 
-import Network.Wrappers.ISocketChannel;
-import Request.Processing.IMarshaller;
-import Utilities.ILauncher;
-import java.io.IOException;
+import Server.IContext;
+import Server.IPipelineMiddleware;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerFactoryWrapper implements IRequestHandlerFactory
+public class Pong implements IPipelineMiddleware
 {
+
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
+    public Boolean Invoke(IContext context)
     {
-        return RequestHandlerFactory.create(channel, marshaller, timeout, launcher);
+        context.setResponseStatus(200);
+        context.addResponseHeader("Content-type", "text/plain");
+        context.setResponseBody("Pong");
+        try
+        {
+            Thread.sleep(10000);
+        } catch (InterruptedException ex)
+        {
+            Logger.getLogger(Pong.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
     }
+    
 }

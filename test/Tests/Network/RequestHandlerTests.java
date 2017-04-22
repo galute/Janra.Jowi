@@ -25,6 +25,7 @@ import Tests.Stubs.Processing.ProcessRequestExceptionStub;
 import Tests.Stubs.Processing.ProcessRequestStub;
 import Tests.Stubs.Processing.SendResponseStub;
 import Tests.Stubs.Protocol.RequestBuilderStub;
+import Tests.Stubs.Utilities.LauncherStub;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -43,6 +44,7 @@ public class RequestHandlerTests
     private RequestBuilderStub _builder;
     private IProcessRequest _processor;
     private SendResponseStub _responder;
+    private LauncherStub _launcher;
     private final long _timeout = 500;
     
     
@@ -50,7 +52,7 @@ public class RequestHandlerTests
     {
         try
         {
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             Thread thread = new Thread(_unitUnderTest);
             thread.start();
         }
@@ -76,6 +78,7 @@ public class RequestHandlerTests
         _responder = new SendResponseStub();
         _selectorStub = new SelectorStub();
         _socketStub = new SocketStubComplete();
+        _launcher = new LauncherStub();
     }
     
     @Test
@@ -84,7 +87,7 @@ public class RequestHandlerTests
         try
         {
             WhenSelectorKeyFlagsAreSet(false, false, false);
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             assertTrue(_selectorStub._registeredForRead == 1);
         }
         catch (Exception ex)
@@ -99,7 +102,7 @@ public class RequestHandlerTests
         try
         {
             WhenSelectorKeyFlagsAreSet(false, false, false);
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             _unitUnderTest.run();
 
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
@@ -118,7 +121,7 @@ public class RequestHandlerTests
         {
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _builder.Status = 400;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             _unitUnderTest.run();
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
             assertTrue(_responder.numRequests() == 1);
@@ -136,7 +139,7 @@ public class RequestHandlerTests
         {
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _builder.Status = 200;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             _unitUnderTest.run();
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 1);
             assertTrue(_responder.numRequests() == 1);
@@ -155,10 +158,27 @@ public class RequestHandlerTests
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _processor = new ProcessRequestExceptionStub();
             _builder.Status = 200;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
             _unitUnderTest.run();
             assertTrue(_responder.Response != null);
             assertTrue(_responder.Response.status() == 500);
+        }
+        catch (Exception ex)
+        {
+            fail("Throws unexpected exception: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void SignalsEndOfThread()
+    {
+        try
+        {
+            WhenSelectorKeyFlagsAreSet(false, true, true);
+            _builder.Status = 200;
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest.run();
+            assertTrue(_launcher.NumFinished == 1);
         }
         catch (Exception ex)
         {

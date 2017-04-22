@@ -14,22 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Factories;
+package Tests.Stubs.Utilities;
 
-import Network.Wrappers.ISocketChannel;
-import Request.Processing.IMarshaller;
-import Utilities.ILauncher;
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerFactoryWrapper implements IRequestHandlerFactory
+public class LaunchableStub implements Runnable
 {
+    public boolean WaitForMe = true;
+
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
+    public void run()
     {
-        return RequestHandlerFactory.create(channel, marshaller, timeout, launcher);
+        while (WaitForMe)
+        {
+            try
+            {
+                Thread.sleep(100);
+            } catch (InterruptedException ex)
+            {
+                Logger.getLogger(LaunchableStub.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

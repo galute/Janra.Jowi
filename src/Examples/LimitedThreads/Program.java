@@ -14,22 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Factories;
+package Examples.LimitedThreads;
 
-import Network.Wrappers.ISocketChannel;
-import Request.Processing.IMarshaller;
-import Utilities.ILauncher;
+import Server.IConfiguration;
+import Server.IPipelineMiddleware;
+import Server.Server;
 import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerFactoryWrapper implements IRequestHandlerFactory
+public class Program
 {
-    @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
+    public static void main(String[] args) throws IOException, Exception
     {
-        return RequestHandlerFactory.create(channel, marshaller, timeout, launcher);
+        IPipelineMiddleware middleware = new Pong();
+        Server server = new Server();
+        IConfiguration config = server.create();
+        config.setTimeout(500); //mS
+        config.setMaxThreads(2);
+        config.addMiddleware("/my/path", middleware);
+        
+        server.Start(6543, config);
     }
 }

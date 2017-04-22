@@ -125,4 +125,25 @@ public class IncomingRequestHandlerTests extends NetworkContext
             fail("Exception Thrown: " + ex.getLocalizedMessage());
         }
     }
+    
+    @Test
+    public void Returns503IfNoMoreThreads()
+    {
+        try
+        {
+            Integer numRequests = 1;
+            _launcher.NoMoreThreads = true;
+            GivenAcceptableKeys();
+            GivenIncomingRequests(numRequests);
+            WhenAcceptingRequests();
+            Thread.sleep(100);
+            _processor.Stop();
+            
+            assertTrue(_responder.Response.status() == 503);
+        }
+        catch (IOException | InterruptedException ex)
+        {
+            fail("Exception Thrown: " + ex.getLocalizedMessage());
+        }  
+    }
 }

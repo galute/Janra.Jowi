@@ -25,10 +25,22 @@ import Utilities.ILauncher;
 public class LauncherStub implements ILauncher
 {
     public long NumCalls = 0;
+    public long NumFinished = 0;
+    public Boolean NoMoreThreads = false;
+    
     @Override
     public long launch(Runnable runnable)
     {
+        if (NoMoreThreads)
+        {
+            return -1;
+        }
         return ++NumCalls;
     }
-    
+
+    @Override
+    public void threadFinished()
+    {
+        NumFinished++;
+    } 
 }

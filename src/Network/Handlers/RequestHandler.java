@@ -22,6 +22,7 @@ import Protocol.Builders.IRequestBuilder;
 import Protocol.Parsers.ProtocolException;
 import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
+import Utilities.ILauncher;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
@@ -35,19 +36,21 @@ public class RequestHandler implements Runnable
 {
     private final ISelector _selector;
     private final long _timeout;
-    IRequestBuilder _builder;
-    IProcessRequest _processor;
-    ISendResponse _responder;
-    Charset _charset=Charset.forName("ISO-8859-1");
+    private final ILauncher _launcher;
+    private final IRequestBuilder _builder;
+    private final IProcessRequest _processor;
+    private final ISendResponse _responder;
+    private final Charset _charset=Charset.forName("ISO-8859-1");
     
     
-    public RequestHandler(ISelector selector, ISocketChannel channel, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder, long timeout) throws IOException
+    public RequestHandler(ISelector selector, ISocketChannel channel, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder, long timeout, ILauncher launcher) throws IOException
     {
         _selector = selector;
         _builder = builder;
         _processor = processor;
         _responder = responder;
         _timeout = timeout;
+        _launcher = launcher;
         
         selector.registerForReads(channel);
     }
@@ -119,6 +122,7 @@ public class RequestHandler implements Runnable
             {
                 Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, "Failed to send response: ", ex);
             }
+            _launcher.threadFinished();
         }
     }
 }

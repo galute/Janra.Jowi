@@ -25,6 +25,7 @@ import Server.IPipelineMiddleware;
  */
 public class ConfigStub implements IConfiguration
 {
+    private Integer _maxThreads = 0;
     @Override
     public void setTimeout(Integer value)
     {
@@ -41,5 +42,17 @@ public class ConfigStub implements IConfiguration
     public long timeout()
     {
         return 500;
+    }
+
+    @Override
+    public void setMaxThreads(Integer maxThreads)
+    {
+        _maxThreads = maxThreads;
+    }
+
+    @Override
+    public Integer maxThreads()
+    {
+        return _maxThreads;
     }
 }

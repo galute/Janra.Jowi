@@ -16,17 +16,36 @@
  */
 package Utilities;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  *
  * @author jmillen
  */
 public class ThreadLauncher implements ILauncher
 {
+    private final AtomicInteger AvailableThreads;
+    
+    public ThreadLauncher(Integer maxThreads)
+    {
+        AvailableThreads = new AtomicInteger(maxThreads);
+    }
     @Override
     public long launch(Runnable runnable)
     {
+        if (AvailableThreads.get() == 0)
+        {
+            return -1;
+        }
         Thread thread = new Thread(runnable);
         thread.start();
+        AvailableThreads.getAndDecrement();
         return thread.getId();
+    }
+    
+    @Override
+    public void threadFinished()
+    {
+        AvailableThreads.getAndIncrement();
     }
 }

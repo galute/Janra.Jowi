@@ -20,6 +20,7 @@ import Network.Factories.IRequestHandlerFactory;
 import Network.Handlers.IncomingRequestHandler;
 import Network.SocketServer;
 import Request.Processing.IMarshaller;
+import Request.Processing.ISendResponse;
 import Server.IConfiguration;
 import Tests.Stubs.Processing.*;
 import Utilities.ILauncher;
@@ -31,11 +32,11 @@ import java.io.IOException;
  */
 public class IncomingRequestHanderWithStubsFactory
 {
-    public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher) throws IOException
+    public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher, ISendResponse responder) throws IOException
     {
         IMarshaller marshaller = new MarshallerStub();
         IConfiguration config = new ConfigStub();
         IRequestHandlerFactory factory = new RequestHandlerStubFactory();
-        return new IncomingRequestHandler(factory, socketServer, launcher, port, config, marshaller);
+        return new IncomingRequestHandler(factory, socketServer, launcher, port, config, marshaller, responder);
     }
 }

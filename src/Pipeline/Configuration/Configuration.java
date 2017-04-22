@@ -27,6 +27,7 @@ import Server.IPipelineMiddleware;
 public class Configuration implements IConfiguration
 {
     private long _timeout = 500;
+    private Integer _maxThreads = 100;
     
     private final IPipelineConfiguration _pipelineConfig;
     
@@ -42,6 +43,12 @@ public class Configuration implements IConfiguration
     }
     
     @Override
+    public void setMaxThreads(Integer maxThreads)
+    {
+        _maxThreads = maxThreads;
+    }
+    
+    @Override
     public void addMiddleware(String path, IPipelineMiddleware middleware)
     {
         _pipelineConfig.addMiddleware(path, middleware);
@@ -51,5 +58,11 @@ public class Configuration implements IConfiguration
     public long timeout()
     {
         return _timeout;
+    }
+    
+    @Override
+    public Integer maxThreads()
+    {
+        return _maxThreads;
     }
 }
