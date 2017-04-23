@@ -101,9 +101,9 @@ public class ResponseBuilderTests
             String resultStr = new String(result.array());
             String[] lines = resultStr.split("\r\n", -1);
             
-            assertTrue(lines.length == 7);
-            assertTrue(lines[4].isEmpty()); // empty line before body
-            assertTrue(lines[6].isEmpty()); // last line must be empty
+            assertTrue(lines.length == 8);
+            assertTrue(lines[5].isEmpty()); // empty line before body
+            assertTrue(lines[7].isEmpty()); // last line must be empty
         }
         catch (ProtocolException | CharacterCodingException ex)
         {

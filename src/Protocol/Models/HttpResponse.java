@@ -69,22 +69,27 @@ public class HttpResponse
     public String getRaw() throws ProtocolException
     {
         Boolean hasContentType = false;
-        
-        
-        String retVal = "";
+        // Not supporting keep-alive at the moment
+        String retVal = "Connection: close\r\n";
         
         Iterator iter = _headers.getIterator();
         
         while (iter.hasNext())
         {
             Map.Entry pair = (Map.Entry)iter.next();
-            //rfc7230 section 3.2 indicates header fieldname followed by a colon (:). This is followed by a value with optional leading and
-            // trailing whitespace on the value
-            retVal = retVal + MessageFormat.format("{0}: {1}\r\n", ((IHeader)pair.getValue()).key(), ((IHeader)pair.getValue()).value(0));
+            
+            if (!"connection".equals(((String)pair.getKey()).toLowerCase()))
+            {
+                //rfc7230 section 3.2 indicates header fieldname followed by a colon (:). This is followed by a value with optional leading and
+                // trailing whitespace on the value
+                retVal = retVal + MessageFormat.format("{0}: {1}\r\n", ((IHeader)pair.getValue()).key(), ((IHeader)pair.getValue()).value(0));
+            }
+            
             if ("content-type".equals(((String)pair.getKey()).toLowerCase()))
             {
                 hasContentType = true;
             }
+            
             iter.remove();
         }
         

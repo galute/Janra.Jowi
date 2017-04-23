@@ -156,8 +156,8 @@ public class HttpResponseTests
             _unitUnderTest.setBody("Test body");
             String result = _unitUnderTest.getRaw();
             String[] lines = result.split("\r\n", -1);
-            assertTrue(lines.length == 5);
-            assertTrue(lines[2].isEmpty());
+            assertTrue(lines.length == 6);
+            assertTrue(lines[3].isEmpty());
         }
         catch (Exception ex)
         {
@@ -187,6 +187,35 @@ public class HttpResponseTests
         {
             String result = _unitUnderTest.getRaw();
             assertFalse(result.contains("Content-Length:"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void ReturnsConnectionIfNotSet()
+    {
+        try
+        {
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Connection: close"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void OveridesConnectionIfSet()
+    {
+        try
+        {
+            _unitUnderTest.addHeader(Header.create("connection", "keep-alive"));
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Connection: close"));
         }
         catch (Exception ex)
         {
