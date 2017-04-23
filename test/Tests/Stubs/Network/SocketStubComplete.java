@@ -82,6 +82,11 @@ public class SocketStubComplete implements ISocketChannel
         IsNonBlocking = true;
     }
     
+    public void setMessageToRead(String message)
+    {
+        bytesToRead = message;
+    }
+    
     public void setBytestoRead(Integer bytes)
     {
         bytesToRead = new String(new char[bytes]).replace("\0", "X");

@@ -32,8 +32,8 @@ import java.nio.charset.CharsetDecoder;
  */
 public class RequestBuilder implements IRequestBuilder
 {
-    CharsetDecoder _decoder;
-    IParser _parser;
+    private final CharsetDecoder _decoder;
+    private final IParser _parser;
     
     public RequestBuilder(IParser parser)
     {
@@ -48,13 +48,9 @@ public class RequestBuilder implements IRequestBuilder
         {
             String requestLine = readLine(channel);
             HttpRequest request = _parser.ParseRequestLine(requestLine);
-            String hostLine = readLine(channel);
-            
-            IHeader host = _parser.ParseHeader(hostLine);
-            
-            request.addHost(host);
             
             Boolean finished = false;
+            Boolean hasHostHeader = false;
             Headers headers = new Headers();
             
             while (!finished)
@@ -66,8 +62,33 @@ public class RequestBuilder implements IRequestBuilder
                 }
                 else
                 {
-                    headers.addHeader(_parser.ParseHeader(headerLine));
+                    IHeader header = _parser.ParseHeader(headerLine);
+                    if ("host".equals(header.key().toLowerCase()))
+                    {
+                        if (hasHostHeader)
+                        {
+                            //rfc7230 section 5.4
+                            // A server MUST respond with a 400 (Bad Request) status code to any
+                            // HTTP/1.1 request message that lacks a Host header field and to any
+                            // request message that contains more than one Host header field or a
+                            // Host header field with an invalid field-value.
+                            throw new ProtocolException("Multiple Host headers not allowed", 400);
+                        }
+                        else
+                        {
+                            request.addHost(header);
+                        }
+                    }
+                    else
+                    {
+                        headers.addHeader(header);
+                    }
                 }
+            }
+            
+            if (!hasHostHeader)
+            {
+                throw new ProtocolException("Host header is missing", 400);
             }
             
             request.addHeaders(headers);

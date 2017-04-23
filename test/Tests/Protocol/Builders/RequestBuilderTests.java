@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Protocol;
+package Tests.Protocol.Builders;
 
 import Tests.Stubs.Network.*;
 import Protocol.Parsers.ProtocolException;
 import Protocol.Builders.RequestBuilder;
+import Protocol.Models.HttpContext;
 import Tests.Stubs.Protocol.ParserStub;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -97,7 +98,6 @@ public class RequestBuilderTests
     {
         try
         {
-            ByteBuffer bbuffer = ByteBuffer.allocate(10);
             SocketStubEmptyLine socketStub = new SocketStubEmptyLine();
             socketStub.setBytestoRead(10);
             String result = _unitUnderTest.readLine(socketStub);
@@ -111,5 +111,25 @@ public class RequestBuilderTests
         {
             fail("Thows exception: " + ex.getMessage());
         }
+    }
+    
+    @Test
+    public void ThrowsIfMoreThanOneHostHeader()
+    {
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nHost: 456\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.response().status() == 400);
+    }
+    
+    @Test
+    public void ThrowsIfMissingOneHostHeader()
+    {
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nheader1: 123\r\nheader2: 456\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.response().status() == 400);
     }
 }
