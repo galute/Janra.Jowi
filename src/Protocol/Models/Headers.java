@@ -82,6 +82,12 @@ public class Headers
         if ("content-type".equals(lowerKey))
         {
             // Only allowed one of these
+            // rfc7230 is not specific about multiple
+            // content-type headers but 
+            // numerous forum posts indicate problems
+            // when this happens.
+            // This is open for debate and future
+            // change though
             _headers.replace(lowerKey, header);
             return true;
         }

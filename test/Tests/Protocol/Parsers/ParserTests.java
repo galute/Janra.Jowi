@@ -16,7 +16,6 @@
  */
 package Tests.Protocol.Parsers;
 
-import Protocol.Models.Header;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Parsers.*;
@@ -40,6 +39,7 @@ public class ParserTests
     private String _goodHeader4;
     private String _badHeader1;
     private String _badHeader2;
+    private String _badHeader3;
     
     private IParser _parser;
     
@@ -54,11 +54,12 @@ public class ParserTests
         // This is followed by a value with optional leading and
         // trailing whitespace on the value.
         _goodHeader1 = "Host: my.host:80";
-        _goodHeader2 = "Host :  my.host:80";
+        _goodHeader2 = "Host:  my.host:80  ";
         _goodHeader3 = "Host:   my.host:80";
         _goodHeader4 = "Host:my.host:80";
         _badHeader1 = "Host my.host80";
         _badHeader2 = "Hostmy.host80";
+        _badHeader3 = "Host :  my.host:80";
 
         
     }
@@ -133,7 +134,7 @@ public class ParserTests
         {
             IHeader result = _parser.ParseHeader(_goodHeader2);
             
-            assertTrue("Host ".equals(result.key()));
+            assertTrue("Host".equals(result.key()));
             assertTrue("my.host:80".equals(result.value(0)));
         }
         catch (Exception ex)
@@ -195,6 +196,21 @@ public class ParserTests
         try
         {
             _parser.ParseHeader(_badHeader2);
+            fail("Exception not thrown");
+        }
+        catch (Exception ex)
+        {
+            assertTrue(ex instanceof ProtocolException);
+            assertTrue("Invalid Header format".equals(ex.getMessage()));
+        }  
+    }
+    
+    @Test
+    public void CorrectlyRejectsBadHeader3()
+    {
+        try
+        {
+            _parser.ParseHeader(_badHeader3);
             fail("Exception not thrown");
         }
         catch (Exception ex)

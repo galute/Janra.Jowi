@@ -60,6 +60,5 @@ public class Responder implements ISendResponse
                 // do nothing
             }
         }
-    }
-    
+    }  
 }

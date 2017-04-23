@@ -56,6 +56,7 @@ public class Parser implements IParser
         //rfc7230 section 3.2 indicates header fieldname followed by a colon (:).
         //This is followed by a value with optional leading and
         // trailing whitespace on the value
+        
         elements = line.split(":\\h");
         
         int colon = line.indexOf(':');
@@ -65,6 +66,13 @@ public class Parser implements IParser
         }
         String name = line.substring(0, colon);
         String value = line.substring(colon + 1);
+        
+        // section 3.2.4 states:
+        // No whitespace is allowed between the header field-name and colon
+        if (name.length() != name.trim().length())
+        {
+            throw new ProtocolException("Invalid Header format", 400);
+        }
         
         return Header.create(name, value.trim());
     }
