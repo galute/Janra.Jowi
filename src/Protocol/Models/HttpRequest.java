@@ -17,6 +17,8 @@
 package Protocol.Models;
 
 import Server.IHeader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -48,9 +50,11 @@ public class HttpRequest implements Cloneable
         _headers = new Headers(request._headers);
     }
     
-    public void addHost(IHeader hostHeader)
+    public void addHost(IHeader hostHeader) throws URISyntaxException
     {
-        _host = hostHeader.value(0);
+        URI uri = new URI(hostHeader.value());
+        
+        _host = hostHeader.value();
     }
     
     public void addHeaders(Headers headers)

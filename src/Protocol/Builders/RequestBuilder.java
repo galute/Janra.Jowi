@@ -21,10 +21,13 @@ import Protocol.Models.*;
 import Protocol.Parsers.*;
 import Server.IHeader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -97,10 +100,9 @@ public class RequestBuilder implements IRequestBuilder
         }
         catch (ProtocolException ex)
         {
-            // Todo pass ex message for response body?
             return new HttpContext(ex.ResponseStatus);
         }
-        catch (IOException ex)
+        catch (IOException | URISyntaxException ex)
         {
             return new HttpContext(400);
         }

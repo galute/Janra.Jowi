@@ -20,7 +20,9 @@ import Protocol.Models.Header;
 import Protocol.Models.Headers;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
+import java.net.URISyntaxException;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -45,5 +47,20 @@ public class HttpRequestTests
         
         assertTrue(first.header("Second Header") == null);
         
+    }
+    
+    @Test
+    public void ThrowsIfIvalidHostUri()
+    {
+        try
+        {
+            HttpRequest request = new HttpRequest(HttpMethod.POST, "first path","first version");
+            request.addHost(new Header("Host", "@htp:?/my,baduri.co[.]uk"));
+            fail("Expected Exception not thrown");
+        }
+        catch (Exception ex)
+        {
+            assertTrue(ex instanceof URISyntaxException);
+        }
     }
 }
