@@ -19,7 +19,6 @@ package Network.Wrappers;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 
 /**
  *
@@ -28,7 +27,6 @@ import java.nio.charset.Charset;
 public class SocketChannelWrapper implements ISocketChannel
 {
     SocketChannel _socket;
-    Charset _charset=Charset.forName("ISO-8859-1");
     
     public SocketChannelWrapper(SocketChannel socket)
     {

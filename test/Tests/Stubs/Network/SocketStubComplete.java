@@ -38,7 +38,7 @@ public class SocketStubComplete implements ISocketChannel
         NumReads++;
         Integer bytes = buffer.remaining();
         
-        String toReturn = "";
+        String toReturn;
         
         if (bytes < bytesToRead.length())
         {

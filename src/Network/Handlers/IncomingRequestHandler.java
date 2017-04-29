@@ -25,7 +25,6 @@ import Protocol.Parsers.ProtocolException;
 import Request.Processing.IMarshaller;
 import Request.Processing.ISendResponse;
 import Server.IConfiguration;
-import Server.IExceptionHandler;
 import Utilities.ILauncher;
 import java.io.IOException;
 

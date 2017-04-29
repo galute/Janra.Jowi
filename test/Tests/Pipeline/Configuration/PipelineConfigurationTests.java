@@ -20,7 +20,6 @@ import Tests.Stubs.Middleware.MiddlewareStubTwo;
 import Tests.Stubs.Middleware.MiddlewareStubThree;
 import Tests.Stubs.Middleware.MiddlewareStub;
 import Pipeline.Configuration.PipelineConfiguration;
-import Tests.Protocol.Processing.*;
 import Tests.Stubs.Processing.PipelineBuilderStub;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;

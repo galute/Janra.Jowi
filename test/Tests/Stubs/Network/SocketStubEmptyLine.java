@@ -36,7 +36,7 @@ public class SocketStubEmptyLine implements ISocketChannel
         NumReads++;
         Integer bytes = buffer.remaining();
         
-        String toReturn = "";
+        String toReturn;
         
         if (bytes < bytesToRead.length())
         {
