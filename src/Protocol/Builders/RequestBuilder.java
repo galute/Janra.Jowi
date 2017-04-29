@@ -111,6 +111,16 @@ public class RequestBuilder implements IRequestBuilder
                         headers.addHeader(header);
                     }
                 }
+                else if ("transfer-encoding".equals(header.key().toLowerCase()))
+                {
+                    headers.remove("content-length");
+                    headers.addHeader(header);
+                }
+                else if ("content-length".equals(header.key().toLowerCase()) &&
+                         headers.get("transfer-encoding") == null)
+                {
+                    headers.addHeader(header);
+                }
                 else
                 {
                     headers.addHeader(header);

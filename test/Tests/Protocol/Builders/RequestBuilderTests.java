@@ -168,6 +168,19 @@ public class RequestBuilderTests
     }
     
     @Test
+    public void ContentLengthIgnoredForTransferEncoding()
+    {
+        IParser parser = new Parser();
+        _unitUnderTest = new RequestBuilder(parser);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 12\r\nTransfer-Encoding: chunked\r\n\r\nhello\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.request().header("content-length") == null);
+        assertTrue(context.request().header("transfer-encoding") != null);
+    }
+    
+    @Test
     public void RequestBodyAddedToRequest()
     {
         try
