@@ -54,6 +54,11 @@ public class Headers
         }
     }
     
+    public void remove(String key)
+    {
+        _headers.remove(key);
+    }
+    
     public IHeader get(String key)
     {
         if (key == null)

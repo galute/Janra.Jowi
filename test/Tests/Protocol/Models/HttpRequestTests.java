@@ -20,6 +20,7 @@ import Protocol.Models.Header;
 import Protocol.Models.Headers;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
+import Protocol.Models.RequestBody;
 import java.net.URISyntaxException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,23 +35,39 @@ public class HttpRequestTests
     @Test
     public void CopyConstructorDoesNotKeepReferences()
     {
-        Headers firstHeaders = new Headers();
-        Headers secondHeaders = new Headers();
-        firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
-        secondHeaders.addHeader(Header.create("Second Header", "Second Header Value"));
-        
-        HttpRequest first = new HttpRequest(HttpMethod.POST, "first path","first version");
-        first.addHeaders(firstHeaders);
-        
-        HttpRequest second = new HttpRequest(first);
-        second.addHeaders(secondHeaders);
-        
-        assertTrue(first.header("Second Header") == null);
+        try
+        {
+            Headers firstHeaders = new Headers();
+            Headers secondHeaders = new Headers();
+            byte[] bodyBytes1 = "hello".getBytes("UTF-8");
+            byte[] bodyBytes2 = "goodbye".getBytes("UTF-8");
+
+            RequestBody body = new RequestBody(bodyBytes1);
+            firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
+            secondHeaders.addHeader(Header.create("Second Header", "Second Header Value"));
+
+            HttpRequest first = new HttpRequest(HttpMethod.POST, "first path","first version");
+            first.setBody(body);
+            first.addHeaders(firstHeaders);
+
+            HttpRequest second = new HttpRequest(first);
+            second.addHeaders(secondHeaders);
+
+            assertTrue(first.header("Second Header") == null);
+            
+            second.setBody(new RequestBody(bodyBytes2));
+            
+            assertTrue("hello".equals(first.body().asString("UTF-8")));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
         
     }
     
     @Test
-    public void ThrowsIfIvalidHostUri()
+    public void ThrowsIfInvalidHostUri()
     {
         try
         {

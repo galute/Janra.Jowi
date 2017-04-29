@@ -20,9 +20,10 @@ import Tests.Stubs.Network.*;
 import Protocol.Parsers.ProtocolException;
 import Protocol.Builders.RequestBuilder;
 import Protocol.Models.HttpContext;
+import Protocol.Parsers.IParser;
+import Protocol.Parsers.Parser;
 import Tests.Stubs.Protocol.ParserStub;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -114,7 +115,28 @@ public class RequestBuilderTests
     }
     
     @Test
-    public void ThrowsIfMoreThanOneHostHeader()
+    public void AddsHostToContext()
+    {
+        IParser parser = new Parser();
+        _unitUnderTest = new RequestBuilder(parser);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        assertTrue("123".equals(context.request().host()));
+    }
+    
+    @Test
+    public void HostHeaderNotInHeadersList()
+    {
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.request().header("host") == null);
+    }
+    
+    @Test
+    public void BadRequestIfMoreThanOneHostHeader()
     {
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nHost: 456\r\n\r\n");
@@ -124,12 +146,43 @@ public class RequestBuilderTests
     }
     
     @Test
-    public void ThrowsIfMissingOneHostHeader()
+    public void BadRequestIfMissingHostHeader()
     {
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nheader1: 123\r\nheader2: 456\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
         
         assertTrue(context.response().status() == 400);
+    }
+    
+    @Test
+    public void BadRequestIfContentLengthNaN()
+    {
+        IParser parser = new Parser();
+        _unitUnderTest = new RequestBuilder(parser);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: ab\r\n\r\nhello\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.response().status() == 400);
+    }
+    
+    @Test
+    public void RequestBodyAddedToRequest()
+    {
+        try
+        {
+            IParser parser = new Parser();
+            _unitUnderTest = new RequestBuilder(parser);
+            SocketStubComplete socketStub = new SocketStubComplete();
+            socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 5\r\n\r\nhello\r\n");
+            HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+
+            assertTrue("hello".equals(context.request().body().asString("UTF-8")));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
     }
 }

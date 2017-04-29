@@ -31,6 +31,7 @@ public class HttpRequest implements Cloneable
     private final String _version;
     private String _host = "";
     private Headers _headers;
+    private RequestBody _body;
     
     public HttpRequest(HttpMethod method, String path, String version)
     {
@@ -48,6 +49,7 @@ public class HttpRequest implements Cloneable
         _version = request._version;
         _host = request._host;
         _headers = new Headers(request._headers);
+        _body = new RequestBody(request._body.raw());
     }
     
     public void addHost(IHeader hostHeader) throws URISyntaxException
@@ -60,6 +62,11 @@ public class HttpRequest implements Cloneable
     public void addHeaders(Headers headers)
     {
         _headers = headers;
+    }
+    
+    public void setBody(RequestBody body)
+    {
+        _body = body;
     }
     
     public HttpMethod method()
@@ -85,5 +92,10 @@ public class HttpRequest implements Cloneable
     public IHeader header(String name)
     {
         return _headers.get(name);
+    }
+    
+    public RequestBody body()
+    {
+        return _body;
     }
  }

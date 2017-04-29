@@ -52,7 +52,7 @@ public class SocketStubComplete implements ISocketChannel
             bytes = toReturn.length();
         }
         
-        buffer.put(toReturn.getBytes());
+        buffer.put(toReturn.getBytes("UTF-8"));
         
         return bytes;
     }

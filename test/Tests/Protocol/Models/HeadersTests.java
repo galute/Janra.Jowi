@@ -75,6 +75,15 @@ public class HeadersTests
     }
     
     @Test
+    public void HeaderCanBeRemoved()
+    {
+        Headers headers = new Headers();
+        headers.addHeader(Header.create("test", "value"));
+        headers.remove("test");
+        assertTrue(headers.get("test") == null);
+    }
+    
+    @Test
     public void OnlyOneContentHeaderType()
     {
         Headers headers = new Headers();

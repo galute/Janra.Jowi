@@ -26,8 +26,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -54,44 +52,18 @@ public class RequestBuilder implements IRequestBuilder
             
             Boolean finished = false;
             Boolean hasHostHeader = false;
-            Headers headers = new Headers();
+            Headers headers = getHeaders(channel);
             
-            while (!finished)
-            {
-                String headerLine = readLine(channel);
-                if (headerLine.isEmpty())
-                {
-                    finished = true;
-                }
-                else
-                {
-                    IHeader header = _parser.ParseHeader(headerLine);
-                    if ("host".equals(header.key().toLowerCase()))
-                    {
-                        if (hasHostHeader)
-                        {
-                            //rfc7230 section 5.4
-                            // A server MUST respond with a 400 (Bad Request) status code to any
-                            // HTTP/1.1 request message that lacks a Host header field and to any
-                            // request message that contains more than one Host header field or a
-                            // Host header field with an invalid field-value.
-                            throw new ProtocolException("Multiple Host headers not allowed", 400);
-                        }
-                        else
-                        {
-                            request.addHost(header);
-                        }
-                    }
-                    else
-                    {
-                        headers.addHeader(header);
-                    }
-                }
-            }
             
-            if (!hasHostHeader)
+            request.addHost(headers.get("host"));
+            
+            headers.remove("host");
+            
+            IHeader contentLen = headers.get("content-length");
+            
+            if (contentLen != null)
             {
-                throw new ProtocolException("Host header is missing", 400);
+                request.setBody(getBody(channel, contentLen.value()));
             }
             
             request.addHeaders(headers);
@@ -108,11 +80,59 @@ public class RequestBuilder implements IRequestBuilder
         }
     }
     
+    private Headers getHeaders(ISocketChannel channel) throws ProtocolException, IOException
+    {
+        Boolean finished = false;
+        Boolean hasHostHeader = false;
+        Headers headers = new Headers();
+
+        while (!finished)
+        {
+            String headerLine = readLine(channel);
+            if (headerLine.isEmpty())
+            {
+                finished = true;
+            }
+            else
+            {
+                IHeader header = _parser.ParseHeader(headerLine);
+                if ("host".equals(header.key().toLowerCase()))
+                {
+                    if (hasHostHeader)
+                    {
+                        //rfc7230 section 5.4
+                        // A server MUST respond with a 400 (Bad Request) status code to any
+                        // HTTP/1.1 request message that lacks a Host header field and to any
+                        // request message that contains more than one Host header field or a
+                        // Host header field with an invalid field-value.
+                        throw new ProtocolException("Multiple Host headers not allowed", 400);
+                    }
+                    else
+                    {
+                        hasHostHeader = true;
+                        headers.addHeader(header);
+                    }
+                }
+                else
+                {
+                    headers.addHeader(header);
+                }
+            }
+        }
+
+        if (!hasHostHeader)
+        {
+            throw new ProtocolException("Host header is missing", 400);
+        }
+
+        return headers;
+    }
+    
     public String readLine(ISocketChannel channel) throws IOException, ProtocolException
     {
         Boolean endOfLine = false;
         Boolean endStart = false;
-        CharBuffer buffer = CharBuffer.allocate(2048);
+        CharBuffer buffer = CharBuffer.allocate(2048); // TODO Is this enough ?
         
         while (!endOfLine)
         {
@@ -154,5 +174,35 @@ public class RequestBuilder implements IRequestBuilder
         }
         buffer.flip();
         return new StringBuilder(buffer).toString();
+    }
+
+    private RequestBody getBody(ISocketChannel channel, String value) throws ProtocolException, IOException
+    {
+        try
+        {
+            Boolean finished = false;
+            Integer length = Integer.parseInt(value);
+            
+            ByteBuffer bbuffer = ByteBuffer.allocate(length);
+            
+            while (!finished)
+            {
+                channel.read(bbuffer);
+                
+                if (!bbuffer.hasRemaining())
+                {
+                    finished = true;
+                }
+            }
+            if (!bbuffer.hasArray())
+            {
+                throw new ProtocolException("Failed to read body", 400); // TODO Find more apppropriate status for this
+            }
+            return new RequestBody(bbuffer.array());
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new ProtocolException("Invalid content-length", 400);
+        }
     }
 }
