@@ -86,7 +86,8 @@ public class ResponseImpl implements HttpResponse
     
     public String getRaw() throws ProtocolException
     {
-        Boolean hasContentType = false;
+        Boolean needsContentType = true;
+        Boolean needsContentLength = true;
         // Not supporting keep-alive at the moment
         String retVal = "Connection: close\r\n";
         
@@ -112,7 +113,12 @@ public class ResponseImpl implements HttpResponse
             
             if ("content-type".equals(((String)pair.getKey()).toLowerCase()))
             {
-                hasContentType = true;
+                needsContentType = false;
+            }
+            
+            if ("transfer-encoding".equals(((String)pair.getKey()).toLowerCase()))
+            {
+                needsContentLength = false;
             }
             
             iter.remove();
@@ -120,12 +126,15 @@ public class ResponseImpl implements HttpResponse
         
         if (!_body.isEmpty() && _bodyIsValid)
         {
-            if (!hasContentType)
+            if (needsContentType)
             {
                 retVal = retVal + "Content-type: text/plain; charset=UTF-8\r\n";
             }
             
-            retVal = MessageFormat.format("{0}Content-Length: {1}\r\n\r\n", retVal, _body.length());
+            if (needsContentLength)
+            {
+                retVal = MessageFormat.format("{0}Content-Length: {1}\r\n\r\n", retVal, _body.length());
+            }
             
             if (!_headRequest)
             {

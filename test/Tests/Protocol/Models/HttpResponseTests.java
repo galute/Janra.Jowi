@@ -116,6 +116,26 @@ public class HttpResponseTests
         }
     }
     
+    // rfc7230 3.3.2
+    // A sender MUST NOT send a Content-Length header field in any message
+    // that contains a Transfer-Encoding header field.
+    @Test
+    public void DoesNotReturnContentLengthIfTransferEncodingSet()
+    {
+        try
+        {
+            _unitUnderTest.setBody("TestBody");
+            _unitUnderTest.addHeader(Header.create("Transfer-Encoding","chunked"));
+            String result = _unitUnderTest.getRaw();
+            assertTrue(result.contains("Transfer-Encoding: chunked"));
+            assertFalse(result.contains("Content-Length"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
     @Test
     public void ReturnsAllSetHeaders()
     {
