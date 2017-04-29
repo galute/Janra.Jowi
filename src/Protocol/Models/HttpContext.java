@@ -16,6 +16,8 @@
  */
 package Protocol.Models;
 
+import Server.HttpResponse;
+
 /**
  *
  * @author jmillen
@@ -23,18 +25,28 @@ package Protocol.Models;
 public class HttpContext
 {
     private final HttpRequest _request;
-    private final HttpResponse _response;
+    private final ResponseImpl _response;
     
     public HttpContext(Integer status)
     {
         _request = null;
-        _response = new HttpResponse(status);
+        _response = new ResponseImpl(status);
     }
     
     public HttpContext(HttpRequest request)
     {
         _request = request;
-        _response = new HttpResponse();
+        _response = new ResponseImpl();
+        
+        if (_request.method() == HttpMethod.CONNECT)
+        {
+            _response.bodyIsInvalid();
+        }
+        
+        if (_request.method() == HttpMethod.HEAD)
+        {
+            _response.isHeadRequest();
+        }
     }
     
     public HttpRequest request()

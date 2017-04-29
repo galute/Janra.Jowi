@@ -16,6 +16,7 @@
  */
 package Protocol.Models;
 
+import Server.HttpResponse;
 import Protocol.Parsers.ProtocolException;
 import Server.IHeader;
 import java.text.MessageFormat;
@@ -26,19 +27,21 @@ import java.util.Map;
  *
  * @author jmillen
  */
-public class HttpResponse
+public class ResponseImpl implements HttpResponse
 {
     private Integer _status;
     private final Headers _headers;
     private String _body = "";
+    private Boolean _bodyIsValid = true;
+    private Boolean _headRequest = false;
     
-    public HttpResponse()
+    public ResponseImpl()
     {
         this._headers = new Headers();
         _status = 200;
     }
     
-    public HttpResponse(Integer status)
+    public ResponseImpl(Integer status)
     {
         this._headers = new Headers();
         _status = status;
@@ -47,6 +50,16 @@ public class HttpResponse
     public void setStatus(Integer status)
     {
         _status = status;
+    }
+    
+    public void bodyIsInvalid()
+    {
+        _bodyIsValid = false;
+    }
+    
+    public void isHeadRequest()
+    {
+        _headRequest = true;
     }
     
     public void setBody(String body)
@@ -66,6 +79,11 @@ public class HttpResponse
         // headers, e.g. Link
     }
     
+    public IHeader header(String name)
+    {
+        return _headers.get(name);
+    }
+    
     public String getRaw() throws ProtocolException
     {
         Boolean hasContentType = false;
@@ -80,6 +98,13 @@ public class HttpResponse
             
             if (!"connection".equals(((String)pair.getKey()).toLowerCase()))
             {
+                if (!_bodyIsValid && 
+                    ("content-length".equals(((String)pair.getKey()).toLowerCase()) || 
+                     "content-type".equals(((String)pair.getKey()).toLowerCase()) ||
+                     "transfer-encoding".equals(((String)pair.getKey()).toLowerCase())))
+                {
+                    continue;
+                }
                 //rfc7230 section 3.2 indicates header fieldname followed by a colon (:). This is followed by a value with optional leading and
                 // trailing whitespace on the value
                 retVal = retVal + MessageFormat.format("{0}: {1}\r\n", ((IHeader)pair.getValue()).key(), ((IHeader)pair.getValue()).value(0));
@@ -93,7 +118,7 @@ public class HttpResponse
             iter.remove();
         }
         
-        if (!_body.isEmpty())
+        if (!_body.isEmpty() && _bodyIsValid)
         {
             if (!hasContentType)
             {
@@ -101,7 +126,11 @@ public class HttpResponse
             }
             
             retVal = MessageFormat.format("{0}Content-Length: {1}\r\n\r\n", retVal, _body.length());
-            retVal = retVal + _body + "\r\n";
+            
+            if (!_headRequest)
+            {
+                retVal = retVal + _body + "\r\n";
+            }
         }
 
         return retVal;

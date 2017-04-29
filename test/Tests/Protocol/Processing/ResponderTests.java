@@ -16,7 +16,7 @@
  */
 package Tests.Protocol.Processing;
 
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import Request.Processing.Responder;
 import Tests.Stubs.Protocol.ResponseBuilderStub;
@@ -52,7 +52,7 @@ public class ResponderTests
         {
             _socket.setBytesToWrite(10);
             _builder.setResponse("1234567890");
-            _unitUnderTest.sendResponse(new HttpResponse(), _socket);
+            _unitUnderTest.sendResponse(new ResponseImpl(), _socket);
             assertTrue(_socket.NumWrites == 1);
         }
         catch (ProtocolException | IOException ex)
@@ -68,7 +68,7 @@ public class ResponderTests
         {
             _socket.setBytesToWrite(2);
             _builder.setResponse("1234567890");
-            _unitUnderTest.sendResponse(new HttpResponse(), _socket);
+            _unitUnderTest.sendResponse(new ResponseImpl(), _socket);
             assertTrue(_socket.NumWrites == 5);
         }
         catch (ProtocolException | IOException ex)

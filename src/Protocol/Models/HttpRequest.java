@@ -16,6 +16,10 @@
  */
 package Protocol.Models;
 
+import Protocol.Models.Headers;
+import Protocol.Models.HttpMethod;
+import Protocol.Models.RequestBody;
+import Server.IHeader;
 import Server.IHeader;
 import java.net.URI;
 import java.net.URISyntaxException;

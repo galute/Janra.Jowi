@@ -18,7 +18,7 @@ package Request.Processing;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Builders.IResponseBuilder;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import java.nio.ByteBuffer;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class Responder implements ISendResponse
     }
     
     @Override
-    public void sendResponse(HttpResponse response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException
+    public void sendResponse(ResponseImpl response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException
     {
         ByteBuffer buffer = _builder.BuildResponse(response);
         Integer retries = 0;

@@ -17,6 +17,7 @@
 
 package Protocol.Parsers;
 
+import Protocol.Models.HttpRequest;
 import Protocol.Models.*;
 import Server.IHeader;
 

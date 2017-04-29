@@ -84,4 +84,21 @@ public class HttpStatus
         
         return MessageFormat.format("{0} {1}", status.toString(), _codes.get(status));
     }
+    
+    public static Boolean isInformational(Integer status)
+    {
+        return firstDigit(status) == 1;
+    }
+    
+    private static Integer firstDigit(Integer status)
+    {
+        Integer value = status;
+        
+        while (value > 9)
+        {
+            value /= 10;
+        }
+        
+        return value;
+    }
 }

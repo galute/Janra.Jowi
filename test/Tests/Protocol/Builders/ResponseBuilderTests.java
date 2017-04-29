@@ -17,7 +17,7 @@
 package Tests.Protocol.Builders;
 
 import Protocol.Builders.ResponseBuilder;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
 public class ResponseBuilderTests
 {
     private ResponseBuilder _unitUnderTest;
-    private HttpResponse _response;
+    private ResponseImpl _response;
     
     @Before
     public void Setup()
     {
         _unitUnderTest = new ResponseBuilder();
-        _response = new HttpResponse();
+        _response = new ResponseImpl();
     }
     
     @Test
@@ -104,6 +104,60 @@ public class ResponseBuilderTests
             assertTrue(lines.length == 8);
             assertTrue(lines[5].isEmpty()); // empty line before body
             assertTrue(lines[7].isEmpty()); // last line must be empty
+        }
+        catch (ProtocolException | CharacterCodingException ex)
+        {
+            fail("Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesNotReturnBodyForInformationStatus()
+    {
+        try
+        {
+            _response.setBody("Body Test");
+            _response.setStatus(101);
+            ByteBuffer result = _unitUnderTest.BuildResponse(_response);
+            String resultStr = new String(result.array());
+            
+            assertFalse(resultStr.contains("Body Test"));
+        }
+        catch (ProtocolException | CharacterCodingException ex)
+        {
+            fail("Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesNotReturnBodyFor204Status()
+    {
+        try
+        {
+            _response.setBody("Body Test");
+            _response.setStatus(204);
+            ByteBuffer result = _unitUnderTest.BuildResponse(_response);
+            String resultStr = new String(result.array());
+            
+            assertFalse(resultStr.contains("Body Test"));
+        }
+        catch (ProtocolException | CharacterCodingException ex)
+        {
+            fail("Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesNotReturnBodyFor304Status()
+    {
+        try
+        {
+            _response.setBody("Body Test");
+            _response.setStatus(304);
+            ByteBuffer result = _unitUnderTest.BuildResponse(_response);
+            String resultStr = new String(result.array());
+            
+            assertFalse(resultStr.contains("Body Test"));
         }
         catch (ProtocolException | CharacterCodingException ex)
         {

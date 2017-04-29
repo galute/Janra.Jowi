@@ -17,7 +17,7 @@
 package Tests.Stubs.Protocol;
 
 import Protocol.Builders.IResponseBuilder;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -31,7 +31,7 @@ public class ResponseBuilderStub implements IResponseBuilder
     private String _response;
     
     @Override
-    public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
+    public ByteBuffer BuildResponse(ResponseImpl response) throws ProtocolException, CharacterCodingException
     {
         return ByteBuffer.wrap(_response.getBytes());
     }

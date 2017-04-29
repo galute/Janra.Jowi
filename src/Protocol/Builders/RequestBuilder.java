@@ -16,6 +16,7 @@
  */
 package Protocol.Builders;
 
+import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.*;
 import Protocol.Parsers.*;
@@ -50,10 +51,7 @@ public class RequestBuilder implements IRequestBuilder
             String requestLine = readLine(channel);
             HttpRequest request = _parser.ParseRequestLine(requestLine);
             
-            Boolean finished = false;
-            Boolean hasHostHeader = false;
             Headers headers = getHeaders(channel);
-            
             
             request.addHost(headers.get("host"));
             

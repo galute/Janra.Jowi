@@ -17,7 +17,7 @@
 package Request.Processing;
 
 import Network.Wrappers.ISocketChannel;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
@@ -28,5 +28,5 @@ import java.nio.charset.CharacterCodingException;
  */
 public interface ISendResponse
 {
-    void sendResponse(HttpResponse response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException;
+    void sendResponse(ResponseImpl response, ISocketChannel channel) throws ProtocolException, CharacterCodingException, IOException;
 }

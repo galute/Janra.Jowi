@@ -14,30 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Processing;
+package Tests.Protocol.Models;
 
-import Network.Wrappers.ISocketChannel;
-import Protocol.Models.ResponseImpl;
-import Request.Processing.ISendResponse;
+import Protocol.Models.HttpStatus;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *
  * @author jmillen
  */
-public class SendResponseStub implements ISendResponse
+public class HttpStatusTests
 {
-    public Integer _numCalls = 0;
-    public ResponseImpl Response = null;
-    
-    @Override
-    public void sendResponse(ResponseImpl response, ISocketChannel channel)
+    @Test
+    public void IsInformationalTrueFor1xx()
     {
-        _numCalls++;
-        Response = response;
+        for (Integer status = 100; status < 200; status++)
+        {
+            assertTrue(HttpStatus.isInformational(status));
+        }
     }
     
-    public Integer numRequests()
+    @Test
+    public void isInformationFalseFor2xx3xx4xxAnd5xx()
     {
-        return _numCalls;
+        for (Integer status = 200; status < 600; status++)
+        {
+            assertFalse(HttpStatus.isInformational(status));
+        }
     }
 }

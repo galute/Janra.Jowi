@@ -20,6 +20,7 @@ import Tests.Stubs.Middleware.MiddlewareStubTwo;
 import Tests.Stubs.Middleware.MiddlewareStubThree;
 import Tests.Stubs.Middleware.MiddlewareStub;
 import Protocol.Models.HttpContext;
+import Protocol.Models.ResponseImpl;
 import Request.Processing.PipelineModule;
 import Request.Processing.RequestContext;
 import Server.IPipelineMiddleware;
@@ -55,7 +56,7 @@ public class PipelineModuleTests
         {
             _unitUnderTest.Invoke(_context);
         
-            String result = _context.getResponse().getRaw();
+            String result = ((ResponseImpl)_context.getResponse()).getRaw();
             assertTrue(result.contains("MiddlewareStub Body"));
             assertTrue(result.contains("Content-type: application/xml"));
         }
@@ -75,7 +76,7 @@ public class PipelineModuleTests
             PipelineModule module = new PipelineModule(middleware2);
             _unitUnderTest = new PipelineModule(_middleware, module);
             _unitUnderTest.Invoke(_context);
-            String result = _context.getResponse().getRaw();
+            String result = ((ResponseImpl)_context.getResponse()).getRaw();
             assertFalse(result.contains("MiddlewareStub Body"));
             assertFalse(result.contains("Content-type: application/xml"));
             assertTrue(result.contains("MiddlewareStubTwo Body"));
@@ -97,7 +98,7 @@ public class PipelineModuleTests
             _middleware = new MiddlewareStubTwo();
             _unitUnderTest = new PipelineModule(_middleware, module);
             _unitUnderTest.Invoke(_context);
-            String result = _context.getResponse().getRaw();
+            String result = ((ResponseImpl)_context.getResponse()).getRaw();
             assertTrue(result.contains("MiddlewareStubThree Body"));
             assertTrue(result.contains("Content-type: application/xml"));
         }

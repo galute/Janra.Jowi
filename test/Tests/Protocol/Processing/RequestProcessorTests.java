@@ -19,6 +19,7 @@ package Tests.Protocol.Processing;
 import Protocol.Models.HttpContext;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
+import Protocol.Models.ResponseImpl;
 import Request.Processing.RequestProcessor;
 import Tests.Stubs.Processing.*;
 import org.junit.*;
@@ -49,7 +50,7 @@ public class RequestProcessorTests
         
         try
         {
-            String raw = result.response().getRaw();
+            String raw = ((ResponseImpl)result.response()).getRaw();
             
             assertTrue(result.response().status() == 503);
             assertTrue(raw.contains("Content-type: application/xml"));

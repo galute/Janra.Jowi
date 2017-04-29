@@ -17,7 +17,7 @@
 package Tests.Protocol.Models;
 
 import Protocol.Models.Header;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -30,12 +30,12 @@ import org.junit.Test;
  */
 public class HttpResponseTests
 {
-    private HttpResponse _unitUnderTest;
+    private ResponseImpl _unitUnderTest;
     
     @Before
     public void setup()
     {
-        _unitUnderTest = new HttpResponse();
+        _unitUnderTest = new ResponseImpl();
     }
     
     @Test
@@ -216,6 +216,87 @@ public class HttpResponseTests
             _unitUnderTest.addHeader(Header.create("connection", "keep-alive"));
             String result = _unitUnderTest.getRaw();
             assertTrue(result.contains("Connection: close"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesntIncludeContentLengthIfBodyFlagUnset()
+    {
+        try
+        {
+            _unitUnderTest.addHeader(Header.create("content-length", "12"));
+            _unitUnderTest.bodyIsInvalid();
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("content-length"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesntIncludeContentTypeIfBodyFlagUnset()
+    {
+        try
+        {
+            _unitUnderTest.addHeader(Header.create("content-type", "text/plain"));
+            _unitUnderTest.bodyIsInvalid();
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("content-length"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesntIncludeTransferEncodingIfBodyFlagUnset()
+    {
+        try
+        {
+            _unitUnderTest.addHeader(Header.create("transfer-encoding", "compress"));
+            _unitUnderTest.bodyIsInvalid();
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("content-length"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesntIncludeBodyIfBodyFlagUnset()
+    {
+        try
+        {
+            _unitUnderTest.setBody("Test Body");
+            _unitUnderTest.bodyIsInvalid();
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Test Body"));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void OnlyBodyMissingIfHeadRequestSet()
+    {
+        try
+        {
+            _unitUnderTest.setBody("Test Body");
+            _unitUnderTest.isHeadRequest();
+            String result = _unitUnderTest.getRaw();
+            assertFalse(result.contains("Test Body"));
+            assertTrue(result.contains("Content-Length"));
         }
         catch (Exception ex)
         {

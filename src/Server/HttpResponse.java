@@ -14,30 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Processing;
-
-import Network.Wrappers.ISocketChannel;
-import Protocol.Models.ResponseImpl;
-import Request.Processing.ISendResponse;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public class SendResponseStub implements ISendResponse
+public interface HttpResponse
 {
-    public Integer _numCalls = 0;
-    public ResponseImpl Response = null;
-    
-    @Override
-    public void sendResponse(ResponseImpl response, ISocketChannel channel)
-    {
-        _numCalls++;
-        Response = response;
-    }
-    
-    public Integer numRequests()
-    {
-        return _numCalls;
-    }
+    void setStatus(Integer status);
+    void setBody(String body);
+    Integer status();
+    void addHeader(IHeader header);
+    IHeader header(String name);
 }

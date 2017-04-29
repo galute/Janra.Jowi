@@ -17,6 +17,7 @@
 package Tests.Protocol.Processing;
 
 import Protocol.Models.HttpContext;
+import Protocol.Models.ResponseImpl;
 import Request.Processing.RequestContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -53,8 +54,8 @@ public class RequestContextTests
         try
         {
             _unitUnderTest.Properties().add("TestKey", "TestValue");
-            assertFalse(_httpContext.response().getRaw().contains("TestKey"));
-            assertFalse(_httpContext.response().getRaw().contains("TestValue"));
+            assertFalse(((ResponseImpl)_httpContext.response()).getRaw().contains("TestKey"));
+            assertFalse(((ResponseImpl)_httpContext.response()).getRaw().contains("TestValue"));
         }
         catch (Exception ex)
         {
@@ -75,7 +76,7 @@ public class RequestContextTests
         try
         {
             _unitUnderTest.setResponseBody("Test Body");
-            assertTrue(_httpContext.response().getRaw().contains("Test Body"));
+            assertTrue(((ResponseImpl)_httpContext.response()).getRaw().contains("Test Body"));
         }
         catch (Exception ex)
         {
@@ -89,7 +90,7 @@ public class RequestContextTests
         try
         {
             _unitUnderTest.addResponseHeader("TestHeaderKey", "TestHeaderValue");
-            assertTrue(_httpContext.response().getRaw().contains("TestHeaderKey: TestHeaderValue"));
+            assertTrue(((ResponseImpl)_httpContext.response()).getRaw().contains("TestHeaderKey: TestHeaderValue"));
         }
         catch (Exception ex)
         {

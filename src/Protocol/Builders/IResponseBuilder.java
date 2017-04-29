@@ -16,7 +16,7 @@
  */
 package Protocol.Builders;
 
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -27,5 +27,5 @@ import java.nio.charset.CharacterCodingException;
  */
 public interface IResponseBuilder
 {
-    ByteBuffer BuildResponse(HttpResponse response)  throws ProtocolException, CharacterCodingException;
+    ByteBuffer BuildResponse(ResponseImpl response)  throws ProtocolException, CharacterCodingException;
 }

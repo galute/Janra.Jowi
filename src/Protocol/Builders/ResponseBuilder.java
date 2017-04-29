@@ -16,7 +16,7 @@
  */
 package Protocol.Builders;
 
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Models.HttpStatus;
 import Protocol.Parsers.ProtocolException;
 import java.nio.ByteBuffer;
@@ -39,10 +39,17 @@ public class ResponseBuilder implements IResponseBuilder
     }
     
     @Override
-    public ByteBuffer BuildResponse(HttpResponse response) throws ProtocolException, CharacterCodingException
+    public ByteBuffer BuildResponse(ResponseImpl response) throws ProtocolException, CharacterCodingException
     {
         //rfc7230 section-3.1.2
         String statusLine = "HTTP/1.1 " + HttpStatus.getRaw(response.status()) + "\r\nServer: Jowi\r\n";
+        
+        if (response.status() == 204 ||
+            response.status() == 304 ||
+            HttpStatus.isInformational(response.status()))
+        {
+            response.bodyIsInvalid();
+        }
         
         return _encoder.encode(CharBuffer.wrap(statusLine + response.getRaw()));
     } 

@@ -111,7 +111,7 @@ public class RequestHandler implements Runnable
                 {
                     if (context != null)
                     {
-                        _responder.sendResponse(context.response(), channel);
+                        _responder.sendResponse((ResponseImpl)context.response(), channel);
                     }
                     channel.close();
                 }

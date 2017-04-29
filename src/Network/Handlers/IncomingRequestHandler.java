@@ -20,7 +20,7 @@ import Network.Factories.IRequestHandlerFactory;
 import Network.ISocketServer;
 import Network.Wrappers.*;
 import Pipeline.Configuration.Configuration;
-import Protocol.Models.HttpResponse;
+import Protocol.Models.ResponseImpl;
 import Protocol.Parsers.ProtocolException;
 import Request.Processing.IMarshaller;
 import Request.Processing.ISendResponse;
@@ -93,7 +93,7 @@ public class IncomingRequestHandler implements Runnable
 
                             if (result == -1)
                             {
-                                HttpResponse response = new HttpResponse(503);
+                                ResponseImpl response = new ResponseImpl(503);
                                 _responder.sendResponse(response, channel);
                                 channel.close();
                             }
