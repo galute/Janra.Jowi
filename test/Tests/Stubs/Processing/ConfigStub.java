@@ -17,6 +17,7 @@
 package Tests.Stubs.Processing;
 
 import Server.IConfiguration;
+import Server.IExceptionHandler;
 import Server.IPipelineMiddleware;
 
 /**
@@ -54,5 +55,11 @@ public class ConfigStub implements IConfiguration
     public Integer maxThreads()
     {
         return _maxThreads;
+    }
+
+    @Override
+    public void registerExceptionHandler(IExceptionHandler handler)
+    {
+        // Do nothing
     }
 }

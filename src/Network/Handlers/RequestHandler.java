@@ -22,11 +22,9 @@ import Protocol.Builders.IRequestBuilder;
 import Protocol.Parsers.ProtocolException;
 import Request.Processing.IProcessRequest;
 import Request.Processing.ISendResponse;
+import Server.IExceptionHandler;
 import Utilities.ILauncher;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -40,10 +38,10 @@ public class RequestHandler implements Runnable
     private final IRequestBuilder _builder;
     private final IProcessRequest _processor;
     private final ISendResponse _responder;
-    private final Charset _charset=Charset.forName("ISO-8859-1");
+    private final IExceptionHandler _handler;
     
     
-    public RequestHandler(ISelector selector, ISocketChannel channel, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder, long timeout, ILauncher launcher) throws IOException
+    public RequestHandler(ISelector selector, ISocketChannel channel, IRequestBuilder builder, IProcessRequest processor, ISendResponse responder, long timeout, ILauncher launcher, IExceptionHandler handler) throws IOException
     {
         _selector = selector;
         _builder = builder;
@@ -51,6 +49,7 @@ public class RequestHandler implements Runnable
         _responder = responder;
         _timeout = timeout;
         _launcher = launcher;
+        _handler = handler;
         
         selector.registerForReads(channel);
     }
@@ -102,8 +101,7 @@ public class RequestHandler implements Runnable
             {
                 context.response().setStatus(500);
             }
-            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, "Failed to handle request: ", ex);
-
+            _handler.HandleException(ex);
         }
         finally
         {
@@ -120,8 +118,9 @@ public class RequestHandler implements Runnable
             }
             catch (ProtocolException | IOException ex)
             {
-                Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, "Failed to send response: ", ex);
+                _handler.HandleException(ex);
             }
+            
             _launcher.threadFinished();
         }
     }

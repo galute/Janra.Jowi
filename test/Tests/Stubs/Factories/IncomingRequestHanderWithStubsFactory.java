@@ -35,7 +35,7 @@ public class IncomingRequestHanderWithStubsFactory
     public static IncomingRequestHandler create(SocketServer socketServer, Integer port, ILauncher launcher, ISendResponse responder) throws IOException
     {
         IMarshaller marshaller = new MarshallerStub();
-        IConfiguration config = new ConfigStub();
+        IConfiguration config = ConfigurationStubFactory.Create();
         IRequestHandlerFactory factory = new RequestHandlerStubFactory();
         return new IncomingRequestHandler(factory, socketServer, launcher, port, config, marshaller, responder);
     }

@@ -17,6 +17,7 @@
 package Network.Factories;
 
 import Network.Wrappers.ISocketChannel;
+import Pipeline.Configuration.Configuration;
 import Request.Processing.IMarshaller;
 import Utilities.ILauncher;
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.io.IOException;
 public class RequestHandlerFactoryWrapper implements IRequestHandlerFactory
 {
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
+    public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
     {
-        return RequestHandlerFactory.create(channel, marshaller, timeout, launcher);
+        return RequestHandlerFactory.create(channel, marshaller, config, launcher);
     }
 }

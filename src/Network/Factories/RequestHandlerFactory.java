@@ -18,6 +18,7 @@ package Network.Factories;
 
 import Network.Handlers.RequestHandler;
 import Network.Wrappers.*;
+import Pipeline.Configuration.Configuration;
 import Protocol.Builders.*;
 import Protocol.Parsers.*;
 import Request.Processing.*;
@@ -30,7 +31,7 @@ import java.io.IOException;
  */
 public class RequestHandlerFactory
 {
-    static public Runnable create(ISocketChannel channel, IMarshaller marshaller, long timeout, ILauncher launcher) throws IOException
+    static public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
     {
         IParser parser = new Parser();
         ISelector selector = new SelectorWrapper();
@@ -39,6 +40,6 @@ public class RequestHandlerFactory
 
         IProcessRequest requestProcessor = new RequestProcessor(marshaller);
         ISendResponse responder = new Responder(responseBuilder);
-        return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, timeout, launcher);
+        return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, config.timeout(), launcher, config.handler());
     }
 }

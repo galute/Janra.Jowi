@@ -49,7 +49,7 @@ public class HttpRequest implements Cloneable
         _version = request._version;
         _host = request._host;
         _headers = new Headers(request._headers);
-        _body = new RequestBody(request._body.raw());
+        _body = request._body == null ? null : new RequestBody(request._body.raw());
     }
     
     public void addHost(IHeader hostHeader) throws URISyntaxException

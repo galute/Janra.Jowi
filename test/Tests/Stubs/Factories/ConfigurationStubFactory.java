@@ -14,19 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Server;
+package Tests.Stubs.Factories;
 
-import org.junit.Test;
+import Pipeline.Configuration.Configuration;
+import Tests.Stubs.Pipeline.ExceptionHandlerStub;
+import Tests.Stubs.Pipeline.PipelineConfigStub;
 
 /**
  *
  * @author jmillen
  */
-public class ServerTests
+public class ConfigurationStubFactory
 {
-    @Test
-    public void StartsIncomingRequestHandler()
+    public static ExceptionHandlerStub Handler;
+    static public Configuration Create()
     {
-        
+        Handler = new ExceptionHandlerStub();
+        return new Configuration(new PipelineConfigStub(), Handler);
     }
 }

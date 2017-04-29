@@ -16,8 +16,11 @@
  */
 package Tests.Network;
 
+import Network.Factories.ConfigurationFactory;
 import Network.Handlers.RequestHandler;
+import Pipeline.Configuration.Configuration;
 import Request.Processing.IProcessRequest;
+import Tests.Stubs.Pipeline.PipelineConfigStub;
 import Tests.Stubs.Network.SelectorKeyStub;
 import Tests.Stubs.Network.SelectorStub;
 import Tests.Stubs.Network.SocketStubComplete;
@@ -45,14 +48,14 @@ public class RequestHandlerTests
     private IProcessRequest _processor;
     private SendResponseStub _responder;
     private LauncherStub _launcher;
-    private final long _timeout = 500;
+    private Configuration _config;
     
     
     public void WhenRunningHandler(SelectorKeyStub keyStub)
     {
         try
         {
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             Thread thread = new Thread(_unitUnderTest);
             thread.start();
         }
@@ -79,6 +82,7 @@ public class RequestHandlerTests
         _selectorStub = new SelectorStub();
         _socketStub = new SocketStubComplete();
         _launcher = new LauncherStub();
+        _config = ConfigurationFactory.Create(new PipelineConfigStub());
     }
     
     @Test
@@ -87,7 +91,7 @@ public class RequestHandlerTests
         try
         {
             WhenSelectorKeyFlagsAreSet(false, false, false);
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             assertTrue(_selectorStub._registeredForRead == 1);
         }
         catch (Exception ex)
@@ -102,7 +106,7 @@ public class RequestHandlerTests
         try
         {
             WhenSelectorKeyFlagsAreSet(false, false, false);
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             _unitUnderTest.run();
 
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
@@ -121,7 +125,7 @@ public class RequestHandlerTests
         {
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _builder.Status = 400;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             _unitUnderTest.run();
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 0);
             assertTrue(_responder.numRequests() == 1);
@@ -139,7 +143,7 @@ public class RequestHandlerTests
         {
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _builder.Status = 200;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             _unitUnderTest.run();
             assertTrue(((ProcessRequestStub)_processor).numRequests() == 1);
             assertTrue(_responder.numRequests() == 1);
@@ -158,7 +162,7 @@ public class RequestHandlerTests
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _processor = new ProcessRequestExceptionStub();
             _builder.Status = 200;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             _unitUnderTest.run();
             assertTrue(_responder.Response != null);
             assertTrue(_responder.Response.status() == 500);
@@ -176,7 +180,7 @@ public class RequestHandlerTests
         {
             WhenSelectorKeyFlagsAreSet(false, true, true);
             _builder.Status = 200;
-            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _timeout, _launcher);
+            _unitUnderTest = new RequestHandler(_selectorStub, _socketStub, _builder, _processor, _responder, _config.timeout(), _launcher, _config.handler());
             _unitUnderTest.run();
             assertTrue(_launcher.NumFinished == 1);
         }

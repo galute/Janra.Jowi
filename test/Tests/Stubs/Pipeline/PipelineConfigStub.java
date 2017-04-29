@@ -14,27 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Factories;
+package Tests.Stubs.Pipeline;
 
-import Network.Factories.IRequestHandlerFactory;
-import Network.Wrappers.ISocketChannel;
-import Pipeline.Configuration.Configuration;
-import Request.Processing.IMarshaller;
-import Tests.Stubs.Network.RequestHandlerStub;
-import Utilities.ILauncher;
-import java.io.IOException;
+import Server.IPipelineConfiguration;
+import Server.IPipelineMiddleware;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerStubFactory implements IRequestHandlerFactory
+public class PipelineConfigStub implements IPipelineConfiguration
 {
 
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
+    public void addMiddleware(String path, IPipelineMiddleware middleware)
     {
-        return new RequestHandlerStub();
+
     }
-    
 }

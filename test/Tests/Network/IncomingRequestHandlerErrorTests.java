@@ -16,7 +16,9 @@
  */
 package Tests.Network;
 
+import Tests.Stubs.Factories.ConfigurationStubFactory;
 import java.io.IOException;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -34,7 +36,6 @@ public class IncomingRequestHandlerErrorTests extends NetworkContext
         try
         {
             GivenConfiguredFailingServer();
-            WhenAcceptingRequests();
         }
         catch (Exception ex)
         {
@@ -44,13 +45,16 @@ public class IncomingRequestHandlerErrorTests extends NetworkContext
     
     
     @Test
-    public void GracefullyTerminatesOnException() throws InterruptedException
+    public void DoesNotTerminatesOnException() throws InterruptedException
     {
         try
         {
             WhenAcceptingRequests();
             Thread.sleep(100L);
-            assertTrue(_processor.isStopped());
+            assertFalse(_processor.isStopped());
+            assertTrue(ConfigurationStubFactory.Handler.Exception instanceof IOException);
+            assertTrue("This is a test".equals(ConfigurationStubFactory.Handler.Exception.getMessage()));
+            _processor.Stop();
             
         }
         catch (IOException ex)

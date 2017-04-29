@@ -32,6 +32,8 @@ import java.io.IOException;
 public class Server
 {
     PipelineConfiguration _pipelineConfig;
+    IncomingRequestHandler _handler;
+    
     
     public Server()
     {
@@ -44,8 +46,16 @@ public class Server
         IRequestHandlerFactory factory = new RequestHandlerFactoryWrapper();
         IResponseBuilder responseBuilder = new ResponseBuilder();
         ISendResponse responder = new Responder(responseBuilder);
-        IncomingRequestHandler handler = new IncomingRequestHandler(factory, ServerFactory.Create(), launcher, port, config, marshaller, responder);
-        handler.run();
+        _handler = new IncomingRequestHandler(factory, ServerFactory.Create(), launcher, port, config, marshaller, responder);
+        _handler.run();
+    }
+    
+    public void stop()
+    {
+        if (_handler != null)
+        {
+            _handler.Stop();
+        }
     }
     
     public Configuration create()

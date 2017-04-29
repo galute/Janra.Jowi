@@ -14,27 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Factories;
+package Pipeline.Configuration;
 
-import Network.Factories.IRequestHandlerFactory;
-import Network.Wrappers.ISocketChannel;
-import Pipeline.Configuration.Configuration;
-import Request.Processing.IMarshaller;
-import Tests.Stubs.Network.RequestHandlerStub;
-import Utilities.ILauncher;
-import java.io.IOException;
+import Server.IExceptionHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerStubFactory implements IRequestHandlerFactory
+public class DefaultExceptionHandler implements IExceptionHandler
 {
-
     @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
+    public void HandleException(Exception ex)
     {
-        return new RequestHandlerStub();
+        Logger.getLogger("DefaultExceptionHandler").log(Level.SEVERE, "An uncaught exception was thrown", ex);
     }
-    
 }

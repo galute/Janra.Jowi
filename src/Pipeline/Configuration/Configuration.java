@@ -16,9 +16,7 @@
  */
 package Pipeline.Configuration;
 
-import Server.IConfiguration;
-import Server.IPipelineConfiguration;
-import Server.IPipelineMiddleware;
+import Server.*;
 
 /**
  *
@@ -28,12 +26,14 @@ public class Configuration implements IConfiguration
 {
     private long _timeout = 500;
     private Integer _maxThreads = 100;
+    private IExceptionHandler _handler;
     
     private final IPipelineConfiguration _pipelineConfig;
     
-    public Configuration(IPipelineConfiguration config)
+    public Configuration(IPipelineConfiguration config, IExceptionHandler handler)
     {
         _pipelineConfig = config;
+        _handler = handler;
     }
     
     @Override
@@ -64,5 +64,16 @@ public class Configuration implements IConfiguration
     public Integer maxThreads()
     {
         return _maxThreads;
+    }
+    
+    @Override
+    public void registerExceptionHandler(IExceptionHandler handler)
+    {
+        _handler = handler;
+    }
+    
+    public IExceptionHandler handler()
+    {
+        return _handler;
     }
 }

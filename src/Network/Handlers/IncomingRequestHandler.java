@@ -19,14 +19,15 @@ package Network.Handlers;
 import Network.Factories.IRequestHandlerFactory;
 import Network.ISocketServer;
 import Network.Wrappers.*;
+import Pipeline.Configuration.Configuration;
 import Protocol.Models.HttpResponse;
+import Protocol.Parsers.ProtocolException;
 import Request.Processing.IMarshaller;
 import Request.Processing.ISendResponse;
 import Server.IConfiguration;
+import Server.IExceptionHandler;
 import Utilities.ILauncher;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -42,6 +43,7 @@ public class IncomingRequestHandler implements Runnable
     private volatile boolean _stop = false;
     private final long _timeout;
     private final Integer _port;
+    private final Configuration _config;
     
     
     public IncomingRequestHandler(IRequestHandlerFactory factory, ISocketServer server, ILauncher launcher, Integer port, IConfiguration config, IMarshaller marshaller, ISendResponse responder) throws IOException
@@ -53,6 +55,7 @@ public class IncomingRequestHandler implements Runnable
         _marshaller = marshaller;
         _factory = factory;
         _responder = responder;
+        _config = (Configuration)config;
     }
     
     @Override
@@ -64,48 +67,53 @@ public class IncomingRequestHandler implements Runnable
 
             while (!_stop)
             {
-                ISelectorKeys keys = _server.Start(_timeout);
-                
-                if (keys == null)
+                try
                 {
-                    continue;
-                }
+                    ISelectorKeys keys = _server.Start(_timeout);
 
-                Boolean hasMoreKeys = true;
-                while (hasMoreKeys)
-                {
-                    ISelectorKey key = keys.getNext();
-
-                    if (key == null)
+                    if (keys == null)
                     {
-                        hasMoreKeys = false;
                         continue;
                     }
 
-                    if (key.isAcceptable())
+                    Boolean hasMoreKeys = true;
+                    while (hasMoreKeys)
                     {
-                        ISocketChannel channel = _server.Accept(key);
-                        long result = _launcher.launch(_factory.create(channel, _marshaller, _timeout, _launcher));
-                    
-                        if (result == -1)
+                        ISelectorKey key = keys.getNext();
+
+                        if (key == null)
                         {
-                            HttpResponse response = new HttpResponse(503);
-                            _responder.sendResponse(response, channel);
-                            channel.close();
+                            hasMoreKeys = false;
+                            continue;
+                        }
+
+                        if (key.isAcceptable())
+                        {
+                            ISocketChannel channel = _server.Accept(key);
+                            long result = _launcher.launch(_factory.create(channel, _marshaller, _config, _launcher));
+
+                            if (result == -1)
+                            {
+                                HttpResponse response = new HttpResponse(503);
+                                _responder.sendResponse(response, channel);
+                                channel.close();
+                            }
+                        }
+                        else
+                        {
+                            key.cancel();
                         }
                     }
-                    else
-                    {
-                        key.cancel();
-                    }
+                }
+                catch (IOException | ProtocolException ex)
+                {
+                    _config.handler().HandleException(ex);
                 }
             }
         }
         catch (Exception ex)
         {
-            Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, null, ex);
-            Stop();
-            Thread.currentThread().interrupt();
+            _config.handler().HandleException(ex);
         }
         finally
         {
@@ -115,7 +123,7 @@ public class IncomingRequestHandler implements Runnable
             } 
             catch (IOException ex)
             {
-                Logger.getLogger(IncomingRequestHandler.class.getName()).log(Level.SEVERE, "Exiting: ", ex);
+                _config.handler().HandleException(ex);
             }
         }
     }

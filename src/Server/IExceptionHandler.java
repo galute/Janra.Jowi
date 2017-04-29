@@ -14,27 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Stubs.Factories;
-
-import Network.Factories.IRequestHandlerFactory;
-import Network.Wrappers.ISocketChannel;
-import Pipeline.Configuration.Configuration;
-import Request.Processing.IMarshaller;
-import Tests.Stubs.Network.RequestHandlerStub;
-import Utilities.ILauncher;
-import java.io.IOException;
+package Server;
 
 /**
  *
  * @author jmillen
  */
-public class RequestHandlerStubFactory implements IRequestHandlerFactory
+public interface IExceptionHandler
 {
-
-    @Override
-    public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
-    {
-        return new RequestHandlerStub();
-    }
-    
+    void HandleException(Exception ex);
 }

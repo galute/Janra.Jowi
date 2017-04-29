@@ -25,6 +25,8 @@ public interface IConfiguration
     void setTimeout(Integer value); // in mS
     void setMaxThreads(Integer maxThreads);
     void addMiddleware(String path, IPipelineMiddleware middleware);
-    public long timeout();
-    public Integer maxThreads();
+    void registerExceptionHandler(IExceptionHandler handler);
+    long timeout();
+    Integer maxThreads();
+    
 }

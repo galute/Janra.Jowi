@@ -17,6 +17,7 @@
 package Network.Factories;
 
 import Pipeline.Configuration.Configuration;
+import Pipeline.Configuration.DefaultExceptionHandler;
 import Server.IPipelineConfiguration;
 
 /**
@@ -27,6 +28,6 @@ public class ConfigurationFactory
 {
     static public Configuration Create(IPipelineConfiguration builder)
     {
-        return new Configuration(builder);
+        return new Configuration(builder, new DefaultExceptionHandler());
     }
 }
