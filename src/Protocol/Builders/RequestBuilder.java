@@ -16,6 +16,7 @@
  */
 package Protocol.Builders;
 
+import Network.Handlers.ChunkedReader;
 import Network.Handlers.ContentLengthReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
@@ -59,12 +60,26 @@ public class RequestBuilder implements IRequestBuilder
             
             headers.remove("host");
             
-            IHeader contentLen = headers.get("content-length");
+            IHeader transferEncoding = headers.get("transfer-encoding");
             
-            if (contentLen != null)
+            if (transferEncoding != null)
             {
-                ContentLengthReader reader = new ContentLengthReader(contentLen);
+                ChunkedReader reader = new ChunkedReader();
                 request.setBody(reader.getBody(channel));
+            }
+            else
+            {
+                IHeader contentLen = headers.get("content-length");
+
+                if (contentLen != null)
+                {
+                    ContentLengthReader reader = new ContentLengthReader(contentLen);
+                    request.setBody(reader.getBody(channel));
+                }
+                else
+                {
+                    throw new ProtocolException("Both Transfer-Encoding and Content-Length missing", 400);
+                }
             }
             
             request.addHeaders(headers);
@@ -167,31 +182,34 @@ public class RequestBuilder implements IRequestBuilder
                 throw new IOException("Timeout after max retries of " + MaxRetries.toString());
             }
             
-            bbuffer.flip();
-        
-            
-            CharBuffer buff = _decoder.decode(bbuffer);
-            
-            char value = buff.charAt(0);
-            
-            switch (value)
+            if (szRead > 0)
             {
-                case '\r':
-                    endStart = true;
-                    break;
-                case '\n':
-                    if (endStart)
-                    {
-                        endOfLine = true;
-                    }
-                    else
-                    {
-                        throw new ProtocolException("Unexpected new line character", 400);
-                    }
-                    break;
-                default:
-                    endStart = false;
-                    buffer = buffer.put(value);
+                bbuffer.flip();
+
+
+                CharBuffer buff = _decoder.decode(bbuffer);
+
+                char value = buff.charAt(0);
+
+                switch (value)
+                {
+                    case '\r':
+                        endStart = true;
+                        break;
+                    case '\n':
+                        if (endStart)
+                        {
+                            endOfLine = true;
+                        }
+                        else
+                        {
+                            throw new ProtocolException("Unexpected new line character", 400);
+                        }
+                        break;
+                    default:
+                        endStart = false;
+                        buffer = buffer.put(value);
+                }
             }
         }
         buffer.flip();

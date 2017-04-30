@@ -190,7 +190,7 @@ public class RequestBuilderTests
         IParser parser = new Parser();
         _unitUnderTest = new RequestBuilder(parser);
         SocketStubComplete socketStub = new SocketStubComplete();
-        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 12\r\nTransfer-Encoding: chunked\r\n\r\nhello\r\n");
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 12\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
         
         assertTrue(context.request().header("content-length") == null);
