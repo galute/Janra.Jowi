@@ -24,6 +24,7 @@ import Protocol.Parsers.IParser;
 import Protocol.Parsers.Parser;
 import Tests.Stubs.Protocol.ParserStub;
 import java.io.IOException;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -86,6 +87,7 @@ public class RequestBuilderTests
             SocketStubBadNewLine socketStub = new SocketStubBadNewLine();
             socketStub.setBytestoRead(10);
             _unitUnderTest.readLine(socketStub);
+            fail("Expected exception not thrown");
         }
         catch (IOException | ProtocolException ex)
         {
@@ -137,7 +139,7 @@ public class RequestBuilderTests
         IParser parser = new Parser();
         _unitUnderTest = new RequestBuilder(parser);
         SocketStubComplete socketStub = new SocketStubComplete();
-        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\n\r\n");
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 0\r\n\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
         assertTrue("123".equals(context.request().host()));
     }
@@ -145,10 +147,12 @@ public class RequestBuilderTests
     @Test
     public void HostHeaderNotInHeadersList()
     {
+        IParser parser = new Parser();
+        _unitUnderTest = new RequestBuilder(parser);
         SocketStubComplete socketStub = new SocketStubComplete();
-        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\n\r\n");
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 0\r\n\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
-        
+        assertFalse(context.request() == null);
         assertTrue(context.request().header("host") == null);
     }
     
@@ -209,6 +213,57 @@ public class RequestBuilderTests
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
 
             assertTrue("hello".equals(context.request().body().asString("UTF-8")));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void ChunkedMustBeLastEncoding()
+    {
+        IParser parser = new Parser();
+        _unitUnderTest = new RequestBuilder(parser);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: chunked, gzip\r\n\r\nhello\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.response().status() == 400);
+    }
+    
+    @Test
+    public void ChunkedEncodingProcessed()
+    {
+        try
+        {
+            IParser parser = new Parser();
+            _unitUnderTest = new RequestBuilder(parser);
+            SocketStubComplete socketStub = new SocketStubComplete();
+            socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
+            HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+
+            assertFalse(context.request() == null);
+            assertTrue("hello".equals(context.request().body().asString("UTF-8")));
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void Returns501ForMultipleEncodingWithChunked()
+    {
+        try
+        {
+            IParser parser = new Parser();
+            _unitUnderTest = new RequestBuilder(parser);
+            SocketStubComplete socketStub = new SocketStubComplete();
+            socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: gzip, chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
+            HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+
+            assertTrue(context.response().status() == 501);
         }
         catch (Exception ex)
         {

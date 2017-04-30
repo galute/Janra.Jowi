@@ -64,8 +64,7 @@ public class RequestBuilder implements IRequestBuilder
             
             if (transferEncoding != null)
             {
-                ChunkedReader reader = new ChunkedReader();
-                request.setBody(reader.getBody(channel));
+                request.setBody(processEncoding(transferEncoding, channel));
             }
             else
             {
@@ -94,6 +93,36 @@ public class RequestBuilder implements IRequestBuilder
         {
             return new HttpContext(400);
         }
+    }
+    
+    private RequestBody processEncoding(IHeader header, ISocketChannel channel) throws ProtocolException, IOException
+    {
+        Boolean chunkedSet = false;
+        Integer occurences = header.occurences();
+        
+        for (int i = 0; i < occurences; i++)
+        {
+            if (header.value(i).equals("chunked"))
+            {
+                chunkedSet = true;
+            }
+            else if (chunkedSet)
+            {
+                throw new ProtocolException("Chunked must be last encoding", 400);
+            }
+        }
+        
+        if (chunkedSet && occurences > 1)
+        {
+            throw new ProtocolException("Not able to handle this yet",501);
+        }
+        
+        if (chunkedSet)
+        {
+            ChunkedReader reader = new ChunkedReader();
+            return reader.getBody(channel);
+        }
+        return null;
     }
     
     private Headers getHeaders(ISocketChannel channel) throws ProtocolException, IOException
