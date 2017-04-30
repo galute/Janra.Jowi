@@ -16,6 +16,7 @@
  */
 package Protocol.Builders;
 
+import Network.Handlers.ContentLengthReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.*;
@@ -34,6 +35,7 @@ import java.nio.charset.CharsetDecoder;
  */
 public class RequestBuilder implements IRequestBuilder
 {
+    private final Integer MaxRetries = 5;
     private final CharsetDecoder _decoder;
     private final IParser _parser;
     
@@ -61,7 +63,8 @@ public class RequestBuilder implements IRequestBuilder
             
             if (contentLen != null)
             {
-                request.setBody(getBody(channel, contentLen.value()));
+                ContentLengthReader reader = new ContentLengthReader(contentLen);
+                request.setBody(reader.getBody(channel));
             }
             
             request.addHeaders(headers);
@@ -140,6 +143,7 @@ public class RequestBuilder implements IRequestBuilder
     {
         Boolean endOfLine = false;
         Boolean endStart = false;
+        Integer readNothingCounter = 0;
         CharBuffer buffer = CharBuffer.allocate(2048); // TODO Is this enough ?
         
         while (!endOfLine)
@@ -148,9 +152,19 @@ public class RequestBuilder implements IRequestBuilder
 
             int szRead = channel.read(bbuffer);
             
-            if (szRead < 1)
+            if (szRead == 0)
+            {
+                readNothingCounter++;
+            }
+            
+            if (szRead == -1)
             {
                 throw new ProtocolException("Unable to process incomplete data", 400);
+            }
+            
+            if (readNothingCounter >= MaxRetries)
+            {
+                throw new IOException("Timeout after max retries of " + MaxRetries.toString());
             }
             
             bbuffer.flip();
@@ -182,35 +196,5 @@ public class RequestBuilder implements IRequestBuilder
         }
         buffer.flip();
         return new StringBuilder(buffer).toString();
-    }
-
-    private RequestBody getBody(ISocketChannel channel, String value) throws ProtocolException, IOException
-    {
-        try
-        {
-            Boolean finished = false;
-            Integer length = Integer.parseInt(value);
-            
-            ByteBuffer bbuffer = ByteBuffer.allocate(length);
-            
-            while (!finished)
-            {
-                channel.read(bbuffer);
-                
-                if (!bbuffer.hasRemaining())
-                {
-                    finished = true;
-                }
-            }
-            if (!bbuffer.hasArray())
-            {
-                throw new ProtocolException("Failed to read body", 400); // TODO Find more apppropriate status for this
-            }
-            return new RequestBody(bbuffer.array());
-        }
-        catch (NumberFormatException ex)
-        {
-            throw new ProtocolException("Invalid content-length", 400);
-        }
     }
 }

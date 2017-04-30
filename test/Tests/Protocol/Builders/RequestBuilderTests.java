@@ -46,6 +46,23 @@ public class RequestBuilderTests
     }
     
     @Test
+    public void TimesOutIfNoDataAfterMaxRetries()
+    {
+        SocketStubComplete socketStub = new SocketStubComplete();
+        try
+        {
+            socketStub.setBytestoRead(0);
+            _unitUnderTest.readLine(socketStub);
+        }
+        catch (IOException | ProtocolException ex)
+        {
+            assertTrue(socketStub.NumReads == 5);
+            assertTrue(ex instanceof IOException);
+            assertTrue("Timeout after max retries of 5".equals(ex.getMessage()));
+        }
+    }
+    
+    @Test
     public void RequestProcessorThrowsIfWrongLineEnding()
     {
         try

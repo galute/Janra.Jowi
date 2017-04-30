@@ -14,33 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Protocol.Models;
+package Network.Handlers;
 
-import java.io.UnsupportedEncodingException;
+import Network.Wrappers.ISocketChannel;
+import Protocol.Models.RequestBody;
+import Protocol.Parsers.ProtocolException;
+import java.io.IOException;
 
 /**
  *
  * @author jmillen
  */
-public class RequestBody
+public interface IReader
 {
-    private final byte[] _body;
-    
-    public RequestBody(byte[] body)
-    {
-        _body = body;
-    }
-    
-    public String asString(String encoding) throws UnsupportedEncodingException
-    {
-        // remove trailing \r\n from string representation
-        byte[] stripped = new byte[_body.length - 2];
-        System.arraycopy(_body, 0, stripped, 0, _body.length - 2);
-        return new String(stripped, encoding);
-    }
-    
-    public byte[] raw()
-    {
-        return _body;
-    }
+    RequestBody getBody(ISocketChannel channel) throws ProtocolException, IOException;
 }

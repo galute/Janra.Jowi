@@ -24,22 +24,51 @@ import java.nio.ByteBuffer;
  *
  * @author jmillen
  */
-public class SocketStubIncomplete implements ISocketChannel
+public class SocketStubInterrupting implements ISocketChannel
 {
     public Boolean IsNonBlocking = false;
     public Integer NumReads = 0;
-    public Integer BytesToRead = 0;
+    public Integer NumWrites = 0;
+    private Integer _bytesToWrite = 0;
+    private String bytesToRead = "";
+    private Integer _chunkSize = 1;
     
     @Override
     public Integer read(ByteBuffer buffer) throws IOException
-    {   
-        return -1;
+    {
+        NumReads++;
+        Integer bytes = _chunkSize;
+        
+        String toReturn;
+        
+        if (bytes < bytesToRead.length())
+        {
+            toReturn = bytesToRead.substring(0, (buffer.remaining()));
+            bytesToRead = bytesToRead.substring(buffer.remaining());
+        }
+        else
+        {
+            toReturn = bytesToRead;
+            bytesToRead = "";
+            bytes = toReturn.length();
+        }
+        
+        buffer.put(toReturn.getBytes("UTF-8"));
+        
+        return bytes;
     }
 
     @Override
     public Integer write(ByteBuffer buffer) throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        NumWrites++;
+        
+        for (int i = 0; i <  _bytesToWrite; i++)
+        {
+            buffer.get();
+        }
+
+        return _bytesToWrite;
     }
 
     @Override
@@ -54,9 +83,24 @@ public class SocketStubIncomplete implements ISocketChannel
         IsNonBlocking = true;
     }
     
-    public void setBytestoRead(Integer bytes)
+    public void setMessageToRead(String message)
     {
-        // Do nothing
+        bytesToRead = message;
     }
     
+    public void setBytestoRead(Integer bytes)
+    {
+        bytesToRead = new String(new char[bytes]).replace("\0", "X");
+        bytesToRead = bytesToRead.concat("\r\n");
+    }
+    
+    public void setBytesToWrite(Integer bytes)
+    {
+        _bytesToWrite = bytes;
+    }
+    
+    public void setChunkSize(Integer size)
+    {
+        _chunkSize = size;
+    }
 }
