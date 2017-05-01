@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 public class SocketStubComplete implements ISocketChannel
 {
     public Boolean IsNonBlocking = false;
+    public String Encoding = "UTF-8";
     public Integer NumReads = 0;
     public Integer NumWrites = 0;
     private Integer _bytesToWrite = 0;
@@ -52,7 +53,7 @@ public class SocketStubComplete implements ISocketChannel
             bytes = toReturn.length();
         }
         
-        buffer.put(toReturn.getBytes("UTF-8"));
+        buffer.put(toReturn.getBytes(Encoding));
         
         return bytes;
     }
@@ -89,7 +90,7 @@ public class SocketStubComplete implements ISocketChannel
     
     public void setBytestoRead(Integer bytes)
     {
-        bytesToRead = new String(new char[bytes]).replace("\0", "X");
+        bytesToRead = new String(new char[bytes]).replace('\0', 'X');
         bytesToRead = bytesToRead.concat("\r\n");
     }
     

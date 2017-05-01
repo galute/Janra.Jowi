@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Tests.Network;
+package Tests.Network.Readers;
 
-import Network.Handlers.ChunkedReader;
+import NetworkReaders.ChunkedReader;
 import Protocol.Models.RequestBody;
 import Protocol.Parsers.ProtocolException;
 import Tests.Stubs.Network.*;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -42,12 +43,18 @@ public class ChunkedReaderTests
         _unitUnderTest = new ChunkedReader();
     }
     
+    private void givenDataToRead(String dataToReadBack, String encoding) throws UnsupportedEncodingException
+    {
+        _channelComplete.setMessageToRead(dataToReadBack);
+        _channelComplete.Encoding = encoding;
+    }
+    
     @Test
     public void ReadsLengthWithoutExtensions()
     {
         try
         {
-            _channelComplete.setMessageToRead("1E\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n");
+            givenDataToRead("1E\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n", "ISO-8859-1");
             RequestBody result = _unitUnderTest.getBody(_channelComplete);
             
             assertTrue(result.raw().length == 32);
@@ -87,7 +94,7 @@ public class ChunkedReaderTests
         catch (ProtocolException | IOException ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Chunk size too big".equals(ex.getMessage()));
+            assertTrue("Chunk size too big or invalid".equals(ex.getMessage()));
         }
     }
     
@@ -97,6 +104,7 @@ public class ChunkedReaderTests
         try
         {
             _channelComplete.setMessageToRead("8\r\nfoo\r\nbar\r\n0\r\n\r\n");
+            _channelComplete.Encoding = "ISO-8859-1";
             RequestBody result = _unitUnderTest.getBody(_channelComplete);
             
             assertTrue(result.raw().length == 10);
@@ -105,58 +113,6 @@ public class ChunkedReaderTests
         catch (ProtocolException | IOException ex)
         {
             fail("Unexpected exception thrown: " + ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void WaitsForAllData()
-    {
-        SocketStubGaps channel = new SocketStubGaps();
-        try
-        {
-            channel.setMessageToRead("11;stuff\r\nfoo\r\nbar stretch \r\n0\r\n\r\n");
-            RequestBody result = _unitUnderTest.getBody(channel);
-            
-            assertTrue(result.raw().length == 19);
-            assertTrue("foo\r\nbar stretch ".equals(result.asString("UTF-8")));
-        }
-        catch (ProtocolException | IOException ex)
-        {
-            fail("Unexpected exception thrown: " + ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void ThrowsIfTimeout()
-    {
-        try
-        {
-            _channelComplete.setMessageToRead("8\r\nfoobar");
-            _unitUnderTest.getBody(_channelComplete);
-            
-            fail("Expected exception not thrown");
-        }
-        catch (ProtocolException | IOException ex)
-        {
-            assertTrue(ex instanceof IOException);
-            assertTrue("Timeout after max retries of 5".equals(ex.getMessage()));
-        }
-    }
-    
-    @Test
-    public void ThrowsIfChunkDataMissing()
-    {
-        SocketStubIncomplete channel = new SocketStubIncomplete();
-        try
-        {
-            _unitUnderTest.getBody(channel);
-            
-            fail("Expected exception not thrown");
-        }
-        catch (ProtocolException | IOException ex)
-        {
-            assertTrue(ex instanceof ProtocolException);
-            assertTrue("Unable to read chunk, incomplete data".equals(ex.getMessage()));
         }
     }
     

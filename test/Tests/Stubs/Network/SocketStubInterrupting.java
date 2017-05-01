@@ -32,6 +32,7 @@ public class SocketStubInterrupting implements ISocketChannel
     private Integer _bytesToWrite = 0;
     private String bytesToRead = "";
     private Integer _chunkSize = 1;
+    public String Encoding = "UTF-8";
     
     @Override
     public Integer read(ByteBuffer buffer) throws IOException
@@ -53,7 +54,7 @@ public class SocketStubInterrupting implements ISocketChannel
             bytes = toReturn.length();
         }
         
-        buffer.put(toReturn.getBytes("UTF-8"));
+        buffer.put(toReturn.getBytes(Encoding));
         
         return bytes;
     }
@@ -90,7 +91,7 @@ public class SocketStubInterrupting implements ISocketChannel
     
     public void setBytestoRead(Integer bytes)
     {
-        bytesToRead = new String(new char[bytes]).replace("\0", "X");
+        bytesToRead = new String(new char[bytes]).replace('\0', 'X');
         bytesToRead = bytesToRead.concat("\r\n");
     }
     

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Handlers;
+package NetworkReaders;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.RequestBody;
@@ -29,8 +29,8 @@ import java.nio.ByteBuffer;
  */
 public class ContentLengthReader implements IReader
 {
-    private final Integer MaxRetries = 5;
     private Integer _length;
+    private final ChannelReader _reader;
     
     public ContentLengthReader(IHeader contentLength) throws ProtocolException
     {
@@ -42,43 +42,14 @@ public class ContentLengthReader implements IReader
         {
             throw new ProtocolException("Invalid content-length", 400);
         }
+        _reader = new ChannelReader();
     }
     
     @Override
     public RequestBody getBody(ISocketChannel channel) throws ProtocolException, IOException
     {
-        Boolean finished = false;
-        Integer readNothingCounter = 0;
-
-        // extra 2 to account for \r\n
-        ByteBuffer bbuffer = ByteBuffer.allocate(_length + 2);
-            
-        while (!finished)
-        {
-            Integer sizeRead = channel.read(bbuffer);
-
-            if (!bbuffer.hasRemaining())
-            {
-                // don't test for sizeRead = -1 here
-                // as we have all the data currently needed
-                finished = true;
-            }
-            
-            if (sizeRead == 0)
-            {
-                readNothingCounter++;
-            }
-            
-            if (readNothingCounter >= MaxRetries ||
-                (sizeRead == -1 && bbuffer.hasRemaining()))
-            {
-                throw new IOException("Incomplete data read");
-            }
-        }
-        if (!bbuffer.hasArray())
-        {
-            throw new ProtocolException("Failed to read body", 500);
-        }
-        return new RequestBody(bbuffer.array());
+        byte[] data = _reader.readBytes(channel, _length + 2);
+        
+        return new RequestBody(data);
     }
 }

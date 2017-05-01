@@ -17,13 +17,11 @@
 package Tests.Protocol.Builders;
 
 import Tests.Stubs.Network.*;
-import Protocol.Parsers.ProtocolException;
 import Protocol.Builders.RequestBuilder;
 import Protocol.Models.HttpContext;
 import Protocol.Parsers.IParser;
 import Protocol.Parsers.Parser;
 import Tests.Stubs.Protocol.ParserStub;
-import java.io.IOException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -44,93 +42,6 @@ public class RequestBuilderTests
     {
         _parser = new ParserStub();
         _unitUnderTest = new RequestBuilder(_parser);
-    }
-    
-    @Test
-    public void TimesOutIfNoDataAfterMaxRetries()
-    {
-        SocketStubComplete socketStub = new SocketStubComplete();
-        try
-        {
-            socketStub.setBytestoRead(0);
-            _unitUnderTest.readLine(socketStub);
-        }
-        catch (IOException | ProtocolException ex)
-        {
-            assertTrue(socketStub.NumReads == 5);
-            assertTrue(ex instanceof IOException);
-            assertTrue("Timeout after max retries of 5".equals(ex.getMessage()));
-        }
-    }
-    
-    @Test
-    public void RequestProcessorThrowsIfWrongLineEnding()
-    {
-        try
-        {
-            SocketStubIncomplete socketStub = new SocketStubIncomplete();
-            socketStub.BytesToRead = 10;
-            _unitUnderTest.readLine(socketStub);
-        }
-        catch (IOException | ProtocolException ex)
-        {
-            assertTrue(ex instanceof ProtocolException);
-            assertTrue("Unable to process incomplete data".equals(ex.getMessage()));
-        }
-    }
-    
-    @Test
-    public void RequestProcessorThrowsIfPartialLineEnding()
-    {
-        try
-        {
-            SocketStubBadNewLine socketStub = new SocketStubBadNewLine();
-            socketStub.setBytestoRead(10);
-            _unitUnderTest.readLine(socketStub);
-            fail("Expected exception not thrown");
-        }
-        catch (IOException | ProtocolException ex)
-        {
-            assertTrue(ex instanceof ProtocolException);
-            assertTrue("Unexpected new line character".equals(ex.getMessage()));
-        }
-    }
-    
-    @Test
-    public void RequestProcessorDoesNotThrowsIfCorrectLineEnding()
-    {
-        try
-        {
-            SocketStubComplete socketStub = new SocketStubComplete();
-            socketStub.setBytestoRead(10);
-            String result = _unitUnderTest.readLine(socketStub);
-            
-            assertTrue("XXXXXXXXXX".equals(result));
-        }
-        catch (IOException | ProtocolException ex)
-        {
-            fail("Thows exception: " + ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void RequestProcessorHandlesEmptyLine()
-    {
-        try
-        {
-            SocketStubEmptyLine socketStub = new SocketStubEmptyLine();
-            socketStub.setBytestoRead(10);
-            String result = _unitUnderTest.readLine(socketStub);
-            
-            assertTrue("XXXXXXXXXX".equals(result));
-            
-            result = _unitUnderTest.readLine(socketStub);
-            assertTrue(result.isEmpty());
-        }
-        catch (IOException | ProtocolException ex)
-        {
-            fail("Thows exception: " + ex.getMessage());
-        }
     }
     
     @Test

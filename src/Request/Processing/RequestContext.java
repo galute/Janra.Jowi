@@ -19,7 +19,6 @@ package Request.Processing;
 import Protocol.Models.Header;
 import Protocol.Models.HttpContext;
 import Protocol.Models.HttpRequest;
-import Protocol.Models.ResponseImpl;
 import Server.HttpResponse;
 import Server.IContext;
 import Server.IProperties;

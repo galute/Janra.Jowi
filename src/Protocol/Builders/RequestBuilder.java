@@ -16,19 +16,16 @@
  */
 package Protocol.Builders;
 
-import Network.Handlers.ChunkedReader;
-import Network.Handlers.ContentLengthReader;
+import NetworkReaders.ChunkedReader;
+import NetworkReaders.ContentLengthReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
+import NetworkReaders.ChannelReader;
 import Protocol.Models.*;
 import Protocol.Parsers.*;
 import Server.IHeader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 
 /**
  *
@@ -36,14 +33,15 @@ import java.nio.charset.CharsetDecoder;
  */
 public class RequestBuilder implements IRequestBuilder
 {
-    private final Integer MaxRetries = 5;
-    private final CharsetDecoder _decoder;
     private final IParser _parser;
+    private final ChannelReader _reader;
+    private final String _encoding;
     
     public RequestBuilder(IParser parser)
     {
         _parser = parser;
-        _decoder = Charset.forName("ISO-8859-1").newDecoder();
+        _encoding = "ISO-8859-1";
+        _reader = new ChannelReader(_encoding);
     }
     
     @Override
@@ -51,7 +49,7 @@ public class RequestBuilder implements IRequestBuilder
     {
         try
         {
-            String requestLine = readLine(channel);
+            String requestLine = new String(_reader.readLine(channel), _encoding);
             HttpRequest request = _parser.ParseRequestLine(requestLine);
             
             Headers headers = getHeaders(channel);
@@ -133,7 +131,7 @@ public class RequestBuilder implements IRequestBuilder
 
         while (!finished)
         {
-            String headerLine = readLine(channel);
+            String headerLine = new String(_reader.readLine(channel), _encoding);
             if (headerLine.isEmpty())
             {
                 finished = true;
@@ -181,67 +179,5 @@ public class RequestBuilder implements IRequestBuilder
         }
 
         return headers;
-    }
-    
-    public String readLine(ISocketChannel channel) throws IOException, ProtocolException
-    {
-        Boolean endOfLine = false;
-        Boolean endStart = false;
-        Integer readNothingCounter = 0;
-        CharBuffer buffer = CharBuffer.allocate(2048); // TODO Is this enough ?
-        
-        while (!endOfLine)
-        {
-            ByteBuffer bbuffer = ByteBuffer.allocate(1);
-
-            int szRead = channel.read(bbuffer);
-            
-            if (szRead == 0)
-            {
-                readNothingCounter++;
-            }
-            
-            if (szRead == -1)
-            {
-                throw new ProtocolException("Unable to process incomplete data", 400);
-            }
-            
-            if (readNothingCounter >= MaxRetries)
-            {
-                throw new IOException("Timeout after max retries of " + MaxRetries.toString());
-            }
-            
-            if (szRead > 0)
-            {
-                bbuffer.flip();
-
-
-                CharBuffer buff = _decoder.decode(bbuffer);
-
-                char value = buff.charAt(0);
-
-                switch (value)
-                {
-                    case '\r':
-                        endStart = true;
-                        break;
-                    case '\n':
-                        if (endStart)
-                        {
-                            endOfLine = true;
-                        }
-                        else
-                        {
-                            throw new ProtocolException("Unexpected new line character", 400);
-                        }
-                        break;
-                    default:
-                        endStart = false;
-                        buffer = buffer.put(value);
-                }
-            }
-        }
-        buffer.flip();
-        return new StringBuilder(buffer).toString();
     }
 }

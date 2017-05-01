@@ -47,6 +47,7 @@ public class ResponseImpl implements HttpResponse
         _status = status;
     }
     
+    @Override
     public void setStatus(Integer status)
     {
         _status = status;
@@ -62,16 +63,19 @@ public class ResponseImpl implements HttpResponse
         _headRequest = true;
     }
     
+    @Override
     public void setBody(String body)
     {
         _body = body;
     }
     
+    @Override
     public Integer status()
     {
         return _status;
     }
     
+    @Override
     public void addHeader(IHeader header)
     {
         _headers.addHeader(header);
@@ -79,6 +83,7 @@ public class ResponseImpl implements HttpResponse
         // headers, e.g. Link
     }
     
+    @Override
     public IHeader header(String name)
     {
         return _headers.get(name);

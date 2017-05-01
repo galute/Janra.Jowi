@@ -21,6 +21,7 @@ import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Models.ResponseImpl;
 import Request.Processing.RequestProcessor;
+import Tests.Stubs.Factories.ConfigurationStubFactory;
 import Tests.Stubs.Processing.*;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +39,7 @@ public class RequestProcessorTests
     @Before
     public void setup()
     {
-        _unitUnderTest = new RequestProcessor(new MarshallerStub());
+        _unitUnderTest = new RequestProcessor(new MarshallerStub(), ConfigurationStubFactory.Create());
         HttpRequest request = new HttpRequest(HttpMethod.GET, "my/path", "HTTP/1.1");
         _context = new HttpContext(request);
     }
@@ -65,7 +66,7 @@ public class RequestProcessorTests
     @Test
     public void returns404IfNoPipeline()
     {
-        _unitUnderTest = new RequestProcessor(new MarshallerStubNoPipelines());
+        _unitUnderTest = new RequestProcessor(new MarshallerStubNoPipelines(), ConfigurationStubFactory.Create());
         
         HttpContext result = _unitUnderTest.processRequest(_context);
         
@@ -82,7 +83,7 @@ public class RequestProcessorTests
     @Test
     public void returns500IfPipelineThrowsException()
     {
-        _unitUnderTest = new RequestProcessor(new MarshallerStubException());
+        _unitUnderTest = new RequestProcessor(new MarshallerStubException(), ConfigurationStubFactory.Create());
         
         HttpContext result = _unitUnderTest.processRequest(_context);
         

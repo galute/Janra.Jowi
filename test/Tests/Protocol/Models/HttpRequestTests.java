@@ -39,8 +39,8 @@ public class HttpRequestTests
         {
             Headers firstHeaders = new Headers();
             Headers secondHeaders = new Headers();
-            byte[] bodyBytes1 = "hello".getBytes("UTF-8");
-            byte[] bodyBytes2 = "goodbye".getBytes("UTF-8");
+            byte[] bodyBytes1 = "hello\r\n".getBytes("UTF-8");
+            byte[] bodyBytes2 = "goodbye\r\n".getBytes("UTF-8");
 
             RequestBody body = new RequestBody(bodyBytes1);
             firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
