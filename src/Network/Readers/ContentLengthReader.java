@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package NetworkReaders;
+package Network.Readers;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.RequestBody;
 import Protocol.Parsers.ProtocolException;
 import Server.IHeader;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
  *
@@ -51,5 +50,11 @@ public class ContentLengthReader implements IReader
         byte[] data = _reader.readBytes(channel, _length + 2);
         
         return new RequestBody(data);
+    }
+
+    @Override
+    public byte[] processData(byte[] data) throws ProtocolException, IOException
+    {
+        return data;
     }
 }

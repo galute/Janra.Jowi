@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package NetworkReaders;
+package Network.Readers;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.RequestBody;
@@ -27,5 +27,6 @@ import java.io.IOException;
  */
 public interface IReader
 {
+    byte[] processData(byte[] data) throws ProtocolException, IOException;
     RequestBody getBody(ISocketChannel channel) throws ProtocolException, IOException;
 }

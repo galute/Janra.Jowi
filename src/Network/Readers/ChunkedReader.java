@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package NetworkReaders;
+package Network.Readers;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.RequestBody;
@@ -92,5 +92,11 @@ public class ChunkedReader implements IReader
         }
         
         return length;
+    }
+
+    @Override
+    public byte[] processData(byte[] data) throws ProtocolException
+    {
+        throw new ProtocolException("Chunking must be last encoding", 501);
     }
 }

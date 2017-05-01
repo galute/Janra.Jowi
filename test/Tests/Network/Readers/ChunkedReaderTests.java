@@ -16,7 +16,7 @@
  */
 package Tests.Network.Readers;
 
-import NetworkReaders.ChunkedReader;
+import Network.Readers.ChunkedReader;
 import Protocol.Models.RequestBody;
 import Protocol.Parsers.ProtocolException;
 import Tests.Stubs.Network.*;

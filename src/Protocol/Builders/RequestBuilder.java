@@ -16,11 +16,11 @@
  */
 package Protocol.Builders;
 
-import NetworkReaders.ChunkedReader;
-import NetworkReaders.ContentLengthReader;
+import Network.Readers.ChunkedReader;
+import Network.Readers.ContentLengthReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
-import NetworkReaders.ChannelReader;
+import Network.Readers.ChannelReader;
 import Protocol.Models.*;
 import Protocol.Parsers.*;
 import Server.IHeader;

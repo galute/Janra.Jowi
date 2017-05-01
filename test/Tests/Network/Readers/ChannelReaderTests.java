@@ -16,7 +16,7 @@
  */
 package Tests.Network.Readers;
 
-import NetworkReaders.ChannelReader;
+import Network.Readers.ChannelReader;
 import Protocol.Parsers.ProtocolException;
 import Tests.Stubs.Network.*;
 import java.io.IOException;
