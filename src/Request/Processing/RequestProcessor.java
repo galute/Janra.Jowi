@@ -16,11 +16,10 @@
  */
 package Request.Processing;
 
+import Pipeline.Configuration.Configuration;
 import Pipeline.IPipeline;
 import Pipeline.Configuration.InvalidConfigurationException;
 import Protocol.Models.HttpContext;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,10 +28,12 @@ import java.util.logging.Logger;
 public class RequestProcessor implements IProcessRequest
 {
     private final IMarshaller _marshaller;
+    private final Configuration _config;
     
-    public RequestProcessor(IMarshaller marshaller)
+    public RequestProcessor(IMarshaller marshaller, Configuration config)
     {
         _marshaller = marshaller;
+        _config = config;
     }
     
     @Override
@@ -54,7 +55,7 @@ public class RequestProcessor implements IProcessRequest
         }
         catch (InvalidConfigurationException ex)
         {
-            Logger.getLogger(RequestProcessor.class.getName()).log(Level.SEVERE, null, ex);
+            _config.handler().HandleException(ex);
         }
         
         context.response().setStatus(500);

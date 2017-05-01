@@ -38,7 +38,7 @@ public class RequestHandlerFactory
         IResponseBuilder responseBuilder = new ResponseBuilder();
         IRequestBuilder requestBuilder = new RequestBuilder(parser);
 
-        IProcessRequest requestProcessor = new RequestProcessor(marshaller);
+        IProcessRequest requestProcessor = new RequestProcessor(marshaller, config);
         ISendResponse responder = new Responder(responseBuilder);
         return new RequestHandler(selector, channel, requestBuilder, requestProcessor, responder, config.timeout(), launcher, config.handler());
     }
