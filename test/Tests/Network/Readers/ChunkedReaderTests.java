@@ -17,7 +17,6 @@
 package Tests.Network.Readers;
 
 import Network.Readers.ChunkedReader;
-import Network.Wrappers.ISocketChannel;
 import Protocol.Parsers.ProtocolException;
 import Tests.Stubs.Network.*;
 import java.io.IOException;

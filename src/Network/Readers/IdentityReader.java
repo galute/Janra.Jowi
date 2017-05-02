@@ -62,7 +62,7 @@ public class IdentityReader implements IReader
         {
             throw new IllegalArgumentException("IdentityReader wrong constructor");
         }
-        byte[] data = _reader.readBytes(channel, _length + 2);
+        byte[] data = _reader.readBytes(channel, _length);
         
         return data;
     }
@@ -70,6 +70,6 @@ public class IdentityReader implements IReader
     @Override
     public byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException
     {
-        return _reader.readBytes(channel, _length + 2);
+        return _reader.readBytes(channel, _length);
     }
 }
