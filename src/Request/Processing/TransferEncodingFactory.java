@@ -14,19 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Readers;
+package Request.Processing;
 
-import Network.Wrappers.ISocketChannel;
-import Protocol.Parsers.ProtocolException;
-import java.io.IOException;
+import Network.Readers.*;
 
 /**
  *
  * @author jmillen
  */
-public interface IReader
+public class TransferEncodingFactory
 {
-    String encoding();
-    byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException;
-    byte[] getBody(ISocketChannel channel) throws ProtocolException, IOException;
+    public static TransferEncodingProcessor create()
+    {
+        EncodingReaders readers = new EncodingReaders();
+        IReader reader = new ChunkedReader();
+        readers.addReader(reader);
+        reader = new GzipReader();
+        readers.addReader(reader);
+        reader = new IdentityReader();
+        readers.addReader(reader);
+        
+        return new TransferEncodingProcessor(readers);
+    }
 }

@@ -17,12 +17,14 @@
 package Protocol.Builders;
 
 import Network.Readers.ChunkedReader;
-import Network.Readers.ContentLengthReader;
+import Network.Readers.IdentityReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
 import Network.Readers.ChannelReader;
 import Protocol.Models.*;
 import Protocol.Parsers.*;
+import Request.Processing.TransferEncodingFactory;
+import Request.Processing.TransferEncodingProcessor;
 import Server.IHeader;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -60,7 +62,7 @@ public class RequestBuilder implements IRequestBuilder
             
             IHeader transferEncoding = headers.get("transfer-encoding");
             
-            if (transferEncoding != null)
+            if (transferEncoding != null) // Transfer-encoding takes precidence
             {
                 request.setBody(processEncoding(transferEncoding, channel));
             }
@@ -70,8 +72,8 @@ public class RequestBuilder implements IRequestBuilder
 
                 if (contentLen != null)
                 {
-                    ContentLengthReader reader = new ContentLengthReader(contentLen);
-                    request.setBody(reader.getBody(channel));
+                    IdentityReader reader = new IdentityReader(contentLen);
+                    request.setBody(new RequestBody(reader.getBody(channel)));
                 }
                 else
                 {
@@ -110,16 +112,8 @@ public class RequestBuilder implements IRequestBuilder
             }
         }
         
-        if (chunkedSet && occurences > 1)
-        {
-            throw new ProtocolException("Not able to handle this yet",501);
-        }
+        TransferEncodingProcessor processor = TransferEncodingFactory.create();
         
-        if (chunkedSet)
-        {
-            ChunkedReader reader = new ChunkedReader();
-            return reader.getBody(channel);
-        }
         return null;
     }
     

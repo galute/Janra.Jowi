@@ -18,6 +18,7 @@ package Tests.Network.Readers;
 
 import Network.Readers.GzipReader;
 import Protocol.Parsers.ProtocolException;
+import Tests.Stubs.Network.SocketStubBinary;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
@@ -45,7 +46,7 @@ public class GzipReaderTests
             out.close();
             byte[] zippedData = out.toByteArray();
             
-            byte[] unzipped = reader.processData(zippedData);
+            byte[] unzipped = reader.processData(zippedData, new SocketStubBinary());
             String result = new String(unzipped, "UTF-8");
             assertTrue(dataStr.equals(result));
         }

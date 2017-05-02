@@ -17,7 +17,7 @@
 package Tests.Network.Readers;
 
 import Network.Readers.ChunkedReader;
-import Protocol.Models.RequestBody;
+import Network.Wrappers.ISocketChannel;
 import Protocol.Parsers.ProtocolException;
 import Tests.Stubs.Network.*;
 import java.io.IOException;
@@ -55,9 +55,9 @@ public class ChunkedReaderTests
         try
         {
             givenDataToRead("1E\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n", "ISO-8859-1");
-            RequestBody result = _unitUnderTest.getBody(_channelComplete);
+            byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.raw().length == 32);
+            assertTrue(result.length == 32);
         }
         catch (ProtocolException | IOException ex)
         {
@@ -71,9 +71,9 @@ public class ChunkedReaderTests
         try
         {
             _channelComplete.setMessageToRead("1E;foobar\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n");
-            RequestBody result = _unitUnderTest.getBody(_channelComplete);
+            byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.raw().length == 32);
+            assertTrue(result.length == 32);
         }
         catch (ProtocolException | IOException ex)
         {
@@ -87,7 +87,7 @@ public class ChunkedReaderTests
         try
         {
             _channelComplete.setMessageToRead("8FFFFFFF;foobar\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n");
-            _unitUnderTest.getBody(_channelComplete);
+            _unitUnderTest.processData(new byte[0], _channelComplete);
             
             fail("Expected exception not thrown");
         }
@@ -105,10 +105,10 @@ public class ChunkedReaderTests
         {
             _channelComplete.setMessageToRead("8\r\nfoo\r\nbar\r\n0\r\n\r\n");
             _channelComplete.Encoding = "ISO-8859-1";
-            RequestBody result = _unitUnderTest.getBody(_channelComplete);
+            byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.raw().length == 10);
-            assertTrue("foo\r\nbar".equals(result.asString("UTF-8")));
+            assertTrue(result.length == 10);
+            assertTrue("foo\r\nbar\r\n".equals(new String(result, "UTF-8")));
         }
         catch (ProtocolException | IOException ex)
         {
@@ -122,10 +122,10 @@ public class ChunkedReaderTests
         try
         {
             _channelComplete.setMessageToRead("8\r\nfoo\r\nbar\r\n14\r\n and another foo bar\r\n0\r\n\r\n");
-            RequestBody result = _unitUnderTest.getBody(_channelComplete);
+            byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.raw().length == 30);
-            assertTrue("foo\r\nbar and another foo bar".equals(result.asString("UTF-8")));
+            assertTrue(result.length == 30);
+            assertTrue("foo\r\nbar and another foo bar\r\n".equals(new String(result, "UTF-8")));
         }
         catch (ProtocolException | IOException ex)
         {

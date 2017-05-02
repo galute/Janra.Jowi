@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package Network.Readers;
+package Request.Processing;
 
 import Network.Wrappers.ISocketChannel;
 import Protocol.Models.RequestBody;
@@ -26,35 +26,25 @@ import java.io.IOException;
  *
  * @author jmillen
  */
-public class ContentLengthReader implements IReader
+public class TransferEncodingProcessor
 {
-    private Integer _length;
-    private final ChannelReader _reader;
+    private final EncodingReaders _readers;
     
-    public ContentLengthReader(IHeader contentLength) throws ProtocolException
+    public TransferEncodingProcessor(EncodingReaders readers)
     {
-        try
-        {
-            _length = Integer.parseInt(contentLength.value());
-        }
-        catch (NumberFormatException ex)
-        {
-            throw new ProtocolException("Invalid content-length", 400);
-        }
-        _reader = new ChannelReader();
+        _readers = readers;
     }
     
-    @Override
-    public RequestBody getBody(ISocketChannel channel) throws ProtocolException, IOException
+    public RequestBody decode(ISocketChannel channel, IHeader encodingHeader, byte[] encodedData) throws ProtocolException, IOException
     {
-        byte[] data = _reader.readBytes(channel, _length + 2);
+        Integer numEncodings = encodingHeader.occurences();
+        byte[] decodedData = encodedData;
         
-        return new RequestBody(data);
-    }
-
-    @Override
-    public byte[] processData(byte[] data) throws ProtocolException, IOException
-    {
-        return data;
+        for (int i = numEncodings -1; i >= 0; i--)
+        {
+            decodedData = _readers.decode(encodingHeader.value(i), decodedData, channel);
+        }
+        
+        return new RequestBody(decodedData);
     }
 }

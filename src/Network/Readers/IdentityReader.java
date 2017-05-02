@@ -19,34 +19,24 @@ package Network.Readers;
 import Network.Wrappers.ISocketChannel;
 import Protocol.Parsers.ProtocolException;
 import Server.IHeader;
-import java.io.ByteArrayInputStream;
-import java.util.zip.GZIPInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 
 /**
  *
  * @author jmillen
  */
-public class GzipReader implements IReader
+public class IdentityReader implements IReader
 {
     private Integer _length;
     private final ChannelReader _reader;
     
-    public GzipReader()
+    public IdentityReader()
     {
         _length = -1;
         _reader = null;
     }
     
-    @Override
-    public String encoding()
-    {
-        return "gzip";
-    }
-    
-    public GzipReader(IHeader contentLength) throws ProtocolException
+    public IdentityReader(IHeader contentLength) throws ProtocolException
     {
         try
         {
@@ -60,39 +50,26 @@ public class GzipReader implements IReader
     }
     
     @Override
-    public byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException
+    public String encoding()
     {
-        Integer result = 0;
-        ByteArrayInputStream bytesIn = new ByteArrayInputStream(data);
-        ByteArrayOutputStream  bytesOut;
-        try (GZIPInputStream gzippedIn = new GZIPInputStream(bytesIn))
-        {
-            bytesOut = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            while (result >= 0)
-            {
-                result = gzippedIn.read(buffer, 0, buffer.length);
-                
-                if (result > 0)
-                {
-                    bytesOut.write(buffer, 0, result);
-                }
-            }
-        }
-        bytesOut.close();
-        
-        return bytesOut.toByteArray();
+        return "identity";
     }
-
+    
     @Override
     public byte[] getBody(ISocketChannel channel) throws ProtocolException, IOException
     {
         if (_reader == null)
         {
-            throw new IllegalArgumentException("GzipReader wrong constructor used");
+            throw new IllegalArgumentException("IdentityReader wrong constructor");
         }
-        byte[] zippedData = _reader.readBytes(channel, _length + 2);
-        byte[] unzippedData = processData(zippedData, channel);
-        return unzippedData;
+        byte[] data = _reader.readBytes(channel, _length + 2);
+        
+        return data;
+    }
+
+    @Override
+    public byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException
+    {
+        return _reader.readBytes(channel, _length + 2);
     }
 }

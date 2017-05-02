@@ -17,7 +17,6 @@
 package Network.Readers;
 
 import Network.Wrappers.ISocketChannel;
-import Protocol.Models.RequestBody;
 import Protocol.Parsers.ProtocolException;
 import java.io.IOException;
 
@@ -37,7 +36,13 @@ public class ChunkedReader implements IReader
     }
     
     @Override
-    public RequestBody getBody(ISocketChannel channel) throws ProtocolException, IOException
+    public String encoding()
+    {
+        return "chunked";
+    }
+    
+    @Override
+    public byte[] getBody(ISocketChannel channel) throws ProtocolException, IOException
     {
         Boolean moreChunks = true;
         byte[] buffer = new byte[2]; // always leave space for final \r\n
@@ -68,7 +73,7 @@ public class ChunkedReader implements IReader
             }
         }
         
-        return new RequestBody(buffer);
+        return buffer;
     }
     
     private Integer readSize(ISocketChannel channel) throws IOException, ProtocolException
@@ -95,8 +100,8 @@ public class ChunkedReader implements IReader
     }
 
     @Override
-    public byte[] processData(byte[] data) throws ProtocolException
+    public byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException
     {
-        throw new ProtocolException("Chunking must be last encoding", 501);
+        return getBody(channel);
     }
 }
