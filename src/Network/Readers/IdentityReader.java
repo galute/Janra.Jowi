@@ -40,6 +40,7 @@ public class IdentityReader implements IReader
     {
         try
         {
+            // To-do needs to be a double?
             _length = Integer.parseInt(contentLength.value());
         }
         catch (NumberFormatException ex)
