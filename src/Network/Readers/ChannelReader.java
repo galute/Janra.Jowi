@@ -85,6 +85,9 @@ public class ChannelReader
     
     public byte[] readBytes(ISocketChannel channel, Integer numBytes) throws IOException, ProtocolException
     {
+        // To-do if length changed to double, test here for length > MAX_VALUE and if
+        // it is, do multiple calls. Fewer problems with incompatibility doing it
+        // that way compared to passing double to private readBytes
         return readBytesPrivate(channel, numBytes).array();
     }
     
