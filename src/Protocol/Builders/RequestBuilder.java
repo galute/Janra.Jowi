@@ -28,6 +28,7 @@ import Server.IConfiguration;
 import Server.IHeader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -61,6 +62,11 @@ public class RequestBuilder implements IRequestBuilder
             request.addHost(headers.get("host"));
             
             headers.remove("host");
+            
+            if (request.host().length() + request.path().length() > _config.maxUriLength())
+            {
+                throw new ProtocolException("Max Uri length exceeded", 414);
+            }
             
             IHeader transferEncoding = headers.get("transfer-encoding");
             

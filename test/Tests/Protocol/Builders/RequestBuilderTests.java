@@ -188,7 +188,7 @@ public class RequestBuilderTests
     }
     
     @Test
-    public void Returns414ForMaxUriLengthExceeded()
+    public void Returns414ForMaxUriLengthExceededWithHost()
     {
         try
         {
@@ -196,7 +196,26 @@ public class RequestBuilderTests
             IParser parser = new Parser(1024);
             _unitUnderTest = new RequestBuilder(parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
-            socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: abcdefghijk\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
+            socketStub.setMessageToRead("POST /a/b HTTP/1.1\r\nHost: abcdefghijk\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
+            HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+            assertEquals((long)414, (long)context.response().status());
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void Returns414ForMaxUriLengthExceededCombined()
+    {
+        try
+        {
+            _config.setMaxUriLength(10);
+            IParser parser = new Parser(1024);
+            _unitUnderTest = new RequestBuilder(parser, _config);
+            SocketStubComplete socketStub = new SocketStubComplete();
+            socketStub.setMessageToRead("POST /a/b HTTP/1.1\r\nHost: abcdefg\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
             assertEquals((long)414, (long)context.response().status());
         }
