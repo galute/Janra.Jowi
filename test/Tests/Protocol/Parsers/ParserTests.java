@@ -46,7 +46,7 @@ public class ParserTests
     @Before
     public void Setup()
     {
-        _parser = new Parser(1024);
+        _parser = new Parser(1024, "UTF-8");
         _goodRequest = "POST /my/resource/location HTTP/1.1";
         _badRequest = "POST HTTP/1.1";
         _unsupportedRequest = "POST /my/resource/location HTTP/1.0";
@@ -71,9 +71,9 @@ public class ParserTests
         {
             HttpRequest result = _parser.ParseRequestLine(_goodRequest);
             
-            assertTrue("POST".equals(HttpMethod.POST.toString()));
-            assertTrue("/my/resource/location".equals(result.path()));
-            assertTrue("HTTP/1.1".equals(result.version()));
+            assertEquals("POST", HttpMethod.POST.toString());
+            assertEquals("/my/resource/location", result.path());
+            assertEquals("HTTP/1.1", result.version());
         }
         catch (Exception ex)
         {
@@ -92,7 +92,7 @@ public class ParserTests
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Invalid Request Line".equals(ex.getMessage()));
+            assertEquals("Invalid Request Line", ex.getMessage());
             
             ProtocolException pEx = (ProtocolException)ex;
             
@@ -111,7 +111,7 @@ public class ParserTests
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Unsupported Http version".equals(ex.getMessage()));
+            assertEquals("Unsupported Http version", ex.getMessage());
             ProtocolException pEx = (ProtocolException)ex;
             
             assertTrue(pEx.ResponseStatus == 505);
@@ -122,14 +122,14 @@ public class ParserTests
     {    
         try
         {
-            _parser = new Parser(10);
+            _parser = new Parser(10, "UTF-8");
             _parser.ParseRequestLine(_goodRequest);
             fail("Exception not thrown");
         }
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Path of Uri too long".equals(ex.getMessage()));
+            assertEquals("Path of Uri too long", ex.getMessage());
             
             ProtocolException pEx = (ProtocolException)ex;
             
@@ -144,8 +144,8 @@ public class ParserTests
         {
             IHeader result = _parser.ParseHeader(_goodHeader1);
             
-            assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value(0)));
+            assertEquals("Host", result.key());
+            assertEquals("my.host:80", result.value(0));
         }
         catch (Exception ex)
         {
@@ -160,8 +160,8 @@ public class ParserTests
         {
             IHeader result = _parser.ParseHeader(_goodHeader2);
             
-            assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value(0)));
+            assertEquals("Host", result.key());
+            assertEquals("my.host:80", result.value(0));
         }
         catch (Exception ex)
         {
@@ -176,8 +176,8 @@ public class ParserTests
         {
             IHeader result = _parser.ParseHeader(_goodHeader3);
             
-            assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value(0)));
+            assertEquals("Host", result.key());
+            assertEquals("my.host:80", result.value(0));
         }
         catch (Exception ex)
         {
@@ -192,8 +192,8 @@ public class ParserTests
         {
             IHeader result = _parser.ParseHeader(_goodHeader4);
             
-            assertTrue("Host".equals(result.key()));
-            assertTrue("my.host:80".equals(result.value(0)));
+            assertEquals("Host", result.key());
+            assertEquals("my.host:80", result.value(0));
         }
         catch (Exception ex)
         {
@@ -212,7 +212,7 @@ public class ParserTests
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Invalid Header format".equals(ex.getMessage()));
+            assertEquals("Invalid Header format", ex.getMessage());
         }  
     }
     
@@ -227,7 +227,7 @@ public class ParserTests
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Invalid Header format".equals(ex.getMessage()));
+            assertEquals("Invalid Header format", ex.getMessage());
         }  
     }
     
@@ -242,7 +242,23 @@ public class ParserTests
         catch (Exception ex)
         {
             assertTrue(ex instanceof ProtocolException);
-            assertTrue("Invalid Header format".equals(ex.getMessage()));
+            assertEquals("Invalid Header format", ex.getMessage());
         }  
+    }
+    
+    @Test
+    public void PassesCharsetToRequest()
+    {
+        try
+        {
+            _parser = new Parser(1024, "FooBar");
+            HttpRequest result = _parser.ParseRequestLine(_goodRequest);
+            
+            assertEquals("FooBar", result.charset());
+        }
+        catch (Exception ex)
+        {
+            fail("Exception thrown: " + ex);
+        }
     }
 }

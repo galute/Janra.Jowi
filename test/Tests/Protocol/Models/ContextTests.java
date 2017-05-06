@@ -16,7 +16,6 @@
  */
 package Tests.Protocol.Models;
 
-import Protocol.Models.Header;
 import Protocol.Models.HttpContext;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
@@ -37,7 +36,7 @@ public class ContextTests
     {
         try
         {
-            HttpRequest request = new HttpRequest(HttpMethod.HEAD, "blaa", "HTTP/1.1");
+            HttpRequest request = new HttpRequest(HttpMethod.HEAD, "blaa", "HTTP/1.1", "UTF-8");
             HttpContext context = new HttpContext(request);
 
             context.response().setBody("Test body");
@@ -58,7 +57,7 @@ public class ContextTests
     {
         try
         {
-            HttpRequest request = new HttpRequest(HttpMethod.CONNECT, "blaa", "HTTP/1.1");
+            HttpRequest request = new HttpRequest(HttpMethod.CONNECT, "blaa", "HTTP/1.1", "UTF-8");
             HttpContext context = new HttpContext(request);
 
             context.response().setBody("Test body");

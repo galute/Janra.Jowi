@@ -23,7 +23,6 @@ import Protocol.Parsers.IParser;
 import Protocol.Parsers.Parser;
 import Server.IConfiguration;
 import Tests.Stubs.Processing.ConfigStub;
-import Tests.Stubs.Protocol.ParserStub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,22 +37,21 @@ import org.junit.Test;
 public class RequestBuilderTests
 {
     private RequestBuilder _unitUnderTest;
-    private ParserStub _parser;
+    private IParser _parser;
     private IConfiguration _config;
     
     @Before
     public void Setup()
     {
         _config = new ConfigStub();
-        _parser = new ParserStub();
+        _parser = new Parser(1024, "UTF-8");
         _unitUnderTest = new RequestBuilder(_parser, _config);
     }
     
     @Test
     public void AddsHostToContext()
     {
-        IParser parser = new Parser(1024);
-        _unitUnderTest = new RequestBuilder(parser, _config);
+        _unitUnderTest = new RequestBuilder(_parser, _config);
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 0\r\n\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -63,8 +61,7 @@ public class RequestBuilderTests
     @Test
     public void HostHeaderNotInHeadersList()
     {
-        IParser parser = new Parser(1024);
-        _unitUnderTest = new RequestBuilder(parser, _config);
+        _unitUnderTest = new RequestBuilder(_parser, _config);
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 0\r\n\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -95,8 +92,7 @@ public class RequestBuilderTests
     @Test
     public void BadRequestIfContentLengthNaN()
     {
-        IParser parser = new Parser(1024);
-        _unitUnderTest = new RequestBuilder(parser, _config);
+        _unitUnderTest = new RequestBuilder(_parser, _config);
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: ab\r\n\r\nhello\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -107,8 +103,19 @@ public class RequestBuilderTests
     @Test
     public void ContentLengthIgnoredForTransferEncoding()
     {
-        IParser parser = new Parser(1024);
-        _unitUnderTest = new RequestBuilder(parser, _config);
+        _unitUnderTest = new RequestBuilder(_parser, _config);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 12\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertTrue(context.request().header("content-length") == null);
+        assertTrue(context.request().header("transfer-encoding") != null);
+    }
+    
+    @Test
+    public void CharsetExtractedFromContentTypeHeader()
+    {
+        _unitUnderTest = new RequestBuilder(_parser, _config);
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 12\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -122,13 +129,12 @@ public class RequestBuilderTests
     {
         try
         {
-            IParser parser = new Parser(1024);
-            _unitUnderTest = new RequestBuilder(parser, _config);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
-            socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 5\r\n\r\nhello\r\n");
+            socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 5\r\nContent-type: text/plain; charset=ISO-8859-1\r\n\r\nhello\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
-            String theBody = context.request().body().asString("UTF-8");
-            assertEquals("hello", theBody);
+            
+            assertEquals("iso-8859-1", context.request().charset());
         }
         catch (Exception ex)
         {
@@ -139,8 +145,7 @@ public class RequestBuilderTests
     @Test
     public void ChunkedMustBeLastEncoding()
     {
-        IParser parser = new Parser(1024);
-        _unitUnderTest = new RequestBuilder(parser, _config);
+        _unitUnderTest = new RequestBuilder(_parser, _config);
         SocketStubComplete socketStub = new SocketStubComplete();
         socketStub.setMessageToRead("\"POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: chunked, gzip\r\n\r\nhello\r\n");
         HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -153,8 +158,7 @@ public class RequestBuilderTests
     {
         try
         {
-            IParser parser = new Parser(1024);
-            _unitUnderTest = new RequestBuilder(parser, _config);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
             socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -173,8 +177,7 @@ public class RequestBuilderTests
     {
         try
         {
-            IParser parser = new Parser(1024);
-            _unitUnderTest = new RequestBuilder(parser, _config);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
             socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nTransfer-encoding: blorg, chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -193,8 +196,7 @@ public class RequestBuilderTests
         try
         {
             _config.setMaxUriLength(10);
-            IParser parser = new Parser(1024);
-            _unitUnderTest = new RequestBuilder(parser, _config);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
             socketStub.setMessageToRead("POST /a/b HTTP/1.1\r\nHost: abcdefghijk\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
@@ -212,8 +214,7 @@ public class RequestBuilderTests
         try
         {
             _config.setMaxUriLength(10);
-            IParser parser = new Parser(1024);
-            _unitUnderTest = new RequestBuilder(parser, _config);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
             SocketStubComplete socketStub = new SocketStubComplete();
             socketStub.setMessageToRead("POST /a/b HTTP/1.1\r\nHost: abcdefg\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);

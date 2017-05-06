@@ -27,6 +27,7 @@ public class Configuration implements IConfiguration
     private long _timeout = 500;
     private Integer _maxThreads = 100;
     private Integer _maxUriLength = 1048;
+    private String _defaultCharset = "ISO-8859-1"; // not actually default anymore (rfc 7231 Appendix B) but need something.
     private IExceptionHandler _handler;
     
     private final IPipelineConfiguration _pipelineConfig;
@@ -49,9 +50,16 @@ public class Configuration implements IConfiguration
         _maxThreads = maxThreads;
     }
     
+    @Override
     public void setMaxUriLength(Integer maxUriLength)
     {
         _maxUriLength = maxUriLength;
+    }
+    
+    @Override
+    public void setDefaultCharsetIncoming(String charset)
+    {
+        _defaultCharset = charset;
     }
     
     @Override
@@ -72,9 +80,15 @@ public class Configuration implements IConfiguration
         return _maxThreads;
     }
     
+    @Override
     public Integer maxUriLength()
     {
         return _maxUriLength;
+    }
+    
+    public String defaultCharset()
+    {
+        return _defaultCharset;
     }
     
     @Override

@@ -40,7 +40,7 @@ public class ChannelReaderTests
     @Before
     public void setup()
     {
-        _unitUnderTest = new ChannelReader();
+        _unitUnderTest = new ChannelReader("ISO-8859-1");
         _channelComplete = new SocketStubComplete();
         _channelInterrupting = new SocketStubInterrupting();
         _channelBinary = new SocketStubBinary();

@@ -44,7 +44,7 @@ public class ParserStub implements IParser
     {
         PassedBuffer = buffer;
         
-        return new HttpRequest(HttpMethod.GET, "/my/path", "HTTP/1.1");
+        return new HttpRequest(HttpMethod.GET, "/my/path", "HTTP/1.1", "UTF-8");
     }
 
     @Override

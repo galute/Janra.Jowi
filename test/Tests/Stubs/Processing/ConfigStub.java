@@ -28,6 +28,8 @@ public class ConfigStub implements IConfiguration
 {
     private Integer _maxThreads = 0;
     public Integer MaxUriLength = 1024;
+    public String Charset = "ISO-8859-1";
+    
     @Override
     public void setTimeout(Integer value)
     {
@@ -74,5 +76,17 @@ public class ConfigStub implements IConfiguration
     public Integer maxUriLength()
     {
         return MaxUriLength;
+    }
+
+    @Override
+    public void setDefaultCharsetIncoming(String charset)
+    {
+        Charset = charset;
+    }
+
+    @Override
+    public String defaultCharset()
+    {
+        return Charset;
     }
 }

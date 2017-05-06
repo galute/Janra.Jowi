@@ -28,10 +28,12 @@ import Server.IHeader;
 public class Parser implements IParser
 {
     private final Integer _maxUriLength;
+    private final String _defaultCharset;
     
-    public Parser(Integer maxUriLength)
+    public Parser(Integer maxUriLength, String defaultCharset)
     {
         _maxUriLength = maxUriLength;
+        _defaultCharset = defaultCharset;
     }
     @Override
     public HttpRequest ParseRequestLine(String line) throws ProtocolException
@@ -58,18 +60,15 @@ public class Parser implements IParser
         HttpMethod method;
         method = HttpMethod.find(elements[0]);
         
-        return new HttpRequest(method, elements[1], elements[2]);
+        return new HttpRequest(method, elements[1], elements[2], _defaultCharset);
     }
     
     @Override
     public IHeader ParseHeader(String line) throws ProtocolException
     {
-        String[] elements;
         //rfc7230 section 3.2 indicates header fieldname followed by a colon (:).
         //This is followed by a value with optional leading and
         // trailing whitespace on the value
-        
-        elements = line.split(":\\h");
         
         int colon = line.indexOf(':');
         if (colon < 1)

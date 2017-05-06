@@ -30,10 +30,12 @@ public class HttpRequest implements Cloneable
     private final String _path;
     private final String _version;
     private String _host = "";
+    private String _mediaType = "application/octet-stream"; // default (rfc7230 3.1.1.5)
+    private String _charset = "ISO-8859-1";
     private Headers _headers;
     private RequestBody _body;
     
-    public HttpRequest(HttpMethod method, String path, String version)
+    public HttpRequest(HttpMethod method, String path, String version, String charset)
     {
         _method = method;
         // Need to handle absolute form rfc7230 5.3.2
@@ -41,6 +43,7 @@ public class HttpRequest implements Cloneable
         _version = version;
         _host = "";
         _headers = new Headers();
+        _charset = charset;
     }
     
     public HttpRequest(HttpRequest request)
@@ -49,13 +52,15 @@ public class HttpRequest implements Cloneable
         _path = request._path;
         _version = request._version;
         _host = request._host;
+        _mediaType = request._mediaType;
+        _charset = request._charset;
         _headers = new Headers(request._headers);
         _body = request._body == null ? null : new RequestBody(request._body.raw());
     }
     
     public void addHost(IHeader hostHeader) throws URISyntaxException
     {
-        URI uri = new URI(hostHeader.value());
+        URI.create(hostHeader.value());
         
         _host = hostHeader.value();
     }
@@ -68,6 +73,16 @@ public class HttpRequest implements Cloneable
     public void setBody(RequestBody body)
     {
         _body = body;
+    }
+    
+    public void setMediaType(String mediaType)
+    {
+        _mediaType = mediaType;
+    }
+    
+    public void setCharset(String charset)
+    {
+        _charset = charset;
     }
     
     public HttpMethod method()
@@ -98,5 +113,15 @@ public class HttpRequest implements Cloneable
     public RequestBody body()
     {
         return _body;
+    }
+    
+    public String mediaType()
+    {
+        return _mediaType;
+    }
+    
+    public String charset()
+    {
+        return _charset;
     }
  }

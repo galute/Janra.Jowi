@@ -21,7 +21,6 @@ import Protocol.Models.Headers;
 import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Models.RequestBody;
-import java.net.URISyntaxException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -47,7 +46,7 @@ public class HttpRequestTests
             firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
             secondHeaders.addHeader(Header.create("Second Header", "Second Header Value"));
 
-            HttpRequest first = new HttpRequest(HttpMethod.POST, "first path","first version");
+            HttpRequest first = new HttpRequest(HttpMethod.POST, "first path","first version", "UTF-8");
             first.setBody(body);
             first.addHeaders(firstHeaders);
 
@@ -72,13 +71,13 @@ public class HttpRequestTests
     {
         try
         {
-            HttpRequest request = new HttpRequest(HttpMethod.POST, "first path","first version");
-            request.addHost(new Header("Host", "@htp:?/my,baduri.co[.]uk"));
+            HttpRequest request = new HttpRequest(HttpMethod.POST, "first path","first version", "UTF-8");
+            request.addHost(new Header("Host", "@htp:?/*baduri.co[.]uk"));
             fail("Expected Exception not thrown");
         }
         catch (Exception ex)
         {
-            assertTrue(ex instanceof URISyntaxException);
+            assertTrue(ex instanceof IllegalArgumentException);
         }
     }
 }

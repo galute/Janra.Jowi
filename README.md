@@ -14,10 +14,10 @@ This basically works but it has limited capability. It has no security yet, or r
 1. Limit concurrent request handling (max threads in config)
 1. Implement chunking (ensure last encoding)
 1. Have chunking transfer-encoding override content-length
+1. Interpret incoming charset in header and use it or default set in config
 
 ## Current Work
 
-1. Interpret incoming charset in header and use it (rather than using default ISO-8859-1)
 1. Build Integeration tests:
 Current thinking:
    Use cucumber running tests in one container with framework running in a second. Use feedback middleware for framework to allow

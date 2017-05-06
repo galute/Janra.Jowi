@@ -28,7 +28,6 @@ import Server.IConfiguration;
 import Server.IHeader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -38,14 +37,14 @@ public class RequestBuilder implements IRequestBuilder
 {
     private final IParser _parser;
     private final ChannelReader _reader;
-    private final String _encoding;
+    private String _charset;
     private final IConfiguration _config;
     
     public RequestBuilder(IParser parser, IConfiguration config)
     {
         _parser = parser;
-        _encoding = "ISO-8859-1";
-        _reader = new ChannelReader(_encoding);
+        _charset = config.defaultCharset();
+        _reader = new ChannelReader(_charset);
         _config = config;
     }
     
@@ -54,7 +53,7 @@ public class RequestBuilder implements IRequestBuilder
     {
         try
         {
-            String requestLine = new String(_reader.readLine(channel), _encoding);
+            String requestLine = new String(_reader.readLine(channel), _charset);
             HttpRequest request = _parser.ParseRequestLine(requestLine);
             
             Headers headers = getHeaders(channel);
@@ -68,6 +67,11 @@ public class RequestBuilder implements IRequestBuilder
                 throw new ProtocolException("Max Uri length exceeded", 414);
             }
             
+            ContentType contentType = processContentType(headers);
+            request.setMediaType(contentType.mediaType());
+            _charset = contentType.charset();
+            request.setCharset(_charset);
+            
             IHeader transferEncoding = headers.get("transfer-encoding");
             
             if (transferEncoding != null) // Transfer-encoding takes precidence
@@ -80,7 +84,7 @@ public class RequestBuilder implements IRequestBuilder
 
                 if (contentLen != null)
                 {
-                    IdentityReader reader = new IdentityReader(contentLen);
+                    IdentityReader reader = new IdentityReader(contentLen, _charset);
                     request.setBody(new RequestBody(reader.getBody(channel)));
                 }
                 else
@@ -97,10 +101,21 @@ public class RequestBuilder implements IRequestBuilder
         {
             return new HttpContext(ex.ResponseStatus);
         }
-        catch (IOException | URISyntaxException ex)
+        catch (IOException | URISyntaxException | IllegalArgumentException ex)
         {
             return new HttpContext(400);
         }
+    }
+    
+    private ContentType processContentType(Headers headers)
+    {
+        IHeader contentTypeHeader = headers.get("content-type");
+        if (contentTypeHeader != null)
+        {
+            return new ContentType(contentTypeHeader, _charset);
+        }
+        
+        return new ContentType(_charset);
     }
     
     private RequestBody processEncoding(IHeader header, ISocketChannel channel) throws ProtocolException, IOException
@@ -132,7 +147,7 @@ public class RequestBuilder implements IRequestBuilder
 
         while (!finished)
         {
-            String headerLine = new String(_reader.readLine(channel), _encoding);
+            String headerLine = new String(_reader.readLine(channel), _charset);
             if (headerLine.isEmpty())
             {
                 finished = true;

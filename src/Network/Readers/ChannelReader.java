@@ -35,10 +35,10 @@ public class ChannelReader
     
     private final CharsetDecoder _decoder;
     
-    public ChannelReader()
-    {
-        _decoder = Charset.forName("ISO-8859-1").newDecoder();
-    }
+//    public ChannelReader()
+//    {
+//        _decoder = Charset.forName("ISO-8859-1").newDecoder();
+//    }
     
     public ChannelReader(String charset)
     {

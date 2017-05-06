@@ -36,7 +36,7 @@ public class IdentityReader implements IReader
         _reader = null;
     }
     
-    public IdentityReader(IHeader contentLength) throws ProtocolException
+    public IdentityReader(IHeader contentLength, String charset) throws ProtocolException
     {
         try
         {
@@ -47,7 +47,7 @@ public class IdentityReader implements IReader
         {
             throw new ProtocolException("Invalid content-length", 400);
         }
-        _reader = new ChannelReader();
+        _reader = new ChannelReader(charset);
     }
     
     @Override

@@ -46,7 +46,7 @@ public class GzipReader implements IReader
         return "gzip";
     }
     
-    public GzipReader(IHeader contentLength) throws ProtocolException
+    public GzipReader(IHeader contentLength, String charset) throws ProtocolException
     {
         try
         {
@@ -56,7 +56,7 @@ public class GzipReader implements IReader
         {
             throw new ProtocolException("Invalid content-length", 400);
         }
-        _reader = new ChannelReader();
+        _reader = new ChannelReader(charset);
     }
     
     @Override

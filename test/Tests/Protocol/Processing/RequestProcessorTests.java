@@ -40,7 +40,7 @@ public class RequestProcessorTests
     public void setup()
     {
         _unitUnderTest = new RequestProcessor(new MarshallerStub(), ConfigurationStubFactory.Create());
-        HttpRequest request = new HttpRequest(HttpMethod.GET, "my/path", "HTTP/1.1");
+        HttpRequest request = new HttpRequest(HttpMethod.GET, "my/path", "HTTP/1.1", "UTF-8");
         _context = new HttpContext(request);
     }
     
