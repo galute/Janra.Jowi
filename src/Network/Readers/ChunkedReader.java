@@ -45,7 +45,7 @@ public class ChunkedReader implements IReader
     public byte[] getBody(ISocketChannel channel) throws ProtocolException, IOException
     {
         Boolean moreChunks = true;
-        byte[] buffer = new byte[2]; // always leave space for final \r\n
+        byte[] buffer = new byte[0];
         int bufferLen = 0;
         
         while (moreChunks)
@@ -63,13 +63,9 @@ public class ChunkedReader implements IReader
 
                 bufferLen += chunk.length - 2;
             }
-            
-            if (size == 0)
+            else
             {
                 moreChunks = false;
-                String ending = "\r\n";
-                
-                System.arraycopy(ending.getBytes(_encoding), 0, buffer, bufferLen, 2);
             }
         }
         

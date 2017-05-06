@@ -33,10 +33,9 @@ public class RequestBody
     
     public String asString(String encoding) throws UnsupportedEncodingException
     {
-        // remove trailing \r\n from string representation
-        byte[] stripped = new byte[_body.length - 2];
-        System.arraycopy(_body, 0, stripped, 0, _body.length - 2);
-        return new String(stripped, encoding);
+        byte[] returnVal = new byte[_body.length];
+        System.arraycopy(_body, 0, returnVal, 0, _body.length);
+        return new String(returnVal, encoding);
     }
     
     public byte[] raw()

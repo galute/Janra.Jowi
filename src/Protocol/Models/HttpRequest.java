@@ -36,6 +36,7 @@ public class HttpRequest implements Cloneable
     public HttpRequest(HttpMethod method, String path, String version)
     {
         _method = method;
+        // Need to handle absolute form rfc7230 5.3.2
         _path = path;
         _version = version;
         _host = "";

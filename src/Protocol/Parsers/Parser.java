@@ -27,6 +27,12 @@ import Server.IHeader;
  */
 public class Parser implements IParser
 {
+    private final Integer _maxUriLength;
+    
+    public Parser(Integer maxUriLength)
+    {
+        _maxUriLength = maxUriLength;
+    }
     @Override
     public HttpRequest ParseRequestLine(String line) throws ProtocolException
     {
@@ -37,6 +43,11 @@ public class Parser implements IParser
         if (elements.length != 3)
         {
             throw new ProtocolException("Invalid Request Line", 400);
+        }
+        
+        if (elements[1].length() > _maxUriLength)
+        {
+            throw new ProtocolException("Path of Uri too long", 414);
         }
         
         if (!"HTTP/1.1".equals(elements[2]))

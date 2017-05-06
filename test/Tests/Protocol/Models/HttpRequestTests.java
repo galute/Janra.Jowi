@@ -22,6 +22,7 @@ import Protocol.Models.HttpMethod;
 import Protocol.Models.HttpRequest;
 import Protocol.Models.RequestBody;
 import java.net.URISyntaxException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -39,8 +40,8 @@ public class HttpRequestTests
         {
             Headers firstHeaders = new Headers();
             Headers secondHeaders = new Headers();
-            byte[] bodyBytes1 = "hello\r\n".getBytes("UTF-8");
-            byte[] bodyBytes2 = "goodbye\r\n".getBytes("UTF-8");
+            byte[] bodyBytes1 = "hello".getBytes("UTF-8");
+            byte[] bodyBytes2 = "goodbye".getBytes("UTF-8");
 
             RequestBody body = new RequestBody(bodyBytes1);
             firstHeaders.addHeader(Header.create("First Header", "First Header Value"));
@@ -56,8 +57,8 @@ public class HttpRequestTests
             assertTrue(first.header("Second Header") == null);
             
             second.setBody(new RequestBody(bodyBytes2));
-            
-            assertTrue("hello".equals(first.body().asString("UTF-8")));
+
+            assertEquals("hello",first.body().asString("UTF-8"));
         }
         catch (Exception ex)
         {

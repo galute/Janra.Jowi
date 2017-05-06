@@ -26,6 +26,7 @@ public class Configuration implements IConfiguration
 {
     private long _timeout = 500;
     private Integer _maxThreads = 100;
+    private Integer _maxUriLength = 1048;
     private IExceptionHandler _handler;
     
     private final IPipelineConfiguration _pipelineConfig;
@@ -48,6 +49,11 @@ public class Configuration implements IConfiguration
         _maxThreads = maxThreads;
     }
     
+    public void setMaxUriLength(Integer maxUriLength)
+    {
+        _maxUriLength = maxUriLength;
+    }
+    
     @Override
     public void addMiddleware(String path, IPipelineMiddleware middleware)
     {
@@ -64,6 +70,11 @@ public class Configuration implements IConfiguration
     public Integer maxThreads()
     {
         return _maxThreads;
+    }
+    
+    public Integer maxUriLength()
+    {
+        return _maxUriLength;
     }
     
     @Override

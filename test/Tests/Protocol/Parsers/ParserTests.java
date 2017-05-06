@@ -46,7 +46,7 @@ public class ParserTests
     @Before
     public void Setup()
     {
-        _parser = new Parser();
+        _parser = new Parser(1024);
         _goodRequest = "POST /my/resource/location HTTP/1.1";
         _badRequest = "POST HTTP/1.1";
         _unsupportedRequest = "POST /my/resource/location HTTP/1.0";
@@ -93,6 +93,10 @@ public class ParserTests
         {
             assertTrue(ex instanceof ProtocolException);
             assertTrue("Invalid Request Line".equals(ex.getMessage()));
+            
+            ProtocolException pEx = (ProtocolException)ex;
+            
+            assertTrue(pEx.ResponseStatus == 400);
         }  
     }
     
@@ -108,7 +112,29 @@ public class ParserTests
         {
             assertTrue(ex instanceof ProtocolException);
             assertTrue("Unsupported Http version".equals(ex.getMessage()));
+            ProtocolException pEx = (ProtocolException)ex;
+            
+            assertTrue(pEx.ResponseStatus == 505);
         }  
+    }
+    @Test
+    public void RejectsUriTooLong()
+    {    
+        try
+        {
+            _parser = new Parser(10);
+            _parser.ParseRequestLine(_goodRequest);
+            fail("Exception not thrown");
+        }
+        catch (Exception ex)
+        {
+            assertTrue(ex instanceof ProtocolException);
+            assertTrue("Path of Uri too long".equals(ex.getMessage()));
+            
+            ProtocolException pEx = (ProtocolException)ex;
+            
+            assertTrue(pEx.ResponseStatus == 414);
+        }
     }
     
     @Test

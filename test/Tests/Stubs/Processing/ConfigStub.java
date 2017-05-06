@@ -27,6 +27,7 @@ import Server.IPipelineMiddleware;
 public class ConfigStub implements IConfiguration
 {
     private Integer _maxThreads = 0;
+    public Integer MaxUriLength = 1024;
     @Override
     public void setTimeout(Integer value)
     {
@@ -61,5 +62,17 @@ public class ConfigStub implements IConfiguration
     public void registerExceptionHandler(IExceptionHandler handler)
     {
         // Do nothing
+    }
+
+    @Override
+    public void setMaxUriLength(Integer maxLength)
+    {
+        MaxUriLength = maxLength;
+    }
+
+    @Override
+    public Integer maxUriLength()
+    {
+        return MaxUriLength;
     }
 }

@@ -16,7 +16,6 @@
  */
 package Protocol.Builders;
 
-import Network.Readers.ChunkedReader;
 import Network.Readers.IdentityReader;
 import Protocol.Models.HttpRequest;
 import Network.Wrappers.ISocketChannel;
@@ -25,6 +24,7 @@ import Protocol.Models.*;
 import Protocol.Parsers.*;
 import Request.Processing.TransferEncodingFactory;
 import Request.Processing.TransferEncodingProcessor;
+import Server.IConfiguration;
 import Server.IHeader;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -38,12 +38,14 @@ public class RequestBuilder implements IRequestBuilder
     private final IParser _parser;
     private final ChannelReader _reader;
     private final String _encoding;
+    private final IConfiguration _config;
     
-    public RequestBuilder(IParser parser)
+    public RequestBuilder(IParser parser, IConfiguration config)
     {
         _parser = parser;
         _encoding = "ISO-8859-1";
         _reader = new ChannelReader(_encoding);
+        _config = config;
     }
     
     @Override
@@ -113,8 +115,7 @@ public class RequestBuilder implements IRequestBuilder
         }
         
         TransferEncodingProcessor processor = TransferEncodingFactory.create();
-        
-        return null;
+        return processor.decode(channel, header, null);
     }
     
     private Headers getHeaders(ISocketChannel channel) throws ProtocolException, IOException
@@ -148,6 +149,12 @@ public class RequestBuilder implements IRequestBuilder
                     {
                         hasHostHeader = true;
                         headers.addHeader(header);
+                        int val = header.value().length();
+                        int val2 = _config.maxUriLength();
+                        if (header.value().length() > _config.maxUriLength())
+                        {
+                            throw new ProtocolException("Host exceed max Uri length", 414);
+                        }
                     }
                 }
                 else if ("transfer-encoding".equals(header.key().toLowerCase()))

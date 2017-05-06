@@ -65,12 +65,26 @@ public class IdentityReader implements IReader
         }
         byte[] data = _reader.readBytes(channel, _length);
         
+        byte[] terminator = _reader.readBytes(channel, 2);
+        
+        
+        
+        if (terminator.length != 2 ||
+            !new String(terminator).contentEquals("\r\n"))
+        {
+            int x = 1;
+        }
+        
         return data;
     }
 
     @Override
     public byte[] processData(byte[] data, ISocketChannel channel) throws ProtocolException, IOException
     {
+        if (_length <= 0)
+        {
+            return data;
+        }
         return _reader.readBytes(channel, _length);
     }
 }

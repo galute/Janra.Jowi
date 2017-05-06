@@ -56,7 +56,7 @@ public class ChunkedReaderTests
             givenDataToRead("1E\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n", "ISO-8859-1");
             byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.length == 32);
+            assertTrue(result.length == 30);
         }
         catch (ProtocolException | IOException ex)
         {
@@ -72,7 +72,7 @@ public class ChunkedReaderTests
             _channelComplete.setMessageToRead("1E;foobar\r\naaaaaaaaaaaaaaabbbbbbbbbbbbbbb\r\n0\r\n\r\n");
             byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.length == 32);
+            assertTrue(result.length == 30);
         }
         catch (ProtocolException | IOException ex)
         {
@@ -106,8 +106,8 @@ public class ChunkedReaderTests
             _channelComplete.Encoding = "ISO-8859-1";
             byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.length == 10);
-            assertTrue("foo\r\nbar\r\n".equals(new String(result, "UTF-8")));
+            assertTrue(result.length == 8);
+            assertTrue("foo\r\nbar".equals(new String(result, "UTF-8")));
         }
         catch (ProtocolException | IOException ex)
         {
@@ -123,8 +123,8 @@ public class ChunkedReaderTests
             _channelComplete.setMessageToRead("8\r\nfoo\r\nbar\r\n14\r\n and another foo bar\r\n0\r\n\r\n");
             byte[] result = _unitUnderTest.processData(new byte[0], _channelComplete);
             
-            assertTrue(result.length == 30);
-            assertTrue("foo\r\nbar and another foo bar\r\n".equals(new String(result, "UTF-8")));
+            assertTrue(result.length == 28);
+            assertTrue("foo\r\nbar and another foo bar".equals(new String(result, "UTF-8")));
         }
         catch (ProtocolException | IOException ex)
         {

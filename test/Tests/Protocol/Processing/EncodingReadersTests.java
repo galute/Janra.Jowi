@@ -22,6 +22,7 @@ import Request.Processing.EncodingReaders;
 import Tests.Stubs.Network.Readers.*;
 import Tests.Stubs.Network.SocketStubBinary;
 import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class EncodingReadersTests
             
             String resultStr = new String(result, Encoding);
             
-            assertTrue("Data to test gzip".equals(resultStr));
+            assertEquals("Data to test gzip",resultStr);
         }
         catch (ProtocolException | IOException ex)
         {
@@ -99,7 +100,7 @@ public class EncodingReadersTests
             
             String resultStr = new String(result, Encoding);
             
-            assertTrue("Data to test gzip deflate identity".equals(resultStr));
+            assertEquals("Data to test gzip deflate identity", resultStr);
         }
         catch (ProtocolException | IOException ex)
         {

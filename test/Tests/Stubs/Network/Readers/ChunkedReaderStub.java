@@ -46,10 +46,8 @@ public class ChunkedReaderStub implements IReader
     {
         channel.read(ByteBuffer.allocate(1));
         StringBuilder dataStr = new StringBuilder(new String(data, _encoding));
-        dataStr.delete(dataStr.length()-2, dataStr.length());
         dataStr.append(" ");
         dataStr.append(encoding());
-        dataStr.append("\r\n");
         
         return dataStr.toString().getBytes(_encoding);
     }

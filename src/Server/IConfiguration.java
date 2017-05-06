@@ -24,9 +24,10 @@ public interface IConfiguration
 {
     void setTimeout(Integer value); // in mS
     void setMaxThreads(Integer maxThreads);
+    void setMaxUriLength(Integer maxThreads);
     void addMiddleware(String path, IPipelineMiddleware middleware);
     void registerExceptionHandler(IExceptionHandler handler);
     long timeout();
     Integer maxThreads();
-    
+    Integer maxUriLength();
 }

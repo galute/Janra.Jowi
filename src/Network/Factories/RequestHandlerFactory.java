@@ -33,10 +33,10 @@ public class RequestHandlerFactory
 {
     static public Runnable create(ISocketChannel channel, IMarshaller marshaller, Configuration config, ILauncher launcher) throws IOException
     {
-        IParser parser = new Parser();
+        IParser parser = new Parser(config.maxUriLength());
         ISelector selector = new SelectorWrapper();
         IResponseBuilder responseBuilder = new ResponseBuilder();
-        IRequestBuilder requestBuilder = new RequestBuilder(parser);
+        IRequestBuilder requestBuilder = new RequestBuilder(parser, config);
 
         IProcessRequest requestProcessor = new RequestProcessor(marshaller, config);
         ISendResponse responder = new Responder(responseBuilder);

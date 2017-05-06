@@ -59,7 +59,7 @@ public class TransferEncodingProcessorTests
         try
         {
             IHeader header = new Header("Transfer-encoding", "gzip");
-            String testData = "Data to test\r\n";
+            String testData = "Data to test";
             ISocketChannel channel = new SocketStubBinary();
 
             RequestBody result = _unitUnderTest.decode(channel, header, testData.getBytes(Encoding));
@@ -81,7 +81,7 @@ public class TransferEncodingProcessorTests
         try
         {
             IHeader header = new Header("Transfer-encoding", "identity,gzip,chunked");
-            String testData = "Data to test\r\n";
+            String testData = "Data to test";
             ISocketChannel channel = new SocketStubBinary();
 
             RequestBody result = _unitUnderTest.decode(channel, header, testData.getBytes(Encoding));
@@ -102,7 +102,7 @@ public class TransferEncodingProcessorTests
         try
         {
             IHeader header = new Header("Transfer-encoding", "identity,chunked");
-            String testData = "Data to test\r\n";
+            String testData = "Data to test";
             SocketStubComplete channel = new SocketStubComplete();
 
             RequestBody result = _unitUnderTest.decode(channel, header, testData.getBytes(Encoding));
