@@ -20,9 +20,7 @@ import Protocol.Models.ContentType;
 import Protocol.Models.Header;
 import Protocol.Parsers.ProtocolException;
 import Server.IHeader;
-import java.io.IOException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -41,7 +39,7 @@ public class ContentTypeTests
             ContentType contentType = new ContentType(header, "foobar");
 
             assertEquals("text/plain", contentType.mediaType());
-            assertEquals("utf-8", contentType.charset());
+            assertEquals("UTF-8", contentType.charset());
         }
         catch (ProtocolException ex)
         {
@@ -75,7 +73,7 @@ public class ContentTypeTests
             ContentType contentType = new ContentType(header, "foobar");
 
             assertEquals("text/plain", contentType.mediaType());
-            assertEquals("utf-8", contentType.charset());
+            assertEquals("UTF-8", contentType.charset());
         }
         catch (ProtocolException ex)
         {
@@ -96,6 +94,40 @@ public class ContentTypeTests
         catch (ProtocolException ex)
         {
             assertEquals("Unrecognised charset format", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void HandlesUppercaseCharset()
+    {
+        try
+        {
+            IHeader header = new Header("content-type", "text/plain;Charset= UTF-8");
+            ContentType contentType = new ContentType(header, "foobar");
+
+            assertEquals("text/plain", contentType.mediaType());
+            assertEquals("UTF-8", contentType.charset());
+        }
+        catch (ProtocolException ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void HandlesWhieSpaceAfetCharset()
+    {
+        try
+        {
+            IHeader header = new Header("content-type", "text/plain;Charset =UTF-8");
+            ContentType contentType = new ContentType(header, "foobar");
+
+            assertEquals("text/plain", contentType.mediaType());
+            assertEquals("UTF-8", contentType.charset());
+        }
+        catch (ProtocolException ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
         }
     }
 }
