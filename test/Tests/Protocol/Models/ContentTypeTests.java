@@ -102,7 +102,7 @@ public class ContentTypeTests
     {
         try
         {
-            IHeader header = new Header("content-type", "text/plain;Charset= UTF-8");
+            IHeader header = new Header("content-type", "text/plain;Charset=UTF-8");
             ContentType contentType = new ContentType(header, "foobar");
 
             assertEquals("text/plain", contentType.mediaType());
@@ -115,19 +115,34 @@ public class ContentTypeTests
     }
     
     @Test
-    public void HandlesWhieSpaceAfetCharset()
+    public void DoesNotAllowWhiteSpaceAfterCharset()
     {
         try
         {
             IHeader header = new Header("content-type", "text/plain;Charset =UTF-8");
             ContentType contentType = new ContentType(header, "foobar");
 
-            assertEquals("text/plain", contentType.mediaType());
-            assertEquals("UTF-8", contentType.charset());
+            fail("Expected Exception not thrown");
         }
         catch (ProtocolException ex)
         {
-            fail("Unexpected Exception thrown: " + ex.getMessage());
+            assertEquals("Unrecognised charset format", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void DoesNotAllowWhiteSpaceAfterEquals()
+    {
+        try
+        {
+            IHeader header = new Header("content-type", "text/plain;Charset= UTF-8");
+            ContentType contentType = new ContentType(header, "foobar");
+
+            fail("Expected Exception not thrown");
+        }
+        catch (ProtocolException ex)
+        {
+            assertEquals("Unrecognised charset format", ex.getMessage());
         }
     }
 }

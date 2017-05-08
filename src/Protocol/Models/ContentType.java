@@ -27,7 +27,7 @@ public class ContentType
 {
     private String _mediaType = "application/octet-stream"; // default (rfc7230 3.1.1.5)
     private String _charset;
-    private final String CharSet = "charset";
+    private final String CharSet = "charset=";
     public ContentType(String charset)
     {
         _charset = charset;
@@ -49,6 +49,12 @@ public class ContentType
             }
             
             _charset = charsetField.substring(charsetField.indexOf("=") + 1);
+            
+            if (_charset.charAt(0) ==' ')
+            {
+                throw new ProtocolException("Unrecognised charset format", 415);
+            }
+            
             _charset = _charset.replace('"', ' ').trim();
         }
         _mediaType = elements[0].trim();
