@@ -107,7 +107,7 @@ public class RequestBuilder implements IRequestBuilder
         }
     }
     
-    private ContentType processContentType(Headers headers)
+    private ContentType processContentType(Headers headers) throws ProtocolException
     {
         IHeader contentTypeHeader = headers.get("content-type");
         if (contentTypeHeader != null)
