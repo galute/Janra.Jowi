@@ -57,7 +57,7 @@ public class ContentType
             
             _charset = _charset.replace('"', ' ').trim();
         }
-        _mediaType = elements[0].trim();
+        _mediaType = elements[0].trim().toLowerCase();
     }
     
     public String mediaType()

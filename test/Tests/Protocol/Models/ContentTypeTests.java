@@ -98,7 +98,7 @@ public class ContentTypeTests
     }
     
     @Test
-    public void HandlesUppercaseCharset()
+    public void CharsetNameIsCaseInsensitive()
     {
         try
         {
@@ -143,6 +143,24 @@ public class ContentTypeTests
         catch (ProtocolException ex)
         {
             assertEquals("Unrecognised charset format", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void MediadTypeAndSubtypeAreCaseInsensitive()
+    {
+        // rfc7231 Sect 3.1.1.1 The type, subtype, and parameter name tokens are case-insensitive.
+        try
+        {
+            IHeader header = new Header("content-type", "Text/Plain;charset=UTF-8");
+            ContentType contentType = new ContentType(header, "foobar");
+
+            assertEquals("text/plain", contentType.mediaType());
+            assertEquals("UTF-8", contentType.charset());
+        }
+        catch (ProtocolException ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
         }
     }
 }
