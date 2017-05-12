@@ -23,6 +23,7 @@ import Protocol.Parsers.IParser;
 import Protocol.Parsers.Parser;
 import Server.IConfiguration;
 import Tests.Stubs.Processing.ConfigStub;
+import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -134,7 +135,7 @@ public class RequestBuilderTests
             socketStub.setMessageToRead("POST /my/request HTTP/1.1\r\nHost: 123\r\nContent-length: 5\r\nContent-type: text/plain; charset=ISO-8859-1\r\n\r\nhello\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
             
-            assertEquals("iso-8859-1", context.request().charset());
+            assertEquals("ISO-8859-1", context.request().charset());
         }
         catch (Exception ex)
         {
@@ -166,7 +167,7 @@ public class RequestBuilderTests
             assertFalse(context.request() == null);
             assertEquals("hello", context.request().body().asString("UTF-8"));
         }
-        catch (Exception ex)
+        catch (UnsupportedEncodingException ex)
         {
             fail("Unexpected Exception thrown: " + ex.getMessage());
         }
@@ -219,6 +220,24 @@ public class RequestBuilderTests
             socketStub.setMessageToRead("POST /a/b HTTP/1.1\r\nHost: abcdefg\r\nTransfer-encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
             HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
             assertEquals((long)414, (long)context.response().status());
+        }
+        catch (Exception ex)
+        {
+            fail("Unexpected Exception thrown: " + ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void Returns400ForContentRangeAndPut()
+    {
+        try
+        {
+            _config.setMaxUriLength(10);
+            _unitUnderTest = new RequestBuilder(_parser, _config);
+            SocketStubComplete socketStub = new SocketStubComplete();
+            socketStub.setMessageToRead("PUT /a/b HTTP/1.1\r\nHost: abcdefg\r\nContent-Range: foobar\r\n\r\n5\r\nhello\r\n0\r\n\r\n\r\n");
+            HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+            assertEquals((long)400, (long)context.response().status());
         }
         catch (Exception ex)
         {

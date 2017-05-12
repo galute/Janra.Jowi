@@ -62,6 +62,17 @@ public class RequestBuilder implements IRequestBuilder
             
             headers.remove("host");
             
+            if (headers.get("content-range") != null &&
+                request.method() == HttpMethod.PUT)
+            {
+                // rfc 7231 Sect 4.3.3
+                // An origin server that allows PUT on a given target resource MUST send
+                // a 400 (Bad Request) response to a PUT request that contains a
+                // Content-Range header field
+                throw new ProtocolException("Content-Range not allowed for PUT requests", 400);
+            }
+            
+            
             if (request.host().length() + request.path().length() > _config.maxUriLength())
             {
                 throw new ProtocolException("Max Uri length exceeded", 414);
