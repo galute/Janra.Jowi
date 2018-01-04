@@ -98,7 +98,7 @@ public class RequestBuilder implements IRequestBuilder
                     IdentityReader reader = new IdentityReader(contentLen, _charset);
                     request.setBody(new RequestBody(reader.getBody(channel)));
                 }
-                else
+                else if (request.method() != HttpMethod.GET)
                 {
                     throw new ProtocolException("Both Transfer-Encoding and Content-Length missing", 400);
                 }
