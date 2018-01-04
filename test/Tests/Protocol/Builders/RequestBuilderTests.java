@@ -102,6 +102,17 @@ public class RequestBuilderTests
     }
     
     @Test
+    public void GoodRequestIfContentLengthMissingForGet()
+    {
+        _unitUnderTest = new RequestBuilder(_parser, _config);
+        SocketStubComplete socketStub = new SocketStubComplete();
+        socketStub.setMessageToRead("\"GET /my/request HTTP/1.1\r\nHost: 123\r\n\r\n\r\n");
+        HttpContext context = _unitUnderTest.ProcessRequest(socketStub);
+        
+        assertEquals((long)200, (long)context.response().status());
+    }
+    
+    @Test
     public void ContentLengthIgnoredForTransferEncoding()
     {
         _unitUnderTest = new RequestBuilder(_parser, _config);
